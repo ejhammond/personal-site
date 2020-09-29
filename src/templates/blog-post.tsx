@@ -10,7 +10,7 @@ import { Data } from '../graphql-type';
 import { makeHeading } from '../utils';
 
 const GITHUB_USERNAME = 'ejhammond';
-const GITHUB_REPO_NAME = 'blog';
+const GITHUB_REPO_NAME = 'personal-site';
 const GITHUB_MAIN_BRANCH = 'main';
 
 type QueryResult = {
