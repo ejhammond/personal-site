@@ -4,6 +4,9 @@
   "description": "Personal site including a blog",
   "version": "0.1.0",
   "author": "EJ Hammond",
+  "engines": {
+    "node": "12.x"
+  },
   "dependencies": {
     "@ejhammond/eslint-plugin": "^2.0.0",
     "@ejhammond/jskit": "^2.0.2",

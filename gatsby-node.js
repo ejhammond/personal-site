@@ -78,13 +78,24 @@ function createPages({ graphql, actions }) {
     posts.forEach((post) => {
       const { series, number } = post.node.frontmatter;
 
+      let nextId = null;
+      let prevId = null;
+      if (postsBySeries[series] !== undefined) {
+        if (postsBySeries[series][number + 1] !== undefined) {
+          nextId = postsBySeries[series][number + 1].id;
+        }
+        if (postsBySeries[series][number - 1] !== undefined) {
+          prevId = postsBySeries[series][number - 1].id;
+        }
+      }
+
       createPage({
         path: post.node.fields.path,
         component: path.resolve('./src/templates/blog-post.tsx'),
         context: {
           id: post.node.id,
-          nextId: postsBySeries?.[series]?.[number + 1]?.id ?? null,
-          prevId: postsBySeries?.[series]?.[number - 1]?.id ?? null,
+          nextId,
+          prevId,
         },
       });
     });
