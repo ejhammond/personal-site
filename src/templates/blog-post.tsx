@@ -50,7 +50,7 @@ type Props = {
 };
 
 export const query = graphql`
-  query BlogPostBySlug($id: String!, $nextId: String, $prevId: String) {
+  query BlogPostById($id: String!, $nextId: String, $prevId: String) {
     post: mdx(id: { eq: $id }) {
       id
       body
