@@ -20,6 +20,8 @@ const Layout: React.FC = ({ children }) => {
           sx={{
             mx: 'auto',
             maxWidth: '900px',
+            px: 3,
+            pb: 4,
           }}
         >
           <main>{children}</main>
