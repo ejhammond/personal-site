@@ -33,7 +33,10 @@ Let's say that we want 4 images on large screens like a full-screen desktop brow
 And here's the API for the `Carousel` component.
 
 ```jsx
-<Carousel imagesToShow={someNumber} showArrows={trueOrFalse} />
+<Carousel
+  imagesToShow={someNumber}
+  showArrows={trueOrFalse}
+/>
 ```
 
 How can we make that work?
@@ -93,7 +96,9 @@ let currentScreenClass = undefined;
 
 const largeScreenMediaQuery = '(min-width: 1200px)';
 
-const mediaQueryList = window.matchMedia(largeScreenMediaQuery);
+const mediaQueryList = window.matchMedia(
+  largeScreenMediaQuery,
+);
 
 mediaQueryList.addListener((event) => {
   if (event.matches) {

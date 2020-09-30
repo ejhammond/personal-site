@@ -166,7 +166,8 @@ const SUBTRACT_ACTION = 'SUBTRACT';
 ```
 
 <Message variant="error">
-  An action must be a plain JavaScript object that has a `type` field
+  An action must be a plain JavaScript object that has a
+  `type` field
 </Message>
 
 Woah there! It looks like Redux didn't like that. Even though our simple string-based actions would work in theory, Redux insists that our actions must be objects with a `type` field. That's easy enough to fix.
@@ -359,7 +360,9 @@ function reduce(currentState, action) {
 }
 ```
 
-<Message variant="error">The reducer must not mutate the `currentState`</Message>
+<Message variant="error">
+  The reducer must not mutate the `currentState`
+</Message>
 
 This reducer is much simpler, but it's actually quite broken for 2 reasons.
 
