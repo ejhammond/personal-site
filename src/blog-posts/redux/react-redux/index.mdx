@@ -3,8 +3,8 @@ series: 'redux'
 article: 'react-redux'
 number: 2
 title: 'React Redux'
-date: '2020-09-27'
-description: 'Part 2 of the Redux series: Explores how React Redux helps to integrate Redux with React apps'
+date: '2020-09-30'
+description: 'Explores how React Redux helps to integrate Redux with React apps'
 tags: ['technology', 'javascript', 'react', 'redux']
 ---
 
@@ -39,11 +39,11 @@ import { AspectImage } from 'theme-ui';
 
 ## Introduction
 
-React and Redux are two immensely popular JavaScript libraries which are commonly paired together in order to develop complex applications that are scalable and easy to reason about. In this installment of "My Mental Model" I'll capture my understanding of how Redux works side-by-side with React (via the `react-redux` library) in order to tame your application's complex data flow.
+React and Redux are two immensely popular JavaScript libraries which are commonly paired together in order to develop complex applications that are scalable and easy to reason about. In this article I'll capture my understanding of how Redux works side-by-side with React (via the `react-redux` library) in order to tame your application's complex data flow.
 
 ## Redux
 
-In a [previous article](/redux), we built a simple app using Redux and we intentionally did so without a UI framework in order to explore Redux's APIs in isolation. We learned that **actions** are plain old JavaScript objects, a **reducer** is nothing more than a function, and that the API of the Redux library itself boils down to:
+In a [previous article](./redux-minus-react), we built a simple app using Redux and we intentionally did so without a UI framework in order to explore Redux's APIs in isolation. We learned that **actions** are plain old JavaScript objects, a **reducer** is nothing more than a function, and that the API of the Redux library itself boils down to:
 
 1. `createStore` - to create the store
 2. `store.dispatch` - to dispatch an action
