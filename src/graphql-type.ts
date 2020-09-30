@@ -14,7 +14,8 @@ export type Data = {
     body: string;
     timeToRead: number;
     fields: {
-      path: string;
+      articleURL: string;
+      seriesURL: string | null;
       pathInRepo: string;
     };
     frontmatter: {

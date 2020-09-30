@@ -19,14 +19,14 @@ type QueryResult = {
 type Props = {
   data: QueryResult;
   pageContext: {
-    series: string;
+    tag: string;
   };
 };
 
 export const query = graphql`
-  query BlogPostsBySeries($series: String!) {
+  query BlogPostsByTag($tag: String!) {
     allMdx(
-      filter: { frontmatter: { series: { eq: $series } } }
+      filter: { frontmatter: { tags: { in: [$tag] } } }
       sort: { order: ASC, fields: frontmatter___number }
     ) {
       edges {
@@ -38,7 +38,7 @@ export const query = graphql`
   }
 `;
 
-const BlogSeriesTemplate: React.FC<Props> = (props) => {
+const BlogTagTemplate: React.FC<Props> = (props) => {
   const { data, pageContext } = props;
 
   if (data === undefined) {
@@ -46,17 +46,17 @@ const BlogSeriesTemplate: React.FC<Props> = (props) => {
   }
 
   const posts = data.allMdx.edges;
-  const { series } = pageContext;
-  const seriesHeading = makeHeading(series);
+  const { tag } = pageContext;
+  const tagHeading = makeHeading(tag);
 
   return (
     <Layout>
-      <SEO title={`${seriesHeading} Series`} />
+      <SEO title={`Tag: ${tag}`} />
       <Breadcrumbs />
-      <h2>{`${seriesHeading} Series`}</h2>
+      <h2>{`Tag: ${tagHeading}`}</h2>
       <PostList posts={posts.map(({ node }) => node)} />
     </Layout>
   );
 };
 
-export default BlogSeriesTemplate;
+export default BlogTagTemplate;

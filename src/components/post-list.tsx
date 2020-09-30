@@ -9,7 +9,7 @@ export const query = graphql`
   fragment PostListPost on Mdx {
     id
     fields {
-      path
+      articleURL
     }
     frontmatter {
       date(formatString: "MMMM DD, YYYY")
@@ -23,7 +23,7 @@ export const query = graphql`
 export type PostListPost = {
   id: Data['mdx']['id'];
   fields: {
-    path: Data['mdx']['fields']['path'];
+    articleURL: Data['mdx']['fields']['articleURL'];
   };
   frontmatter: {
     title: Data['mdx']['frontmatter']['title'];
@@ -44,7 +44,7 @@ export const PostList: React.FC<{
         return (
           <div key={post.id}>
             <h3 sx={{ mb: 1 }}>
-              <Link to={post.fields.path} sx={{ color: 'accent', textDecoration: 'none' }}>
+              <Link to={post.fields.articleURL} sx={{ color: 'accent', textDecoration: 'none' }}>
                 {post.frontmatter.title}
               </Link>
             </h3>

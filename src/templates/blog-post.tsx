@@ -3,7 +3,6 @@ import { jsx } from 'theme-ui';
 import { Link, graphql } from 'gatsby';
 import { MDXRenderer } from 'gatsby-plugin-mdx';
 
-import Bio from '../components/bio';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 import { Data } from '../graphql-type';
@@ -20,6 +19,7 @@ type QueryResult = {
     body: Data['mdx']['body'];
     timeToRead: Data['mdx']['timeToRead'];
     fields: {
+      seriesURL: Data['mdx']['fields']['seriesURL'];
       pathInRepo: Data['mdx']['fields']['pathInRepo'];
     };
     frontmatter: {
@@ -32,7 +32,7 @@ type QueryResult = {
   };
   nextPost?: {
     fields: {
-      path: Data['mdx']['fields']['path'];
+      articleURL: Data['mdx']['fields']['articleURL'];
     };
     frontmatter: {
       title: Data['mdx']['frontmatter']['title'];
@@ -40,7 +40,7 @@ type QueryResult = {
   };
   prevPost?: {
     fields: {
-      path: Data['mdx']['fields']['path'];
+      articleURL: Data['mdx']['fields']['articleURL'];
     };
     frontmatter: {
       title: Data['mdx']['frontmatter']['title'];
@@ -59,6 +59,7 @@ export const query = graphql`
       body
       timeToRead
       fields {
+        seriesURL
         pathInRepo
       }
       frontmatter {
@@ -71,7 +72,7 @@ export const query = graphql`
     }
     nextPost: mdx(id: { eq: $nextId }) {
       fields {
-        path
+        articleURL
       }
       frontmatter {
         title
@@ -79,7 +80,7 @@ export const query = graphql`
     }
     prevPost: mdx(id: { eq: $prevId }) {
       fields {
-        path
+        articleURL
       }
       frontmatter {
         title
@@ -101,9 +102,12 @@ const BlogPostTemplate: React.FC<Props> = (props) => {
       <SEO title={post.frontmatter.title} description={post.frontmatter.description} />
       <Breadcrumbs />
       <h1 sx={{ my: 0 }}>{post.frontmatter.title}</h1>
-      {post.frontmatter.series !== null && (
+      {post.frontmatter.series !== null && post.fields.seriesURL !== null && (
         <small sx={{ display: 'block', mb: 2 }}>
-          {makeHeading(post.frontmatter.series)} Series, Article {post.frontmatter.number}
+          <Link to={post.fields.seriesURL} sx={{ color: 'accent', textDecoration: 'none' }}>
+            {makeHeading(post.frontmatter.series)} Series
+          </Link>{' '}
+          | Article {post.frontmatter.number}
         </small>
       )}
       <div sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
@@ -123,7 +127,6 @@ const BlogPostTemplate: React.FC<Props> = (props) => {
       >
         Edit on GitHub
       </a>
-      <Bio />
       <ul
         sx={{
           display: `flex`,
@@ -137,7 +140,7 @@ const BlogPostTemplate: React.FC<Props> = (props) => {
           {prevPost && (
             <Link
               sx={{ color: 'accent', textDecoration: 'none' }}
-              to={prevPost.fields.path}
+              to={prevPost.fields.articleURL}
               rel="prev"
             >
               ← {prevPost.frontmatter.title}
@@ -148,7 +151,7 @@ const BlogPostTemplate: React.FC<Props> = (props) => {
           {nextPost && (
             <Link
               sx={{ color: 'accent', textDecoration: 'none' }}
-              to={nextPost.fields.path}
+              to={nextPost.fields.articleURL}
               rel="next"
             >
               {nextPost.frontmatter.title} →

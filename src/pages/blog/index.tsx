@@ -1,56 +1,44 @@
 /** @jsx jsx */
-import { jsx } from 'theme-ui';
-import { graphql } from 'gatsby';
+import { Card, Text, jsx } from 'theme-ui';
+import { Link } from 'gatsby';
+import { FaNewspaper, FaTags, FaFolderOpen } from 'react-icons/fa';
 
-import Bio from '../../components/bio';
 import Layout from '../../components/layout';
 import SEO from '../../components/seo';
-import { PostList, PostListPost } from '../../components/post-list';
-import { Data } from '../../graphql-type';
 import { Breadcrumbs } from '../../components/breadcrumbs';
 
-export const pageQuery = graphql`
-  query {
-    site {
-      siteMetadata {
-        title
-      }
-    }
-    allMdx(sort: { fields: [frontmatter___date], order: DESC }) {
-      edges {
-        node {
-          ...PostListPost
-        }
-      }
-    }
-  }
-`;
-
-type QueryResult = {
-  site: {
-    siteMetadata: {
-      title: Data['site']['siteMetadata']['title'];
-    };
-  };
-  allMdx: {
-    edges: Array<{
-      node: PostListPost;
-    }>;
-  };
-};
-
-const BlogIndex: React.FC<{ data: QueryResult }> = (props) => {
-  const { data } = props;
-  const posts = data.allMdx.edges;
-
+const BlogIndex: React.FC = () => {
   return (
     <Layout>
-      <SEO title="All posts" />
+      <SEO title="All articles" />
       <Breadcrumbs />
-      <h2>All Posts</h2>
-      <PostList posts={posts.map(({ node }) => node)} />
-      <hr sx={{ my: 4 }} />
-      <Bio />
+      <h2>Browse</h2>
+      <ul sx={{ listStyleType: 'none' }}>
+        <li sx={{ mb: 3 }}>
+          <Link to="articles" sx={{ color: 'accent', textDecoration: 'none' }}>
+            <Card sx={{ maxWidth: 250, textAlign: 'center' }}>
+              <FaNewspaper size={50} />
+              <Text>By Article</Text>
+            </Card>
+          </Link>
+        </li>
+        <li sx={{ mb: 3 }}>
+          <Link to="series" sx={{ color: 'accent', textDecoration: 'none' }}>
+            <Card sx={{ maxWidth: 250, textAlign: 'center' }}>
+              <FaFolderOpen size={50} />
+              <Text>By Series</Text>
+            </Card>
+          </Link>
+        </li>
+        <li>
+          <Link to="tags" sx={{ color: 'accent', textDecoration: 'none' }}>
+            <Card sx={{ maxWidth: 250, textAlign: 'center' }}>
+              <FaTags size={50} />
+              <Text>By Tag</Text>
+            </Card>
+          </Link>
+        </li>
+      </ul>
     </Layout>
   );
 };

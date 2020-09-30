@@ -1,23 +1,46 @@
 const path = require(`path`);
 
+function makeSeriesURL(series) {
+  return `/blog/series/${series}`;
+}
+
+function makeArticleURL(article) {
+  return `/blog/articles/${article}`;
+}
+
+function makeTagURL(tag) {
+  return `/blog/tags/${tag}`;
+}
+
 function onCreateNode({ node, actions }) {
   const { createNodeField } = actions;
   if (node.internal.type === `Mdx`) {
     const { article, series, number } = node.frontmatter;
+
+    // todo: more validations and split them out
     if (series !== undefined && number === undefined) {
       throw new Error('Any article with a series must also have a number');
     }
 
     createNodeField({
       node,
-      name: `path`,
-      value: series !== undefined ? `/blog/${series}/${article}` : `/blog/${article}`,
+      name: 'articleURL',
+      value: makeArticleURL(article),
     });
+
     createNodeField({
       node,
       name: 'pathInRepo',
       value: node.fileAbsolutePath.slice(node.fileAbsolutePath.indexOf('src')),
     });
+
+    if (series !== undefined) {
+      createNodeField({
+        node,
+        name: 'seriesURL',
+        value: makeSeriesURL(series),
+      });
+    }
   }
 }
 
@@ -32,11 +55,13 @@ function createPages({ graphql, actions }) {
             node {
               id
               fields {
-                path
+                articleURL
+                seriesURL
               }
               frontmatter {
                 series
                 number
+                tags
               }
             }
           }
@@ -49,6 +74,7 @@ function createPages({ graphql, actions }) {
     }
 
     const posts = result.data.allMdx.edges;
+
     const postsBySeries = posts.reduce((acc, p) => {
       const { series, number } = p.node.frontmatter;
 
@@ -65,9 +91,25 @@ function createPages({ graphql, actions }) {
       return acc;
     }, {});
 
+    const tags = posts.reduce((acc, p) => {
+      const t = p.node.frontmatter.tags || [];
+      t.forEach((tag) => acc.add(tag));
+      return acc;
+    }, new Set());
+
+    Array.from(tags).forEach((tag) => {
+      createPage({
+        path: makeTagURL(tag),
+        component: path.resolve('./src/templates/blog-tag.tsx'),
+        context: {
+          tag,
+        },
+      });
+    });
+
     Object.keys(postsBySeries).forEach((series) => {
       createPage({
-        path: `/blog/${series}`,
+        path: makeSeriesURL(series),
         component: path.resolve('./src/templates/blog-series.tsx'),
         context: {
           series,
@@ -90,7 +132,7 @@ function createPages({ graphql, actions }) {
       }
 
       createPage({
-        path: post.node.fields.path,
+        path: post.node.fields.articleURL,
         component: path.resolve('./src/templates/blog-post.tsx'),
         context: {
           id: post.node.id,

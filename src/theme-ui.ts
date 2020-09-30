@@ -8,6 +8,7 @@ const theme: Theme = {
     accent: '#1CA086',
     gray: '#666666',
     text: '#333333',
+    border: '#AAAAAA',
     background: '#FFFFFF',
     danger: '#F44336',
   },
@@ -30,6 +31,14 @@ const theme: Theme = {
     error: {
       backgroundColor: lighten('danger', 0.32),
       borderLeftColor: 'danger',
+    },
+  },
+  cards: {
+    primary: {
+      padding: 3,
+      borderRadius: 4,
+      border: '1px solid',
+      borderColor: 'border',
     },
   },
   styles: {

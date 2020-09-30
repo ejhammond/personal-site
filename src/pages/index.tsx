@@ -1,7 +1,8 @@
 /** @jsx jsx */
-import { jsx } from 'theme-ui';
+import { jsx, Card, Text } from 'theme-ui';
 import { Link } from 'gatsby';
-import Bio from '../components/bio';
+import { FaBookReader } from 'react-icons/fa';
+
 import Layout from '../components/layout';
 import SEO from '../components/seo';
 
@@ -17,16 +18,17 @@ const Index: React.FC = () => {
       </p>
       <h2>Nav</h2>
       <nav>
-        <ul sx={{ fontSize: 2 }}>
+        <ul sx={{ listStyleType: 'none' }}>
           <li>
             <Link to="/blog" sx={{ color: 'accent', textDecoration: 'none' }}>
-              Blog
+              <Card sx={{ maxWidth: 250, textAlign: 'center' }}>
+                <FaBookReader size={50} />
+                <Text sx={{ fontSize: 2 }}>Blog</Text>
+              </Card>
             </Link>
           </li>
         </ul>
       </nav>
-      <hr sx={{ my: 4 }} />
-      <Bio />
     </Layout>
   );
 };
