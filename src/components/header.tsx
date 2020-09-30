@@ -74,7 +74,7 @@ const Header: React.FC = () => {
   return (
     <header>
       <div sx={{ backgroundColor: 'primary', color: 'white' }}>
-        <div sx={{ maxWidth: '900px', mx: 'auto', mb: 3, py: 3 }}>
+        <div sx={{ maxWidth: '900px', mx: 'auto', mb: 3, p: 3 }}>
           <h1
             sx={{
               margin: 0,
@@ -102,7 +102,7 @@ const Header: React.FC = () => {
           </h1>
         </div>
       </div>
-      <div sx={{ maxWidth: '900px', mx: 'auto' }}>
+      <div sx={{ maxWidth: '900px', mx: 'auto', px: 3 }}>
         <Breadcrumbs />
       </div>
     </header>
