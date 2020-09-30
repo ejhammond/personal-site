@@ -5,26 +5,23 @@ import { graphql } from 'gatsby';
 import Bio from '../components/bio';
 import Layout from '../components/layout';
 import SEO from '../components/seo';
-import { PostList } from '../components/post-list';
-import { Data } from '../graphql-type';
+import { PostList, PostListPost } from '../components/post-list';
 import { makeHeading } from '../utils';
+import { Breadcrumbs } from '../components/breadcrumbs';
 
 type QueryResult = {
-  posts: {
-    id: Data['mdx']['id'];
-    fields: {
-      path: Data['mdx']['fields']['path'];
-    };
-    frontmatter: {
-      title: Data['mdx']['frontmatter']['title'];
-      date: Data['mdx']['frontmatter']['date'];
-      description: Data['mdx']['frontmatter']['description'];
-    };
+  allMdx: {
+    edges: Array<{
+      node: PostListPost;
+    }>;
   };
 };
 
 type Props = {
   data: QueryResult;
+  pageContext: {
+    series: string;
+  };
 };
 
 export const query = graphql`
@@ -56,6 +53,7 @@ const BlogPostTemplate: React.FC<Props> = (props) => {
   return (
     <Layout>
       <SEO title={`${seriesHeading} Series`} />
+      <Breadcrumbs />
       <h2>{`${seriesHeading} Series`}</h2>
       <PostList posts={posts.map(({ node }) => node)} />
       <hr sx={{ my: 4 }} />

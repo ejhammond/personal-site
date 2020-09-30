@@ -3,6 +3,7 @@ import { jsx } from 'theme-ui';
 import { Link, graphql } from 'gatsby';
 
 import { Tag } from './tag';
+import { Data } from '../graphql-type';
 
 export const query = graphql`
   fragment PostListPost on Mdx {
@@ -19,7 +20,7 @@ export const query = graphql`
   }
 `;
 
-type Post = {
+export type PostListPost = {
   id: Data['mdx']['id'];
   fields: {
     path: Data['mdx']['fields']['path'];
@@ -33,7 +34,7 @@ type Post = {
 };
 
 export const PostList: React.FC<{
-  posts: Post[];
+  posts: PostListPost[];
 }> = (props) => {
   const { posts } = props;
 

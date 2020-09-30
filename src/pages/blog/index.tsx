@@ -5,7 +5,7 @@ import { graphql } from 'gatsby';
 import Bio from '../../components/bio';
 import Layout from '../../components/layout';
 import SEO from '../../components/seo';
-import { PostList } from '../../components/post-list';
+import { PostList, PostListPost } from '../../components/post-list';
 import { Data } from '../../graphql-type';
 
 export const pageQuery = graphql`
@@ -33,18 +33,7 @@ type QueryResult = {
   };
   allMdx: {
     edges: Array<{
-      node: {
-        id: Data['mdx']['id'];
-        fields: {
-          path: Data['mdx']['fields']['path'];
-        };
-        frontmatter: {
-          title: Data['mdx']['frontmatter']['title'];
-          date: Data['mdx']['frontmatter']['date'];
-          description: Data['mdx']['frontmatter']['description'];
-          tags: Data['mdx']['frontmatter']['tags'];
-        };
-      };
+      node: PostListPost;
     }>;
   };
 };

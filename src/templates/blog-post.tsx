@@ -8,6 +8,7 @@ import Layout from '../components/layout';
 import SEO from '../components/seo';
 import { Data } from '../graphql-type';
 import { makeHeading } from '../utils';
+import { Breadcrumbs } from '../components/breadcrumbs';
 
 const GITHUB_USERNAME = 'ejhammond';
 const GITHUB_REPO_NAME = 'personal-site';
@@ -22,6 +23,8 @@ type QueryResult = {
       pathInRepo: Data['mdx']['fields']['pathInRepo'];
     };
     frontmatter: {
+      series: Data['mdx']['frontmatter']['series'];
+      number: Data['mdx']['frontmatter']['number'];
       title: Data['mdx']['frontmatter']['title'];
       date: Data['mdx']['frontmatter']['date'];
       description: Data['mdx']['frontmatter']['description'];
@@ -94,9 +97,10 @@ const BlogPostTemplate: React.FC<Props> = (props) => {
   const editOnGitHubURL = `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO_NAME}/edit/${GITHUB_MAIN_BRANCH}/${post.fields.pathInRepo}`;
 
   return (
-    <Layout title="Ayhota | Blog" titleLink="/blog">
+    <Layout>
       <SEO title={post.frontmatter.title} description={post.frontmatter.description} />
-      <h1 sx={{ mb: 0 }}>{post.frontmatter.title}</h1>
+      <Breadcrumbs />
+      <h1 sx={{ my: 0 }}>{post.frontmatter.title}</h1>
       {post.frontmatter.series !== null && (
         <small sx={{ display: 'block', mb: 2 }}>
           {makeHeading(post.frontmatter.series)} Series, Article {post.frontmatter.number}
