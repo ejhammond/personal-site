@@ -80,7 +80,7 @@ const theme: Theme = {
     },
     inlineCode: {
       fontFamily: 'monospace',
-      whiteSpace: 'nowrap',
+      whiteSpace: 'pre-wrap',
       padding: '2px 5px',
       backgroundColor: lighten('secondary', 0.56),
     },
