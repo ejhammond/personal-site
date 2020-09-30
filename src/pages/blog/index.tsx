@@ -7,6 +7,7 @@ import Layout from '../../components/layout';
 import SEO from '../../components/seo';
 import { PostList, PostListPost } from '../../components/post-list';
 import { Data } from '../../graphql-type';
+import { Breadcrumbs } from '../../components/breadcrumbs';
 
 export const pageQuery = graphql`
   query {
@@ -45,6 +46,7 @@ const BlogIndex: React.FC<{ data: QueryResult }> = (props) => {
   return (
     <Layout>
       <SEO title="All posts" />
+      <Breadcrumbs />
       <h2>All Posts</h2>
       <PostList posts={posts.map(({ node }) => node)} />
       <hr sx={{ my: 4 }} />
