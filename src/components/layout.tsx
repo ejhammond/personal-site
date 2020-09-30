@@ -8,6 +8,7 @@ import Header from './header';
 import { Bio } from './bio';
 import { BoundedContent } from './bounded-content';
 import theme from '../theme-ui';
+import Div100vh from 'react-div-100vh';
 
 const mdxComponents = {
   code: Prism,
@@ -20,7 +21,7 @@ const Layout: React.FC = ({ children }) => {
   return (
     <MDXProvider components={mdxComponents}>
       <ThemeProvider theme={theme}>
-        <div sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <Div100vh sx={{ display: 'flex', flexDirection: 'column' }}>
           <NoGrow>
             <Header />
           </NoGrow>
@@ -36,7 +37,7 @@ const Layout: React.FC = ({ children }) => {
               </BoundedContent>
             </footer>
           </NoGrow>
-        </div>
+        </Div100vh>
       </ThemeProvider>
     </MDXProvider>
   );
