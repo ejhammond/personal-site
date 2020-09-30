@@ -37,7 +37,7 @@ const theme: Theme = {
       fontFamily: 'body',
       fontWeight: 'body',
       lineHeight: 'body',
-      fontSize: 2,
+      fontSize: 1,
     },
     a: {
       color: 'accent',
