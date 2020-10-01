@@ -124,13 +124,13 @@ At a high level, you can think of the `getNextState` function like this:
 
 We input the current state and some _action_ that just happened, and the reducer determines what (if anything) needs to change.
 
-The actual implementation of this `getNextState` function will depend on what form the `action` argument takes, so let's put the reducer on hold for a moment while we talk about _actions_.
+The actual implementation of this `getNextState` function will depend on what form the actions take, so let's put the reducer on hold for a moment while we talk about _actions_.
 
 ### Actions
 
 Actions represent the fact that _something just happened_ in the app. Every state-change in a Redux app can be traced back to a specific action.
 
-Let's think about the different things that can _happen_ in this app. Well, we know that the counter should increment when the user clicks the plus button, and it should decrement when the user clicks the minus button. Pretty straight-forward!
+Let's think about the different things that can _happen_ in this app. Well, the counter can increment and it can decrement, and that's pretty much it!
 
 Okay, now let's use what we know about the reducer in order to figure out what our actions should look like. We don't know _exactly_ how the reducer is going to work yet, but we know the inputs and outputs that we want, right?
 
@@ -140,25 +140,25 @@ Let's say that we're starting fresh and the currentState is `{ count: 0 }`, and 
 
 ![An object containing the key, count, with the value, 0, is combined with some Action via the Reducer which produces an object with the key, count, with the value, 1](./images/reducer-example-1.png)
 
-Again, we haven't written the reducer function yet, but we know that whatever we pass in for `action` needs to be able to tell `reduce` to increment the count by 1.
+Again, we haven't written the `getNextState` function yet, but we know that whatever we supply for `action` needs to be able to tell `getNextState` to increment the count by 1.
 
 So, how about `action = 'ADD'`?
 
 ![An object containing the key, count, with the value, 0, is combined with the string, ADD, via the Reducer which produces an object with the key, count, with the value, 1](./images/reducer-example-2.png)
 
-That'll work! It's not too much of a stretch to conceive of a theoretical reducer function that could take `{ count: 0 }` + `"ADD"` and output `{ count: 1 }`.
+That'll work! Since `getNextState` is just a normal function, we can do whatever we want inside of it. Maybe we'll do something like this:
 
 e.g.
 
 ```js
-function reduce(currentState, action) {
+function getNextState(currentState, action) {
   if (action === 'ADD') {
     increment(currentState, 'count', 1);
   }
 }
 ```
 
-Let's put this into some real code:
+Let's define a couple constants to keep track of our actions in case we want to change them later.
 
 ```js
 const ADD_ACTION = 'ADD';
@@ -177,11 +177,11 @@ const ADD_ACTION = { type: 'ADD' };
 const SUBTRACT_ACTION = { type: 'SUBTRACT' };
 ```
 
-In my opinion, this is an odd constraint, but if we're honest, using objects is a much more scalable pattern and is probably the right choice in any case. As an exercise, let's imagine that we didn't have that contraint and see what happens as the app gets more complex.
+In my opinion, this is an odd constraint, but if we're honest, using objects is a much more scalable pattern and is probably the right choice in almost any case. As an exercise, let's imagine that we didn't have that contraint and see what happens as the app gets more complex.
 
 #### Adding Complexity
 
-Let's say that somewhere down the line we want to add a few more buttons to our app that add 5 or 10 to our counter rather than just adding 1. How would we represent that functionality as actions?
+Suppose that somewhere down the line we want to add a few more buttons to our app that add 5 or 10 to our counter rather than just adding 1. How would we represent that functionality as actions?
 
 Well, (assuming that we don't have the `{ type }` constraint) we could define 2 more actions:
 
@@ -194,7 +194,7 @@ const ADD_10_ACTION = 'ADD_10';
 And update our reducer:
 
 ```js
-function reduce(currentState, action) {
+function getNextState(currentState, action) {
   if (action === 'ADD') {
     increment(currentState, 'count', 1);
   } else if (action === 'ADD_5') {
@@ -217,7 +217,7 @@ ADD_N_ACTION: { kind: 'ADD', amount: number }
 Now our reducer can be much simpler:
 
 ```js
-function reduce(currentState, action) {
+function getNextState(currentState, action) {
   if (action.kind === 'ADD') {
     increment(currentState, 'count', action.amount);
   }
@@ -229,7 +229,7 @@ Much better! Now we can have as many add-buttons in our app as we want and we do
 Using an object with multiple fields saved us from a lot of code duplication when compared to using a simple string as an action. We can use this pattern for our subtract actions too!
 
 ```js
-function reduce(currentState, action) {
+function getNextState(currentState, action) {
   switch (action.kind) {
     case 'ADD':
       increment(currentState, 'count', action.amount);
@@ -253,7 +253,7 @@ Before we jump back to our simple version of the app, I'd like to make one more 
 
 #### Action Creators
 
-Now that we're using proper Redux-approved actions, our code looks somethingl ike this:
+Now that we're using proper Redux-approved actions, our code looks something like this:
 
 ```js
 const ADD_1_ACTION = { type: 'ADD', amount: 1 };
@@ -278,17 +278,17 @@ function createSubtractAction(amount) {
 
 Beautiful! Now whenever we need an action, we can _create_ one on the spot. This saves us from keeping a huge list of action constants and it's much more flexible. Notice how if we wanted to support adding/subtracting a new number like 25, we wouldn't have to make any changes to our action creators!
 
-This pattern of creating helper-functions which generate actions is called the _Action Creator_ pattern, and it's so helpful that it's often taught as the primary way to handle actions with Redux! But I want you to keep in mind there's nothing Redux-specific about the code that we just added; indeed, we haven't even used the Redux library yet! Rather, we used our JavaScript skills to come up with a more scalable pattern that uses helper functions in order to make our lives easier.
+This pattern of creating helper-functions which generate actions is called the _Action Creator_ pattern, and it's so helpful that it's often taught as the primary way to handle actions with Redux! But I want you to keep in mind that there's nothing Redux-specific about the code that we just added; indeed, we haven't even used the Redux library yet! Rather, we used our JavaScript skills to come up with a more scalable pattern that uses helper functions in order to make our lives easier.
 
 This is going to be a theme throughout the blog post: most of the perceived "magic" around Redux is actually just handy patterns like this one that folks have devised in order to make their lives easier.
 
 Alright, now let's head back to the simple version of the app.
 
-### The Reducer (aka `getNextState`) Part 2
+### The Reducer [Part 2 of 2]
 
 Now that we know all about actions, we can write our reducer function for real.
 
-Remember, the reducer is a function which is supplied with the current state of the app and an _action_ (like the ones we just described) and it must return the _next_ state of the app.
+Remember, the reducer is the `getNextState` function. It is supplied with the current state of the app and an _action_ (like the ones we just described) and it must return the _next_ state of the app.
 
 ```html
 <script>
@@ -301,7 +301,7 @@ Remember, the reducer is a function which is supplied with the current state of 
   `currentState` will be undefined.
   in that scenario, we'll use a pre-determined `initialState`
   */
-  function reduce(currentState = initialState, action) {
+  function getNextState(currentState = initialState, action) {
     switch (action.type) {
       case 'ADD':
         return {
@@ -346,7 +346,7 @@ Here, we're creating a new object with the updated `count` value and returning i
 // this reducer is broken!
 // read on to see why
 
-function reduce(currentState, action) {
+function getNextState(currentState, action) {
   switch (action.type) {
     case 'ADD':
       currentState.count += action.amount;
@@ -426,7 +426,7 @@ Now we've got some more state to track. Rather than just `{ count: number }` we 
 // add an initial value
 const initialState = { count: 0, theme: 'light' };
 
-function reduce(currentState = initialState, action) {
+function getNextState(currentState = initialState, action) {
   switch (action.type) {
     case 'ADD':
       return {
@@ -462,7 +462,7 @@ Rather than worrying about manually copying over each and every value from `curr
 ```js
 const initialState = { count: 0, theme: 'light' };
 
-function reduce(currentState = initialState, action) {
+function getNextState(currentState = initialState, action) {
   switch (action.type) {
     case 'ADD':
       return {
