@@ -44,23 +44,23 @@ export const Bio: React.FC = () => {
         }}
       />
       <div>
-        <p sx={{ my: 0, display: 'flex', alignItems: 'center' }}>
+        <p sx={{ my: 0 }}>
           <strong sx={{ mr: 1 }}>{author.name}</strong>
           <Link
             to={`https://twitter.com/${author.twitter}`}
-            sx={{ display: 'inline-flex', alignItems: 'center' }}
+            sx={{ display: 'inline-flex', alignItems: 'baseline' }}
           >
-            <FaTwitter sx={{ mr: 1 }} />
+            <FaTwitter size="0.8em" sx={{ mr: 1 }} />
             {author.twitter}
           </Link>
         </p>
-        <p sx={{ my: 0, display: 'flex', alignItems: 'center' }}>
+        <p sx={{ my: 0 }}>
           <span sx={{ mr: 1 }}>is a Boston-based web dev who writes code at</span>{' '}
           <Link
             to="https://twitter.com/facebook"
-            sx={{ display: 'inline-flex', alignItems: 'center' }}
+            sx={{ display: 'inline-flex', alignItems: 'baseline' }}
           >
-            <FaTwitter sx={{ mr: 1 }} />
+            <FaTwitter size="0.8em" sx={{ mr: 1 }} />
             facebook
           </Link>
           .
