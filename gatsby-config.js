@@ -4,7 +4,7 @@ module.exports = {
     description: "EJ Hammond's personal site",
     author: {
       name: 'EJ Hammond',
-      twitter: '@ejhammond',
+      twitter: 'ejhammond',
     },
   },
   plugins: [
@@ -13,7 +13,7 @@ module.exports = {
       resolve: 'gatsby-plugin-web-font-loader',
       options: {
         google: {
-          families: ['Montserrat:400,700', 'Inconsolata:400,400i', 'Handlee:400'],
+          families: ['Montserrat:400,700', 'Inconsolata:400,400i'],
         },
       },
     },

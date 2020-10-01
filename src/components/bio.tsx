@@ -2,6 +2,8 @@
 import { jsx } from 'theme-ui';
 import { graphql, useStaticQuery } from 'gatsby';
 import Image from 'gatsby-image';
+import { FaTwitter } from 'react-icons/fa';
+import { Link } from './link';
 
 export const Bio: React.FC = () => {
   const { avatar, site } = useStaticQuery(graphql`
@@ -42,24 +44,25 @@ export const Bio: React.FC = () => {
         }}
       />
       <div>
-        <p sx={{ my: 0 }}>
-          <strong>{author.name}</strong> (
-          <a
-            href={`https://twitter.com/${author.twitter}`}
-            sx={{ color: 'inherit', textDecoration: 'none' }}
+        <p sx={{ my: 0, display: 'flex', alignItems: 'center' }}>
+          <strong sx={{ mr: 1 }}>{author.name}</strong>
+          <Link
+            to={`https://twitter.com/${author.twitter}`}
+            sx={{ display: 'inline-flex', alignItems: 'center' }}
           >
+            <FaTwitter sx={{ mr: 1 }} />
             {author.twitter}
-          </a>
-          )
+          </Link>
         </p>
-        <p sx={{ my: 0 }}>
-          Boston-based web dev who writes code at{' '}
-          <a
-            href={`https://twitter.com/facebook`}
-            sx={{ color: 'inherit', textDecoration: 'none' }}
+        <p sx={{ my: 0, display: 'flex', alignItems: 'center' }}>
+          <span sx={{ mr: 1 }}>is a Boston-based web dev who writes code at</span>{' '}
+          <Link
+            to="https://twitter.com/facebook"
+            sx={{ display: 'inline-flex', alignItems: 'center' }}
           >
-            @facebook
-          </a>
+            <FaTwitter sx={{ mr: 1 }} />
+            facebook
+          </Link>
           .
         </p>
       </div>

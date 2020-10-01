@@ -1,8 +1,9 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
-import { Link, graphql } from 'gatsby';
+import { graphql } from 'gatsby';
 
 import { Tag } from './tag';
+import { Link } from './link';
 import { Data } from '../graphql-type';
 
 export const query = graphql`
@@ -39,20 +40,18 @@ export const PostList: React.FC<{
   const { posts } = props;
 
   return (
-    <ul sx={{ listStyleType: 'none', pl: 4 }}>
+    <ul sx={{ listStyleType: 'none', pl: [0, 4] }}>
       {posts.map((post) => {
         return (
           <div key={post.id}>
             <h3 sx={{ mb: 1 }}>
-              <Link to={post.fields.articleURL} sx={{ color: 'accent', textDecoration: 'none' }}>
-                {post.frontmatter.title}
-              </Link>
+              <Link to={post.fields.articleURL}>{post.frontmatter.title}</Link>
             </h3>
             {Array.isArray(post.frontmatter.tags) && (
               <ul sx={{ mt: 0, mb: 1, listStyle: 'none', pl: 0, display: 'flex' }}>
                 {post.frontmatter.tags.map((tag) => (
                   <li key={tag} style={{ margin: '0 4px 0 0' }}>
-                    <Tag>{tag}</Tag>
+                    <Tag tag={tag} />
                   </li>
                 ))}
               </ul>

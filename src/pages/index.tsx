@@ -1,10 +1,10 @@
 /** @jsx jsx */
 import { jsx, Card, Text } from 'theme-ui';
-import { Link } from 'gatsby';
 import { FaBookReader } from 'react-icons/fa';
 
 import Layout from '../components/layout';
 import SEO from '../components/seo';
+import { Link } from '../components/link';
 
 const Index: React.FC = () => {
   return (
@@ -18,10 +18,10 @@ const Index: React.FC = () => {
       </p>
       <h2>Nav</h2>
       <nav>
-        <ul sx={{ listStyleType: 'none' }}>
+        <ul sx={{ listStyleType: 'none', pl: [0, 4] }}>
           <li>
-            <Link to="/blog" sx={{ color: 'accent', textDecoration: 'none' }}>
-              <Card sx={{ maxWidth: 250, textAlign: 'center' }}>
+            <Link to="/blog">
+              <Card sx={{ width: ['100%', '50%'], textAlign: 'center', display: 'inline-block' }}>
                 <FaBookReader size={50} />
                 <Text sx={{ fontSize: 2 }}>Blog</Text>
               </Card>
