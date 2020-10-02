@@ -1,6 +1,6 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
-import { Link, graphql } from 'gatsby';
+import { graphql } from 'gatsby';
 import { MDXRenderer } from 'gatsby-plugin-mdx';
 
 import Layout from '../components/layout';
@@ -8,6 +8,7 @@ import SEO from '../components/seo';
 import { Data } from '../graphql-type';
 import { makeHeading } from '../utils';
 import { Breadcrumbs } from '../components/breadcrumbs';
+import { Link } from '../components/link';
 
 const GITHUB_USERNAME = 'ejhammond';
 const GITHUB_REPO_NAME = 'personal-site';
@@ -104,10 +105,8 @@ const BlogPostTemplate: React.FC<Props> = (props) => {
       <h1 sx={{ my: 0 }}>{post.frontmatter.title}</h1>
       {post.frontmatter.series !== null && post.fields.seriesURL !== null && (
         <small sx={{ display: 'block', mb: 2 }}>
-          <Link to={post.fields.seriesURL} sx={{ color: 'accent', textDecoration: 'none' }}>
-            {makeHeading(post.frontmatter.series)} Series
-          </Link>{' '}
-          | Article {post.frontmatter.number}
+          <Link to={post.fields.seriesURL}>{makeHeading(post.frontmatter.series)} Series</Link> |
+          Article {post.frontmatter.number}
         </small>
       )}
       <div sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
@@ -119,14 +118,9 @@ const BlogPostTemplate: React.FC<Props> = (props) => {
       </div>
       <MDXRenderer frontmatter={post.frontmatter}>{post.body}</MDXRenderer>
       <hr sx={{ my: 4 }} />
-      <a
-        href={editOnGitHubURL}
-        target="_blank"
-        rel="noopener noreferrer"
-        sx={{ color: 'accent', textDecoration: 'none', display: 'block', mb: 4 }}
-      >
+      <Link to={editOnGitHubURL} target="_blank" rel="noopener noreferrer" sx={{ mb: 4 }}>
         Edit on GitHub
-      </a>
+      </Link>
       <ul
         sx={{
           display: `flex`,
