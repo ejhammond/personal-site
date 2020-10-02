@@ -28,7 +28,7 @@ type Props = {
 
 const Index: React.FC<Props> = (props) => {
   const { data } = props;
-  console.log(data);
+
   return (
     <Layout>
       <SEO title="Home" />
