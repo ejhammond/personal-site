@@ -20,14 +20,8 @@ const Layout: React.FC = ({ children }) => {
       <ThemeProvider theme={theme}>
         <Header />
         <BoundedContent>
-          <main sx={{ mb: 4 }}>{children}</main>
+          <main sx={{ mb: 5 }}>{children}</main>
         </BoundedContent>
-        <footer sx={{ mb: 4 }}>
-          <BoundedContent>
-            <hr sx={{ mb: 4 }} />
-            <Bio />
-          </BoundedContent>
-        </footer>
       </ThemeProvider>
     </MDXProvider>
   );

@@ -1,5 +1,5 @@
 /** @jsx jsx */
-import { jsx } from 'theme-ui';
+import { Link as ExternalLink, jsx } from 'theme-ui';
 import { graphql } from 'gatsby';
 import { MDXRenderer } from 'gatsby-plugin-mdx';
 
@@ -9,6 +9,7 @@ import { Data } from '../graphql-type';
 import { makeHeading } from '../utils';
 import { Breadcrumbs } from '../components/breadcrumbs';
 import { Link } from '../components/link';
+import { Bio } from '../components/bio';
 
 const GITHUB_USERNAME = 'ejhammond';
 const GITHUB_REPO_NAME = 'personal-site';
@@ -118,9 +119,9 @@ const BlogPostTemplate: React.FC<Props> = (props) => {
       </div>
       <MDXRenderer frontmatter={post.frontmatter}>{post.body}</MDXRenderer>
       <hr sx={{ my: 4 }} />
-      <Link to={editOnGitHubURL} target="_blank" rel="noopener noreferrer" sx={{ mb: 4 }}>
+      <ExternalLink href={editOnGitHubURL} target="_blank" rel="noopener noreferrer" sx={{ mb: 4 }}>
         Edit on GitHub
-      </Link>
+      </ExternalLink>
       <ul
         sx={{
           display: `flex`,
@@ -153,6 +154,8 @@ const BlogPostTemplate: React.FC<Props> = (props) => {
           )}
         </li>
       </ul>
+      <hr sx={{ my: 4 }} />
+      <Bio />
     </Layout>
   );
 };

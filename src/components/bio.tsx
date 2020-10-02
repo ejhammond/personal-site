@@ -1,9 +1,8 @@
 /** @jsx jsx */
-import { jsx } from 'theme-ui';
+import { jsx, Link } from 'theme-ui';
 import { graphql, useStaticQuery } from 'gatsby';
 import Image from 'gatsby-image';
 import { FaTwitter } from 'react-icons/fa';
-import { Link } from './link';
 
 export const Bio: React.FC = () => {
   const { avatar, site } = useStaticQuery(graphql`
@@ -47,7 +46,7 @@ export const Bio: React.FC = () => {
         <p sx={{ my: 0 }}>
           <strong sx={{ mr: 1 }}>{author.name}</strong>
           <Link
-            to={`https://twitter.com/${author.twitter}`}
+            href={`https://twitter.com/${author.twitter}`}
             sx={{ display: 'inline-flex', alignItems: 'baseline' }}
           >
             <FaTwitter size="0.8em" sx={{ mr: 1 }} />
@@ -57,7 +56,7 @@ export const Bio: React.FC = () => {
         <p sx={{ my: 0 }}>
           <span sx={{ mr: 1 }}>is a Boston-based web dev who writes code at</span>{' '}
           <Link
-            to="https://twitter.com/facebook"
+            href="https://twitter.com/facebook"
             sx={{ display: 'inline-flex', alignItems: 'baseline' }}
           >
             <FaTwitter size="0.8em" sx={{ mr: 1 }} />
