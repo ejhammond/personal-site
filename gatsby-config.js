@@ -59,6 +59,8 @@ module.exports = {
         theme_color: '#385170',
         display: 'minimal-ui',
         icon: 'content/images/ayhota-logo.png',
+        // marks the logo as "maskable" so that it can be masked into different shapes
+        icon_options: { purpose: 'any maskable' },
       },
     },
     'gatsby-plugin-offline',
