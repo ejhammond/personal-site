@@ -34,7 +34,10 @@ const Index: React.FC<Props> = (props) => {
       <SEO title="Home" />
       <h2>Welcome!</h2>
       <div sx={{ display: 'flex' }}>
-        <Image fixed={data.avatar.childImageSharp.fixed} sx={{ borderRadius: '50%', mr: 3 }} />
+        <Image
+          fixed={data.avatar.childImageSharp.fixed}
+          sx={{ flexShrink: 0, borderRadius: '50%', mr: 3 }}
+        />
         <p>
           <i sx={{ fontSize: 2 }}>{"Hi! My name's EJ. Glad to have you here!"}</i>
         </p>
