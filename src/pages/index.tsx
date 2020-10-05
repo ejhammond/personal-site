@@ -33,7 +33,7 @@ const Index: React.FC<Props> = (props) => {
     <Layout>
       <SEO title="Home" />
       <h2>Welcome!</h2>
-      <div sx={{ display: 'flex' }}>
+      <div sx={{ display: 'flex', alignItems: 'center' }}>
         <Image
           fixed={data.avatar.childImageSharp.fixed}
           sx={{ flexShrink: 0, borderRadius: '50%', mr: 3 }}
