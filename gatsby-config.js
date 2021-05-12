@@ -44,6 +44,12 @@ module.exports = {
               maxWidth: 600,
             },
           },
+          {
+            resolve: 'remark-codesandbox/gatsby',
+            options: {
+              mode: 'iframe',
+            },
+          },
           // changes dash dash (--) to a nice em dash etc.
           { resolve: 'gatsby-remark-smartypants' },
         ],

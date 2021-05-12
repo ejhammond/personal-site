@@ -5,13 +5,22 @@ number: 1
 title: 'Redux Minus React'
 date: '2020-09-28'
 description: 'A truly barebones intro to Redux'
-tags: ['technology', 'javascript', 'redux']
+tags:
+  ['technology', 'javascript', 'redux']
 ---
 
-import { AspectImage, Message } from 'theme-ui';
+import {
+  AspectImage,
+  Message,
+} from 'theme-ui';
 import { Counter } from './Counter';
 
-<div style={{ maxWidth: 300, margin: '0 auto' }}>
+<div
+  style={{
+    maxWidth: 300,
+    margin: '0 auto',
+  }}
+>
   <AspectImage
     ratio={2383 / 2500}
     src="https://res.cloudinary.com/ejhammond/image/upload/v1577720577/logos/redux-logo_d1kpyb.svg"
@@ -85,7 +94,9 @@ With that said, we can still learn a lot from the exercise of implementing Redux
     <title>Redux Counter</title>
   </head>
   <body>
-    <button id="subtractButton">-</button>
+    <button id="subtractButton">
+      -
+    </button>
     <div id="counterDisplay">0</div>
     <button id="addButton">+</button>
 
@@ -151,7 +162,10 @@ That'll work! Since `getNextState` is just a normal function, we can do whatever
 e.g.
 
 ```js
-function getNextState(currentState, action) {
+function getNextState(
+  currentState,
+  action,
+) {
   if (action === 'ADD') {
     increment(currentState, 'count', 1);
   }
@@ -166,15 +180,17 @@ const SUBTRACT_ACTION = 'SUBTRACT';
 ```
 
 <Message variant="error">
-  An action must be a plain JavaScript object that has a
-  `type` field
+  An action must be a plain JavaScript
+  object that has a `type` field
 </Message>
 
 Woah there! It looks like Redux didn't like that. Even though our simple string-based actions would work in theory, Redux insists that our actions must be objects with a `type` field. That's easy enough to fix.
 
 ```js
 const ADD_ACTION = { type: 'ADD' };
-const SUBTRACT_ACTION = { type: 'SUBTRACT' };
+const SUBTRACT_ACTION = {
+  type: 'SUBTRACT',
+};
 ```
 
 In my opinion, this is an odd constraint, but if we're honest, using objects is a much more scalable pattern and is probably the right choice in almost any case. As an exercise, let's imagine that we didn't have that contraint and see what happens as the app gets more complex.
@@ -194,13 +210,20 @@ const ADD_10_ACTION = 'ADD_10';
 And update our reducer:
 
 ```js
-function getNextState(currentState, action) {
+function getNextState(
+  currentState,
+  action,
+) {
   if (action === 'ADD') {
     increment(currentState, 'count', 1);
   } else if (action === 'ADD_5') {
     increment(currentState, 'count', 5);
   } else if (action === 'ADD_10') {
-    increment(currentState, 'count', 10);
+    increment(
+      currentState,
+      'count',
+      10,
+    );
   }
 }
 ```
@@ -217,9 +240,16 @@ ADD_N_ACTION: { kind: 'ADD', amount: number }
 Now our reducer can be much simpler:
 
 ```js
-function getNextState(currentState, action) {
+function getNextState(
+  currentState,
+  action,
+) {
   if (action.kind === 'ADD') {
-    increment(currentState, 'count', action.amount);
+    increment(
+      currentState,
+      'count',
+      action.amount,
+    );
   }
 }
 ```
@@ -229,13 +259,24 @@ Much better! Now we can have as many add-buttons in our app as we want and we do
 Using an object with multiple fields saved us from a lot of code duplication when compared to using a simple string as an action. We can use this pattern for our subtract actions too!
 
 ```js
-function getNextState(currentState, action) {
+function getNextState(
+  currentState,
+  action,
+) {
   switch (action.kind) {
     case 'ADD':
-      increment(currentState, 'count', action.amount);
+      increment(
+        currentState,
+        'count',
+        action.amount,
+      );
       break;
     case 'SUBTRACT':
-      decrement(currentState, 'count', action.amount);
+      decrement(
+        currentState,
+        'count',
+        action.amount,
+      );
       break;
     default:
     // don't change anything
@@ -256,23 +297,47 @@ Before we jump back to our simple version of the app, I'd like to make one more 
 Now that we're using proper Redux-approved actions, our code looks something like this:
 
 ```js
-const ADD_1_ACTION = { type: 'ADD', amount: 1 };
-const ADD_5_ACTION = { type: 'ADD', amount: 5 };
-const ADD_10_ACTION = { type: 'ADD', amount: 10 };
-const SUBTRACT_1_ACTION = { type: 'SUBTRACT', amount: 1 };
-const SUBTRACT_5_ACTION = { type: 'SUBTRACT', amount: 5 };
-const SUBTRACT_10_ACTION = { type: 'SUBTRACT', amount: 10 };
+const ADD_1_ACTION = {
+  type: 'ADD',
+  amount: 1,
+};
+const ADD_5_ACTION = {
+  type: 'ADD',
+  amount: 5,
+};
+const ADD_10_ACTION = {
+  type: 'ADD',
+  amount: 10,
+};
+const SUBTRACT_1_ACTION = {
+  type: 'SUBTRACT',
+  amount: 1,
+};
+const SUBTRACT_5_ACTION = {
+  type: 'SUBTRACT',
+  amount: 5,
+};
+const SUBTRACT_10_ACTION = {
+  type: 'SUBTRACT',
+  amount: 10,
+};
 ```
 
 Hm. That's a lot of duplicated boilerplate. What if we wrote some little helper functions to build those actions for us?
 
 ```js
 function createAddAction(amount) {
-  return { type: 'ADD', amount: amount };
+  return {
+    type: 'ADD',
+    amount: amount,
+  };
 }
 
 function createSubtractAction(amount) {
-  return { type: 'SUBTRACT', amount: amount };
+  return {
+    type: 'SUBTRACT',
+    amount: amount,
+  };
 }
 ```
 
@@ -301,15 +366,22 @@ Remember, the reducer is the `getNextState` function. It is supplied with the cu
   `currentState` will be undefined.
   in that scenario, we'll use a pre-determined `initialState`
   */
-  function getNextState(currentState = initialState, action) {
+  function getNextState(
+    currentState = initialState,
+    action,
+  ) {
     switch (action.type) {
       case 'ADD':
         return {
-          count: currentState.count + action.amount,
+          count:
+            currentState.count +
+            action.amount,
         };
       case 'SUBTRACT':
         return {
-          count: currentState.count - action.amount,
+          count:
+            currentState.count -
+            action.amount,
         };
       default:
         /*
@@ -336,7 +408,8 @@ The next part that might look a little funny is the return statement.
 
 ```js
 return {
-  count: currentState.count + action.amount,
+  count:
+    currentState.count + action.amount,
 };
 ```
 
@@ -346,12 +419,17 @@ Here, we're creating a new object with the updated `count` value and returning i
 // this reducer is broken!
 // read on to see why
 
-function getNextState(currentState, action) {
+function getNextState(
+  currentState,
+  action,
+) {
   switch (action.type) {
     case 'ADD':
-      currentState.count += action.amount;
+      currentState.count +=
+        action.amount;
     case 'SUBTRACT':
-      currentState.count -= action.amount;
+      currentState.count -=
+        action.amount;
     default:
     // don't change anything
   }
@@ -361,7 +439,8 @@ function getNextState(currentState, action) {
 ```
 
 <Message variant="error">
-  The reducer must not mutate the `currentState`
+  The reducer must not mutate the
+  `currentState`
 </Message>
 
 This reducer is much simpler, but it's actually quite broken for 2 reasons.
@@ -397,12 +476,16 @@ switch (action.type) {
   case 'ADD':
     // returns a new object
     return {
-      count: currentState.count + action.amount, // overwrite count
+      count:
+        currentState.count +
+        action.amount, // overwrite count
     };
   case 'SUBTRACT':
     // returns a new object
     return {
-      count: currentState.count - action.amount, // overwrite count
+      count:
+        currentState.count -
+        action.amount, // overwrite count
     };
   default:
     // return the old currentState as-is, there's no change
@@ -424,23 +507,33 @@ Now we've got some more state to track. Rather than just `{ count: number }` we 
 
 ```js
 // add an initial value
-const initialState = { count: 0, theme: 'light' };
+const initialState = {
+  count: 0,
+  theme: 'light',
+};
 
-function getNextState(currentState = initialState, action) {
+function getNextState(
+  currentState = initialState,
+  action,
+) {
   switch (action.type) {
     case 'ADD':
       return {
         // keep the current theme the same
         theme: currentState.theme,
         // update the count
-        count: currentState.count + action.amount,
+        count:
+          currentState.count +
+          action.amount,
       };
     case 'SUBTRACT':
       return {
         // keep the current theme the same
         theme: currentState.theme,
         // update the count
-        count: currentState.count - action.amount,
+        count:
+          currentState.count -
+          action.amount,
       };
     case 'CHANGE_THEME':
       return {
@@ -460,23 +553,33 @@ Notice that when we update the count, we need to make sure that we copy over the
 Rather than worrying about manually copying over each and every value from `currentState`, let's make use of our JavaScript skills and copy _all of the values_ from the `currentState` into the `nextState` and then just overwrite the parts that we want to change. Here's what that might look like:
 
 ```js
-const initialState = { count: 0, theme: 'light' };
+const initialState = {
+  count: 0,
+  theme: 'light',
+};
 
-function getNextState(currentState = initialState, action) {
+function getNextState(
+  currentState = initialState,
+  action,
+) {
   switch (action.type) {
     case 'ADD':
       return {
         // copy *all* values from currentState
         ...currentState,
         // overwrite the count with the new value
-        count: currentState.count + action.amount,
+        count:
+          currentState.count +
+          action.amount,
       };
     case 'SUBTRACT':
       return {
         // copy *all* values from currentState
         ...currentState,
         // overwrite the count with the new value
-        count: currentState.count - action.amount,
+        count:
+          currentState.count -
+          action.amount,
       };
     case 'CHANGE_THEME':
       return {
@@ -505,7 +608,9 @@ Redux's `createStore` function will create a store and connect it to our reducer
 <script>
   // ... actions and reducer omitted for brevity
 
-  const store = Redux.createStore(reduce);
+  const store = Redux.createStore(
+    reduce,
+  );
 </script>
 ```
 
@@ -521,21 +626,33 @@ Telling the store when an action happens is as simple as invoking `store.dispatc
 <script>
   // ... actions and reducer omitted for brevity
 
-  const store = Redux.createStore(reduce);
+  const store = Redux.createStore(
+    reduce,
+  );
 
-  addButtonElement.addEventListener('click', () => {
-    // we'll create an ADD_1 action using our actionCreator
-    // createAddAction(1) returns { type: "ADD", amount: 1 }
-    const ADD_1_ACTION = createAddAction(1);
+  addButtonElement.addEventListener(
+    'click',
+    () => {
+      // we'll create an ADD_1 action using our actionCreator
+      // createAddAction(1) returns { type: "ADD", amount: 1 }
+      const ADD_1_ACTION = createAddAction(
+        1,
+      );
 
-    // then dispatch it to the store
-    store.dispatch(ADD_1_ACTION);
-  });
+      // then dispatch it to the store
+      store.dispatch(ADD_1_ACTION);
+    },
+  );
 
-  subtractButtonElement.addEventListener('click', () => {
-    const SUBTRACT_1_ACTION = createSubtractAction(1);
-    store.dispatch(SUBTRACT_1_ACTION);
-  });
+  subtractButtonElement.addEventListener(
+    'click',
+    () => {
+      const SUBTRACT_1_ACTION = createSubtractAction(
+        1,
+      );
+      store.dispatch(SUBTRACT_1_ACTION);
+    },
+  );
 </script>
 ```
 
@@ -561,7 +678,8 @@ We'll use the `subscribe` function that's exposed by the `store` in order to lis
 
   // a simple "renderer" that takes our state and updates the UI
   function render(state) {
-    counterElement.innerText = state.count;
+    counterElement.innerText =
+      state.count;
   }
 
   store.subscribe(() => {
@@ -573,7 +691,221 @@ We'll use the `subscribe` function that's exposed by the `store` in order to lis
 </script>
 ```
 
-And we're done! Every time the store's state changes, we'll be notified and we'll run our little `render` function in order to update the UI. You can check out the full annotated code in action in [this CodeSandbox](https://codesandbox.io/s/redux-minus-react-edmfu).
+And we're done! Every time the store's state changes, we'll be notified and we'll run our little `render` function in order to update the UI.
+
+Here's the full, annotated code:
+
+```html codesandbox=github/codesandbox-app/static-template/tree/master/?editorsize=75
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <meta
+      http-equiv="X-UA-Compatible"
+      content="ie=edge"
+    />
+    <title>Redux Minus React</title>
+  </head>
+  <body>
+    <div
+      style="
+        display: flex;
+        height: 100vh;
+        width: 100vw;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+      "
+    >
+      <button id="subtract-ten-button">
+        -10
+      </button>
+      <button id="subtract-one-button">
+        -1
+      </button>
+      <div id="count-display">0</div>
+      <button id="add-one-button">
+        +1
+      </button>
+      <button id="add-ten-button">
+        +10
+      </button>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/4.0.0/redux.js"></script>
+    <script>
+      /*
+      Action Creators
+
+      Helper-functions that save some keystrokes...
+      ...when creating many similar actions
+
+      In this case, we want to create multiple different "Add"-type actions...
+      ...each of which add a different amount
+      */
+
+      function createAddAction(amount) {
+        return {
+          type: 'ADD',
+          amount,
+        };
+      }
+
+      function createSubtractAction(
+        amount,
+      ) {
+        return {
+          type: 'SUBTRACT',
+          amount,
+        };
+      }
+
+      /*
+      Reducer (aka the getNextState function)
+
+      A function that takes 2 inputs:
+      1. the current state of the app
+      2. an action
+      ...and produces 1 output:
+      1. the next state of the app
+      */
+
+      const initialState = {
+        count: 0,
+      };
+
+      function reduce(
+        currentState = initialState,
+        action,
+      ) {
+        switch (action.type) {
+          case 'ADD':
+            return {
+              ...currentState,
+              count:
+                currentState.count +
+                action.amount,
+            };
+          case 'SUBTRACT':
+            return {
+              ...currentState,
+              count:
+                currentState.count -
+                action.amount,
+            };
+          default:
+            return currentState;
+        }
+      }
+
+      /*
+      Store
+
+      The central place where we keep our app's state
+
+      It receives actions and uses the reducer...
+      ...in order to determine the next state of the app
+      */
+      const store = Redux.createStore(
+        reduce,
+      );
+
+      /*
+      Renderer
+
+      The Renderer's job is to look at the state of the app...
+      ...and to update the DOM so that it reflects the given state
+
+      This is the part that React, Vue, Svelte + friends handle behind the scenes
+
+      Since we're not using a UI Framework, we'll manually create our Renderer
+      */
+
+      function render(state) {
+        document.getElementById(
+          'count-display',
+        ).innerText = state.count;
+      }
+
+      // call render every time the state changes
+      store.subscribe(() => {
+        const stateSnapshot = store.getState();
+
+        console.log(
+          'state changed',
+          stateSnapshot,
+        );
+
+        render(stateSnapshot);
+      });
+
+      /*
+      App
+
+      This is the "app" code
+
+      It ties the UI elements (buttons) together...
+      ...with our actions
+      */
+
+      document
+        .getElementById(
+          'add-one-button',
+        )
+        .addEventListener(
+          'click',
+          () => {
+            store.dispatch(
+              createAddAction(1),
+            );
+          },
+        );
+
+      document
+        .getElementById(
+          'add-ten-button',
+        )
+        .addEventListener(
+          'click',
+          () => {
+            store.dispatch(
+              createAddAction(10),
+            );
+          },
+        );
+
+      document
+        .getElementById(
+          'subtract-one-button',
+        )
+        .addEventListener(
+          'click',
+          () => {
+            store.dispatch(
+              createSubtractAction(1),
+            );
+          },
+        );
+
+      document
+        .getElementById(
+          'subtract-ten-button',
+        )
+        .addEventListener(
+          'click',
+          () => {
+            store.dispatch(
+              createSubtractAction(10),
+            );
+          },
+        );
+    </script>
+  </body>
+</html>
+```
 
 ## Wrap Up
 
