@@ -1,0 +1,285 @@
+---
+article: 'react-children'
+title: 'React Children'
+date: '2021-05-22'
+description: 'Benefits of using the "children" prop in React'
+tags:
+  ['technology', 'javascript', 'react']
+---
+
+import { AspectImage } from 'theme-ui';
+import TweetEmbed from 'react-tweet-embed';
+import { YouTubeVideo } from '../../components/youtube-video';
+
+[WIP][draft]
+
+In React, the `children` prop is pretty neat, but it's often overlooked. This article will highlight some of the cool things that you can do with the `children` prop.
+
+![Think of the children!](./images/think-of-the-children.jpg)
+
+## There are 2 Ways to Pass Children to a Component
+
+We're all accustomed to passing `children` to a component by nesting the children inside of the parent's JSX tags.
+
+```jsx
+function Demo() {
+  return (
+    <Parent>
+      <Child />
+    </Parent>
+  );
+}
+```
+
+But you can also pass a value for `children` like any other prop!
+
+```jsx
+function Demo() {
+  return (
+    <Parent children={<Child />} />
+  );
+}
+```
+
+Either way, the `Parent` component will be receive the value as `props.children`.
+
+Here's a quick demo that you can play with:
+
+```jsx codesandbox=react-component?editorsize=75
+function Parent(props) {
+  return (
+    <div style={{ marginBottom: 20 }}>
+      Here are my children:
+      <div>{props.children}</div>
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <>
+      <Parent children="Children 1" />
+      <Parent>Children 2</Parent>
+      <Parent children="Children 3">
+        Children 4
+      </Parent>
+    </>
+  );
+}
+```
+
+Fun fact: if you nest some children inside of the parent's JSX tags _and_ you pass some children as an explicit prop, the prop-based children will be overwritten!
+
+That's kind of just a fun fact to start off. Let's get on to the useful stuff!
+
+## Children can Reduce the Need for React.Context
+
+<TweetEmbed id="1195431511417208834" />
+
+There are definitely valid use-cases for React Context, but if you're just using context to avoid passing some prop through multiple layers of components, you might be able to use `children` instead!
+
+Michael explains this really well his video titled: "Using Composition in React to Avoid Prop Drilling":
+
+<YouTubeVideo
+  id="3XaXKiXtNjw"
+  start={580}
+/>
+
+## Children can Reduce the Need for React.memo
+
+Let's imagine that you have some component tree in your app that's really expensive to re-render.
+
+```jsx codesandbox=react-component?editorsize=75
+import * as React from 'react';
+
+function ExpensiveComponent() {
+  // imagine that this console.log represents
+  // some expensive calculations required for layout
+  console.log(
+    'Crunching numbers and doing expensive stuff...',
+  );
+
+  return <div>Expensive</div>;
+}
+
+function Parent(props) {
+  // this will let us force Parent
+  // to re-render by updating some state
+  const [_, setState] = React.useState(
+    0,
+  );
+  const forceRerender = () => {
+    setState((prev) => prev + 1);
+  };
+
+  return (
+    <div>
+      <button onClick={forceRerender}>
+        Force Parent to Rerender
+      </button>
+      <ExpensiveComponent />
+    </div>
+  );
+}
+
+export default function App() {
+  return <Parent />;
+}
+```
+
+Notice that whenever we cause `Parent` to re-render, `ExpensiveComponent` re-renders as well (each console log message represents a run of the "expensive calculation"). This might be surprising since `ExpensiveComponent` has no props/state of its own. Nothing is changing for `ExpensiveComponent` when we force `Parent` to re-render, but `ExpensiveComponent` re-renders all the same.
+
+This is because React assumes that whenever a parent component updates its state/props, the children will probably also need to be updated. If we want React to think twice before re-rendering our `ExpensiveComponent` we can use `React.memo`.
+
+```jsx codesandbox=react-component?editorsize=75
+import * as React from 'react';
+
+function ExpensiveComponent() {
+  // imagine that this console.log represents
+  // some expensive calculations required for layout
+  console.log(
+    'Crunching numbers and doing expensive stuff...',
+  );
+
+  return <div>Expensive</div>;
+}
+
+const MemoizedExpensiveComponent = React.memo(
+  ExpensiveComponent,
+);
+
+function Parent(props) {
+  // this will let us force Parent
+  // to re-render by updating some state
+  const [_, setState] = React.useState(
+    0,
+  );
+  const forceRerender = () => {
+    setState((prev) => prev + 1);
+  };
+
+  return (
+    <div>
+      <button onClick={forceRerender}>
+        Force Parent to Rerender
+      </button>
+      <MemoizedExpensiveComponent />
+    </div>
+  );
+}
+
+export default function App() {
+  return <Parent />;
+}
+```
+
+`React.memo` tells React to take the time to compare `ExpensiveComponent`'s current props to its previous props rather than blindly re-rendering it. React will find that `ExpensiveComponent` isn't actually changing when `Parent`'s state is updated, and our performance issue is resolved!
+
+But let's rewind a little bit and imagine that `Parent` was taking advantage of the `children` prop from the start.
+
+```jsx codesandbox=react-component?editorsize=75
+import * as React from 'react';
+
+function ExpensiveComponent() {
+  // imagine that this console.log represents
+  // some expensive calculations required for layout
+  console.log(
+    'Crunching numbers and doing expensive stuff...',
+  );
+
+  return <div>Expensive</div>;
+}
+
+function Parent(props) {
+  // this will let us force Parent
+  // to re-render by updating some state
+  const [_, setState] = React.useState(
+    0,
+  );
+  const forceRerender = () => {
+    setState((prev) => prev + 1);
+  };
+
+  return (
+    <div>
+      <button onClick={forceRerender}>
+        Force Parent to Rerender
+      </button>
+      {props.children}
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Parent>
+      <ExpensiveComponent />
+    </Parent>
+  );
+}
+```
+
+No performance issue, and we didn't even need to use `React.memo`! Thanks `children` prop!
+
+Here's how I like to think about it.
+
+When React looks at our first version of Parent, it sees this return value:
+
+```jsx
+return (
+  <div>
+    <button onClick={forceRerender}>
+      Force Parent to Rerender
+    </button>
+    <ExpensiveComponent />
+  </div>
+);
+```
+
+Folks are pretty accustomed to seeing JSX nowadays, so it's easy to forget that these JSX tags are actually function calls! If you were using React back in 2015, you might have seen this component written out a bit differently.
+
+```js
+// React.createElement(type, props, children)
+
+const button = React.createElement(
+  'button',
+  { onClick: forceRerender },
+  [],
+);
+
+const expensiveComponent = React.createElement(
+  ExpensiveComponent,
+  {},
+  [],
+);
+
+return React.createElement('div', {}, [
+  button,
+  expensiveComponent,
+]);
+```
+
+In fact, since browsers don't understand JSX syntax, we typically have a build-step that converts the JSX into code that looks a lot like this even today!
+
+Let's compare this to the version where `Parent` is using the `children` prop.
+
+```js
+// React.createElement(type, props, children)
+
+const button = React.createElement(
+  'button',
+  { onClick: forceRerender },
+  [],
+);
+
+return React.createElement('div', {}, [
+  button,
+  props.children,
+]);
+```
+
+When `Parent`'s state changes and it re-renders, these code blocks get executed. In the first example, React re-executes the `ExpensiveComponent` `createElement` call, but in the second example the `createElement` for `ExpensiveComponent` doesn't live inside of `Parent`, so it doesn't get executed!
+
+## Conclusion
+
+The `children` prop is super cool and there are some real composability and performance benefits to using it. So please, show the `children` a little love!
