@@ -6,19 +6,38 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier . --write --ignore-path .gitignore",
+    "gen": "panda codegen && ts-node ./scripts/gen-articles.ts",
+    "prepare": "npm run gen"
   },
   "dependencies": {
+    "@mdx-js/loader": "^2.3.0",
+    "@mdx-js/react": "^2.3.0",
+    "@next/mdx": "^13.5.3",
+    "next": "latest",
     "react": "latest",
+    "react-aria-components": "^1.0.0-beta.0",
     "react-dom": "latest",
-    "next": "latest"
+    "react-icons": "^4.11.0",
+    "rehype-autolink-headings": "^7.0.0",
+    "rehype-pretty-code": "^0.10.1",
+    "remark-toc": "^9.0.0",
+    "use-local-storage-state": "^19.1.0"
   },
   "devDependencies": {
-    "typescript": "latest",
-    "@types/react": "latest",
+    "@pandacss/dev": "^0.15.3",
+    "@types/mdx": "^2.0.8",
     "@types/node": "latest",
+    "@types/react": "latest",
     "@types/react-dom": "latest",
     "eslint": "latest",
-    "eslint-config-next": "latest"
+    "eslint-config-next": "latest",
+    "eslint-config-prettier": "^9.0.0",
+    "glob": "^10.3.10",
+    "gray-matter": "^4.0.3",
+    "prettier": "^3.0.3",
+    "ts-node": "^10.9.1",
+    "typescript": "latest"
   }
 }

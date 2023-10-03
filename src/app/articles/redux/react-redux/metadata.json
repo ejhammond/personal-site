@@ -1,0 +1,9 @@
+{
+  "series": "redux",
+  "article": "react-redux",
+  "number": 2,
+  "title": "React Redux",
+  "date": "2020-09-30",
+  "description": "Explores how React Redux helps to integrate Redux with React apps",
+  "tags": ["technology", "javascript", "react", "redux"]
+}

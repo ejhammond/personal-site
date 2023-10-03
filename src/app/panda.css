@@ -1,0 +1,46 @@
+@layer reset, base, tokens, recipes, utilities;
+
+/*
+Color mode
+*/
+
+/*
+Our MDX code-block system (rehype-pretty-code) handles dark-mode by simply
+rendering every code block twice and expecting us to hide the irrelevant one.
+
+This is actually fairly convenient since it requires no JS, though it results
+in bloated markup.
+
+Since we don't have a choice but to enable this pattern, we may as well make it
+generic so we can use it elsewhere.
+
+rehype-pretty-code specifically uses the data attribute "theme" to mark content
+as "light mode only" or "dark mode only", but we refer to light/dark mode as a
+"color mode" rather than a theme, so we'll use the data attribute "colormode"
+for this purpose in our code.
+
+
+
+See "Multiple Themes" https://rehype-pretty-code.netlify.app/
+*/
+
+@media (prefers-color-scheme: dark), (prefers-color-scheme: no-preference) {
+  [data-theme='light']:not(.light-mode *),
+  [data-colormode='light']:not(.light-mode *) {
+    display: none;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  [data-theme='light']:not(.light-mode *),
+  [data-colormode='light']:not(.light-mode *) {
+    display: none;
+  }
+}
+
+.light-mode [data-theme='dark'],
+.dark-mode [data-theme='light'],
+.light-mode [data-colormode='dark'],
+.dark-mode [data-colormode='light'] {
+  display: none;
+}

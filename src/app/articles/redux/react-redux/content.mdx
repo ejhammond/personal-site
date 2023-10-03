@@ -1,0 +1,262 @@
+<div
+  style={{
+    width: '100%',
+    display: 'flex',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+  }}
+>
+  <div
+    style={{
+      maxWidth: 250,
+      flexBasis: '40%',
+    }}
+  >
+    <Image
+      height={438}
+      width={491}
+      src="https://res.cloudinary.com/ejhammond/image/upload/v1577720577/logos/react-logo_elm9gj.svg"
+      alt="React logo"
+    />
+  </div>
+  <span
+    role="img"
+    aria-label="heart emoji"
+    style={{
+      fontSize: '3em',
+      flexBasix: '20%',
+    }}
+  >
+    💖
+  </span>
+  <div
+    style={{
+      maxWidth: 250,
+      flexBasis: '40%',
+    }}
+  >
+    <Image
+      height={2383}
+      width={2500}
+      src="https://res.cloudinary.com/ejhammond/image/upload/v1577720577/logos/redux-logo_d1kpyb.svg"
+      alt="Redux logo"
+    />
+  </div>
+</div>
+
+## Introduction
+
+React and Redux are two immensely popular JavaScript libraries which are commonly paired together in order to develop complex applications that are scalable and easy to reason about. In this article I'll capture my understanding of how Redux works side-by-side with React (via the `react-redux` library) in order to tame your application's complex data flow.
+
+## Redux
+
+In a [previous article](./redux-minus-react), we built a simple app using Redux and we intentionally did so without a UI framework in order to explore Redux's APIs in isolation. We learned that **actions** are plain old JavaScript objects, a **reducer** is nothing more than a function, and that the API of the Redux library itself boils down to:
+
+1. `createStore` - to create the store
+2. `store.dispatch` - to dispatch an action
+3. `store.subscribe` - to listen for updates to the state
+
+Now, we'll build on that foundation by examining how React Redux provides helpers on top of those APIs that make it super easy to use Redux with React.
+
+## React Redux
+
+[React Redux](https://github.com/reduxjs/react-redux) is a library that helps us to connect our React components to a Redux store.
+
+React Redux doesn't replace Redux, it simply provides a few helpful tools to make it easier to use Redux's `store.dispatch` and `store.subscribe` within a React application.
+
+## Actions and Reducers
+
+Actions and reducers are still just plain objects and functions. We'll build those like we did in the [previous article](/redux) without any additional logic from React Redux.
+
+## Provider
+
+The first helper provided by React Redux is the `Provider` component. `Provider` uses React Context to make your Redux `store` available to its children. We typically add it at the root of our application so that the store is accessible to every one of our components!
+
+We create the `store` just like before: with Redux's `createStore` method.
+
+## Connect
+
+Next, we have the `connect` Higher Order Component. Now that [React Redux exposes hooks](https://github.com/reduxjs/react-redux/releases/tag/v7.1.0), this utility is going to be used less often, but we'll cover it here anyway because it's still heavily used in production applications.
+
+Connect, like all other Higher Order Components, is a function (or a function which produces a function in this case) which takes in your component as an argument and returns a new, augmented component in return.
+
+The augmentation that Connect performs is to wrap your component in a Context Consumer (so that it can access the `store` from `Provider`) and gives your component access to the store's state and dispatch method by injecting props.
+
+Here's the same counter app that we built in the [Redux article](/redux) but using React Redux's `connect` utility.
+
+```jsx
+function MyConnectedCounter(props) {
+  return {
+    <div>
+      <button onClick={props.decrement}>-</button>
+      <div>{props.counter}</div>
+      <button onClick={props.increment}>+</button>
+    </div>
+  }
+}
+
+function mapStateToProps(currentState) {
+  return {
+    counter: currentState.counter
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    increment: dispatch({ type: 'ADD' }),
+    decrement: dispatch({ type: 'SUBTRACT' })
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MyComponent);
+```
+
+You tell Connect which pieces of state that your component cares about via the `mapStateToProps` function which accepts the current state, and returns a trimmed-down version. Connect then injects that trimmed-down state into your component as props.
+
+Connect also sets up a store-subscription (via `store.subscribe`) so that it can listen for changes to the props that your component cares about and can re-render the component for you whenever those props change.
+
+You can also get access to `store.dispatch` in your component by providing the `mapDispatchToProps` function which accepts the `store.dispatch` function itself, and returns a set of functions which use dispatch to communicate with the store.
+
+## useDispatch and useSelector
+
+Next, we have `useDispatch`. It's a hook that reaches in to the Context (from `Provider`) to get the `store` and it returns the `store.dispatch` method so that you can dispatch an action from within your React component.
+
+And then we have `useSelector` which, again, uses the Context from `Provider` to get the `store`, but rather than returning the `dispatch` method, it returns the current state from the store. `useSelector` accepts a `mapState` function which trims down the state to exactly what the component needs (just like `connect`s `mapStateToProps`).
+
+Finally, `useSelector` sets up a store-subscription (like `connect`'s) so that your component will re-render whenever certain state-changes occur.
+
+Here's the counter app one more time, using `useDispatch` and `useSelector` rather than `connect`:
+
+```jsx
+export default function MyConnectedCounter(props) {
+  const dispatch = useDispatch();
+  const counter = useSelector((currentState) => currentState.counter);
+
+  return {
+    <div>
+      <button onClick={dispatch({ type: 'SUBTRACT' })}>-</button>
+      <div>{counter}</div>
+      <button onClick={dispatch({ type: 'ADD' })}>+</button>
+    </div>
+  }
+}
+```
+
+## Referential Equality and Re-Renders
+
+In the [Redux article](/redux) we talked about how it's super important to return a new object from your reducer so that Redux can perform a quick referential-equality check to determine if the state changed.
+
+React Redux adds another place where we'll need to be mindful of referential equality.
+
+Every time Redux broadcasts that a piece of state changed, all of your `connect`s and `useSelector`s will quickly run their `mapState` functions and they'll try to determine if their component should re-render by comparing the current result of `mapState` (using the current state) to the new result of `mapState` (using the new state). Since `mapState` always returns a new object, the equality check must go _slightly deeper_ than the check that Redux does at the top level of your state. Which is to say, rather than simply doing:
+
+```js
+// broken pseudocode for connect and useSelector
+
+const currentMappedState = mapState(
+  currentState,
+);
+const newMappedState =
+  mapState(newState);
+
+if (
+  currentMappedState !== newMappedState
+) {
+  forceComponentToReRender();
+}
+```
+
+it is necessary for `connect` and `useSelector` to go a bit deeper:
+
+```js
+// pseudocode for connect and useSelector
+
+const currentMappedState = mapState(
+  currentState,
+);
+const newMappedState =
+  mapState(newState);
+
+for (key of newMappedState) {
+  if (
+    currentMappedState[key] !==
+    newMappedState[key]
+  ) {
+    forceComponentToReRender();
+    return;
+  }
+}
+```
+
+Even though we're going one level deeper and comparing each of the keys of the mapped state, we're still not recursively analyzing every single child, and we're still doing a referential equality check on each key.
+
+In the Redux article, we made sure that we always returned a new object from our reducer in order to indicate that some state had changed, but with React Redux we need to do a bit more:
+
+> if you change any nested state, you need to update the references to \*every single parent\* all the way up to the root state object
+
+This way, your `connect`s and `useSelector`s can mapState to any arbitrary chunk/level/sub-tree of the state and will always update appropriately when the state changes.
+
+Here are some examples. Let's say that we want to update a deeply-nested value in our state tree: `state.foo.bar.baz`
+
+```js
+// good code inside of a reducer
+
+case ActionType.ChangeFooBarBaz:
+  // update the ref of the root object
+  return {
+    ...state,
+    // update the ref of the grandparent
+    foo: {
+      ...state.foo,
+      // update ref of the parent
+      bar: {
+        ...state.foo.bar,
+        baz: action.newBaz, // change the object itself
+      },
+    },
+  }
+```
+
+In this example, we changed the object itself, the parent, grandparent, and root. We started with the object that we needed to change and we walked all the way up to the root and changed the ref to each parent on the way.
+
+An alternative implementation might look like this:
+
+```js
+// bad code instide of a reducer
+
+case ActionType.ChangeFooBarBaz:
+  // update the ref of the grandparent
+  const newFoo = { ...state.foo };
+  // change the object itself
+  newFoo.bar.baz = action.newBaz;
+
+  // change the ref of the root object
+  return {
+    ...state,
+    foo: newFoo
+  }
+```
+
+In this example, we used the spread operator to "clone" the foo object, so the grandparent (`foo`) got a new reference. We returned a new object from the reducer, so the root object changed, and we overwrote the value of baz to our new value, so the object itself got a new reference, but what about `bar`!? The ref to `bar` actually didn't change in this example.
+
+Even thought the root-state-object changed, and Redux would broadcast the state change, `connect` and `useSelector` would ignore the change if they were subscribed directly to `bar`.
+
+e.g. if you had a function that did this:
+
+```js
+mapStateToProps((state) => {
+  bar: state.foo.bar;
+});
+```
+
+it would _not_ re-render when `foo.bar.baz` changed because the ref to `bar` didn't get updated!
+
+If the pattern shown in the "good" example of updating refs all the way up to the root seems tedious or confusing, you may be interested in a library like [immer](https://github.com/immerjs/immer) which abstracts these concerns away from the developer and lets you write nice, terse reducers that feel leverage the readability of impertive APIs without violating Redux's rules around immutability and referential equality.
+
+## Wrap Up
+
+We've seen how React Redux provides helpers on top of Redux's `store.dispatch` and `store.subscribe` to make them easier to use inside of a React application. `Provider` exposes the store to your components; `connect` and `useDispatch`+`useSelector` make it easy for individual components to subscribe to a single piece of state (only re-rendering when necessary) and for individual components to dispatch actions directly to the store.
+
+We've explored Redux's and React Redux's usage _referential equality_ to perform super fast comparisons to see if state has changed, and we understand the patterns that have emerged within reducers that help us avoid the related "gotchas"
+
+Thanks for reading!

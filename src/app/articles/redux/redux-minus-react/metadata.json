@@ -1,0 +1,9 @@
+{
+  "article": "redux-minus-react",
+  "series": "redux",
+  "number": 1,
+  "title": "Redux Minus React",
+  "date": "2020-09-28",
+  "description": "A truly barebones intro to Redux",
+  "tags": ["technology", "javascript", "redux"]
+}

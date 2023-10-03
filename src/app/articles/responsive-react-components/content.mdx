@@ -1,0 +1,162 @@
+## Responsive Web Design
+
+In today's world, we know that folks are just as likely to visit our web page on their phone as they are to visit our web page on a laptop/desktop computer. So, in order to make sure that folks get a great experience no matter how they choose to interact with our content, we need to be thinking about how our page _responds_ to different screen-size requirements.
+
+> A page is considered to be _responsive_ when it is able to gracefully change its content in order to fit any potential screen size.
+
+Most responsive pages make use of [grid systems](https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Legacy_Layout_Methods) which are wonderful abstractions that allow us to resize and to re-position our content based on the size of a user's screen. In many cases, a grid system is all you really need in order to build a great responsive experience, but there are some things that a grid simply cannot do.
+
+In this article, we're gonna talk about how we can go beyond size and positioning in order to make our components fully responsive!
+
+## Fully Responsive Components
+
+> For the rest of this post, we're going to be using React components to illustrate concepts, but these ideas can be applied to any component-based UI framework (Angular/Vue/Svelte etc.)!
+
+### A Carousel Case Study
+
+Let's say that we're building a responsive web page and we need to show a [carousel](https://www.nngroup.com/articles/designing-effective-carousels/) of images. If you're unfamiliar, a carousel basically lets you swipe left/right through a set of images.
+
+<Image
+  width={301}
+  height={111}
+  src="https://res.cloudinary.com/ejhammond/image/upload/v1648911429/ayhota/responsive-react-components_2022-04-02_10_56/carousel-sizes_pihgd3_vrjbid.png"
+  alt="Carousel on different screens"
+  style={{ marginInline: 'auto' }}
+/>
+
+On large screens we can fit a bunch of carousel images on the page at the same time, but on very small screens we might only be able to show one at a time.
+
+To make this a bit more concrete, let's say that we want to show 4 images at a time on large screens like a full-screen desktop browser, 2 images on medium screens like a tablet, and 1 image on small screens like a mobile phone.
+
+And here's the API for the `Carousel` component.
+
+```jsx
+<Carousel imagesToShow={someNumber} />
+```
+
+How can we make that work?
+
+#### Breakpoints
+
+Well, the first step is to decide exactly what we mean by "large", "medium", and "small". We need to decide the exact screen-widths where we switch from one to the next. Commonly, these specific widths are called _breakpoints_ and the ranges themselves ("large", "medium", "small") are called _screen classes_.
+
+#### Media Queries
+
+Once we have our breakpoints defined, we can use [media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries) in order to ask the browser to tell us the device's current screen class. Due to the popularity of media queries in CSS, many folks have the perception that media queries are a feature of CSS, but (and this is a bit of a spoiler about where this article is headed) you can actually use media queries in your JavaScript code as well!
+
+#### Using Media Queries with CSS
+
+Now that we have a way to ask our browser about the current size of the user's screen, let's put it to use!
+
+We'll start with using the media-query solution that I see most often: the CSS-based approach.
+
+With media queries in CSS, we can indicate that different styles should used based on the size of user's the screen. This works great for shrinking the font size of a heading on a small device, or making a button bigger on a touch screen, but the tricky part here is that we need to be able to change the `imagesToShow` prop on our Carousel, and we can't do that with CSS alone.
+
+The next step that folks often take is to double-down on using CSS to solve the problem by creating multiple Carousels and showing/hiding them with CSS media queries. i.e. "Show this 4-slide Carousel on large screens, but not medium or small screens. Show this 2-slide Carousel on medium screens, but not on large or small screens" etc.
+
+Let's play that out.
+
+```jsx
+<Carousel
+  imagesToShow={4}
+  className="hidden-on-medium-screens hidden-on-small-screens"
+/>
+<Carousel
+  imagesToShow={2}
+  className="hidden-on-large-screens hidden-on-small-screens"
+/>
+<Carousel
+  imagesToShow={1}
+  className="hidden-on-large-screens hidden-on-medium-screens"
+/>
+```
+
+This will work! But there are a few drawbacks.
+
+The first one is that we're actually shipping a lot of extra code (bytes) to our users; rather than a single `Carousel`, we're sending 3 `Carousel`s each with different props. That's more to download and parse for the browser and it'll negatively impact our page's performance. The second issue is that this pattern is going to be really hard to maintain; having duplicate (or triplicate) components all over your codebase is gonna make your code hard to read and error-prone.
+
+So, is there a way to avoid shipping all of that duplicate code? Well, if we knew the size of the user's screen _ahead of time_, we could just choose the right value and send it to them. This pattern is called _adaptive_ (vs _responsive_) and a lot of folks use it. The drawback here is that detecting the user's screen size ahead of time (e.g. by examining the request from the browser before you send the page response) is tougher than it sounds, and the pattern doesn't work very well when users resize their windows (or rotate their device).
+
+Let's try something else.
+
+#### Using Media Queries in JavaScript
+
+As I mentioned earlier, we can actually utilize media queries in JavaScript and not just in CSS. Specifically, we can make use the browser's [`matchMedia`](https://developer.mozilla.org/en-US/docs/Web/API/Window/matchMedia) function in order to check the size of the user's screen.
+
+Here's an example where we use `matchMedia` to check if the screen is "large" or not. We use the `addListener` function in order to be notified if the media query result ever changes. The listener will be fired when we go from not-matching to matching and it will also be fired when we go from matching back to not-matching.
+
+```js
+let currentScreenClass = undefined;
+
+const largeScreenMediaQuery =
+  '(min-width: 1200px)';
+
+const mediaQueryList =
+  window.matchMedia(
+    largeScreenMediaQuery,
+  );
+
+mediaQueryList.addListener((event) => {
+  if (event.matches) {
+    currentScreenClass = 'LARGE';
+  } else {
+    currentScreenClass = 'NOT LARGE';
+  }
+});
+```
+
+If we're using React, we could create a [Context Provider](https://reactjs.org/docs/context.html) at the root of our app that would use code like this in order to keep track of the current screen class. Then our components could consume that context in order to decide what to do.
+
+```jsx
+const App = () => {
+  // theoretical `useScreenClassContext`
+  // that gets the current screen class
+  // from a Context Provider
+  // where Context Provider is using
+  // window.matchMedia
+  const { screenClass } =
+    useScreenClassContext();
+
+  let imagesToShow;
+  switch (screenClass) {
+    case 'large':
+      imagesToShow = 4;
+      break;
+    case 'medium':
+      imagesToShow = 2;
+      break;
+    case 'small':
+      imagesToShow = 1;
+      break;
+  }
+
+  return (
+    <Carousel
+      imagesToShow={imagesToShow}
+    />
+  );
+};
+```
+
+And now our `Carousel` is _fully responsive_! Now that we have the current screen class available in our JavaScript code, we can make any property change its value based on the size of the users screen.
+
+### React Responsive System
+
+I've been using this pattern (media queries + React Context) for a while in order to create responsive React components and I like it so much that I've built a library to make it easier to pull off. It's called [`react-responsive-system`](https://www.npmjs.com/package/react-responsive-system).
+
+Responsive System creates media queries based on your own customizable breakpoints and then gives you a React Context Provider that you can render in your app.
+
+Rather than writing a `switch` statement in your component, you use a hook:
+
+```jsx
+const imagesToShow = useResponsiveValue(
+  4, // default value
+  { medium: 2, small: 1 }, // overrides based on your own breakpoints
+);
+
+<Carousel
+  imagesToShow={imagesToShow}
+/>;
+```
+
+If you're interested in making your React components responsive, give it a try and let me know what you think on Twitter! [React Responsive System](https://www.npmjs.com/package/react-responsive-system)
