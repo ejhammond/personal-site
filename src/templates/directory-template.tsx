@@ -13,12 +13,26 @@ import { useMemo } from 'react';
 function DirListing({
   selectedDirectories,
   directories,
+  isCurrentDirectory,
 }: Readonly<{
   selectedDirectories: ReadonlySet<string>;
   directories: ReadonlyArray<string>;
+  isCurrentDirectory: boolean;
 }>) {
   return (
-    <VStack className={css({ minWidth: 150, maxWidth: 300 })}>
+    <VStack
+      className={css({
+        flexWrap: 'wrap',
+        minWidth: 150,
+        maxWidth: 300,
+        display: {
+          // always show the current directory
+          base: isCurrentDirectory ? 'block' : 'none',
+          // start showing the other directories at 600+px
+          '@/600': 'block',
+        },
+      })}
+    >
       {directories.map((dir) => {
         const parts = dir.split('/');
         const name = parts.at(-1);
@@ -99,17 +113,15 @@ export function DirectoryTemplate() {
   }
 
   return (
-    <HStack gap="lg">
-      {directories.map(
-        (directory) =>
-          directory != null && (
-            <DirListing
-              key={directory.path}
-              directories={directory.subDirectories}
-              selectedDirectories={new Set(directories.map((d) => d.path))}
-            />
-          ),
-      )}
+    <HStack gap="lg" className={css({ containerType: 'size' })}>
+      {directories.map((directory, index) => (
+        <DirListing
+          key={directory.path}
+          directories={directory.subDirectories}
+          selectedDirectories={new Set(directories.map((d) => d.path))}
+          isCurrentDirectory={index === directories.length - 1}
+        />
+      ))}
     </HStack>
   );
 }

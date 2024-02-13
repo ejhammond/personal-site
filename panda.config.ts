@@ -115,6 +115,12 @@ export default defineConfig({
     },
   },
   theme: {
+    containerSizes: {
+      '300': '300px',
+      '400': '400px',
+      '500': '500px',
+      '600': '600px',
+    },
     tokens: {
       colors: pandaTheme.theme.tokens.colors,
       shadows: pandaTheme.theme.tokens.shadows,
