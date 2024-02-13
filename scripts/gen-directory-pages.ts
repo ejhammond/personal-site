@@ -5,12 +5,10 @@ import fs from 'fs/promises';
 import { Directory } from './gen';
 
 export async function genDirectoryPages(directory: Directory): Promise<void> {
-  const customPageFile = directory.files.find(
-    (file) => file.tags.has('page') && !file.tags.has('generated'),
-  );
+  const pageFile = directory.files.find((file) => file.tags.has('page'));
 
   // if this directory has a page defined, then we don't need to create a routing page here
-  if (customPageFile != null) {
+  if (pageFile != null) {
     return;
   }
 

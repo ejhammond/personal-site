@@ -4,7 +4,6 @@ import fs from 'fs/promises';
 import path from 'path';
 import { genArticles } from './gen-articles';
 import { genDirectoryPages } from './gen-directory-pages';
-import { genClean } from './gen-clean';
 import { readTimer, startTimer } from './timer';
 
 export const REPO_ROOT = path.resolve('.');
@@ -92,8 +91,6 @@ async function processDirectory(dir: string): Promise<void> {
     processDirectory(dir),
   );
 
-  // remove any generated files in the directory
-  await genClean(directory);
   // gen page files for our mdx articles
   await genArticles(directory);
   // gen "directory" pages for any non-page path
