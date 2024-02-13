@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs/promises';
 import { Directory } from './gen';
 
-export async function genDirectoryPages(directory: Directory): Promise<void> {
+export async function genIndexes(directory: Directory): Promise<void> {
   const pageFile = directory.files.find((file) => file.tags.has('page'));
 
   // if this directory has a page defined, then we don't need to create a routing page here
@@ -40,7 +40,7 @@ export default function Page() {
   `.trim();
 
   await fs.writeFile(
-    path.resolve(directory.path, 'page.gen.tsx'),
+    path.resolve(directory.path, 'index.gen.tsx'),
     fileContents,
     {
       encoding: 'utf-8',

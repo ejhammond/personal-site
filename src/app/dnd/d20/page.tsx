@@ -2,6 +2,7 @@
 
 import { Card } from '@/ds/card';
 import { Counter } from '@/ds/counter';
+import { HStack } from '@/ds/h-stack';
 import { Selector } from '@/ds/selector';
 import { vStack } from '@/ds/styles/v-stack-style';
 import { Text } from '@/ds/text';
@@ -80,7 +81,7 @@ const D20: React.FC = () => {
       <p className={css({ mb: 'lg' })}>
         Calculate your chance to meet a certain threshold with a D20 roll.
       </p>
-      <Card css={{ width: 'max-content' }}>
+      <Card css={{ width: 'min-content' }}>
         <h4>Chance</h4>
         <Text variant="display" className={css({ mb: 'md' })}>
           {(calculateHitChance(d20FormData) * 100).toFixed(2)}%
@@ -92,21 +93,23 @@ const D20: React.FC = () => {
             event.preventDefault();
           }}
         >
-          <Counter
-            label="Threshold (e.g. AC or DC)"
-            min={0}
-            value={d20FormData.threshold}
-            onChange={(number) => {
-              updateD20FormData({ threshold: number });
-            }}
-          />
-          <Counter
-            label="Modifier"
-            value={d20FormData.modifier}
-            onChange={(number) => {
-              updateD20FormData({ modifier: number });
-            }}
-          />
+          <HStack gap="lg">
+            <Counter
+              label="Threshold"
+              min={0}
+              value={d20FormData.threshold}
+              onChange={(number) => {
+                updateD20FormData({ threshold: number });
+              }}
+            />
+            <Counter
+              label="Modifier"
+              value={d20FormData.modifier}
+              onChange={(number) => {
+                updateD20FormData({ modifier: number });
+              }}
+            />
+          </HStack>
           <Selector
             label="Advantage"
             value={d20FormData.advantage}

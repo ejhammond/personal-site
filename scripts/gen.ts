@@ -3,7 +3,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { genArticles } from './gen-articles';
-import { genDirectoryPages } from './gen-directory-pages';
+import { genIndexes } from './gen-indexes';
 import { readTimer, startTimer } from './timer';
 
 export const REPO_ROOT = path.resolve('.');
@@ -93,8 +93,8 @@ async function processDirectory(dir: string): Promise<void> {
 
   // gen page files for our mdx articles
   await genArticles(directory);
-  // gen "directory" pages for any non-page path
-  await genDirectoryPages(directory);
+  // gen "index" pages for any non-page path
+  await genIndexes(directory);
 
   // wait for subDirectory work to finish
   // this ensures that the script won't exit until all work is done
