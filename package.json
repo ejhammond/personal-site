@@ -9,7 +9,9 @@
     "lint": "next lint",
     "format": "prettier . --write --ignore-path .gitignore",
     "gen": "panda codegen && ts-node ./scripts/gen.ts",
-    "prepare": "npm run gen"
+    "prepare": "npm run gen",
+    "clean": "npx rimraf --glob src/**/*.gen.*",
+    "check": "npx tsc"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.0.0",

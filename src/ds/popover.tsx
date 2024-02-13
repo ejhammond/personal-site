@@ -10,7 +10,7 @@ type Props = Readonly<{
 export function Popover({ children }: Props) {
   return (
     <RACPopover>
-      <Card className={css({ p: 'sm' })}>{children}</Card>
+      <Card css={{ p: 'sm' }}>{children}</Card>
     </RACPopover>
   );
 }

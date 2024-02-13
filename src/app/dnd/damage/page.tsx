@@ -88,7 +88,7 @@ const Damage: React.FC = () => {
       <p className={css({ mb: 'lg' })}>
         Calculate the expected damage of an attack.
       </p>
-      <Card className={css({ width: 'min-content' })}>
+      <Card css={{ width: 'max-content' }}>
         <div className={css({ mb: 'md' })}>
           <h4>Roll</h4>
           <Text aria-hidden variant="display" className={css({ mb: 'md' })}>

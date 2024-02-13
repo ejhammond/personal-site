@@ -80,7 +80,7 @@ const D20: React.FC = () => {
       <p className={css({ mb: 'lg' })}>
         Calculate your chance to meet a certain threshold with a D20 roll.
       </p>
-      <Card className={css({ width: 'max-content' })}>
+      <Card css={{ width: 'max-content' }}>
         <h4>Chance</h4>
         <Text variant="display" className={css({ mb: 'md' })}>
           {(calculateHitChance(d20FormData) * 100).toFixed(2)}%

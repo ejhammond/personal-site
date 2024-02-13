@@ -1,12 +1,13 @@
 import { css, cx } from '@/panda/css';
+import { SystemStyleObject } from '@/panda/types';
 import React from 'react';
 
 type Props = Readonly<{
   children: React.ReactNode;
-  className?: string;
+  css?: SystemStyleObject;
 }>;
 
-export function Card({ children, className }: Props) {
+export function Card({ children, css: cssOverride }: Props) {
   return (
     <div
       className={cx(
@@ -18,8 +19,8 @@ export function Card({ children, className }: Props) {
           padding: 'lg',
           boxShadow: 'sm',
           borderRadius: 'md',
+          ...cssOverride,
         }),
-        className,
       )}
     >
       {children}
