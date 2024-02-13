@@ -19,21 +19,23 @@ function DirListing({
   directories: ReadonlyArray<string>;
   isCurrentDirectory: boolean;
 }>) {
+  const sortedDirectories = useMemo(() => directories.toSorted(), directories);
   return (
     <VStack
       className={css({
         flexWrap: 'wrap',
+        flexBasis: 300,
         minWidth: 150,
         maxWidth: 300,
         display: {
           // always show the current directory
-          base: isCurrentDirectory ? 'block' : 'none',
+          base: isCurrentDirectory ? 'block' : 'block',
           // start showing the other directories at 600+px
           '@/600': 'block',
         },
       })}
     >
-      {directories.map((dir) => {
+      {sortedDirectories.map((dir) => {
         const parts = dir.split('/');
         const name = parts.at(-1);
         const label = name != null ? makeHeading(name) : null;
@@ -105,7 +107,8 @@ export function DirectoryTemplate() {
         nonNullDirectories.push(directory);
       }
     }
-    return nonNullDirectories;
+    // show max of 3 layers
+    return nonNullDirectories.slice(-3);
   }, [uriPath]);
 
   if (directories.length == 0) {
