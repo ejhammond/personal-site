@@ -38,4 +38,7 @@ next-env.d.ts
 src/panda
 
 # gen-articles
-src/app/articles/**/page.tsx
+*.gen.tsx
+
+# vscode
+.vscode

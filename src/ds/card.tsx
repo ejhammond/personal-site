@@ -15,7 +15,7 @@ export function Card({ children, className }: Props) {
           borderWidth: '1px',
           borderStyle: 'solid',
           borderColor: 'border',
-          padding: 'sm',
+          padding: 'lg',
           boxShadow: 'sm',
           borderRadius: 'md',
         }),

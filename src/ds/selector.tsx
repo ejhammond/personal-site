@@ -1,6 +1,6 @@
 import { css } from '@/panda/css';
 import {
-  Item,
+  ListBoxItem,
   Label,
   ListBox,
   Select,
@@ -49,14 +49,6 @@ export function Selector<TValue extends string>({
         <Button
           variant="flat"
           className={css({
-            cursor: 'pointer',
-
-            color: 'text-primary',
-            border: '1px solid token(border)',
-
-            p: 'sm',
-            borderRadius: 'md',
-
             display: 'flex',
             alignItems: 'center',
             gap: 'sm',
@@ -71,17 +63,18 @@ export function Selector<TValue extends string>({
       <Popover>
         <ListBox items={items}>
           {(item) => (
-            <Item
+            <ListBoxItem
               key={item.value}
               id={item.value}
               textValue={item.label}
               className={css({
                 p: 'xs',
                 cursor: 'pointer',
+                color: 'text-primary',
               })}
             >
               {({ isSelected }) => `${item.label}${isSelected ? ' ✓' : ''}`}
-            </Item>
+            </ListBoxItem>
           )}
         </ListBox>
       </Popover>

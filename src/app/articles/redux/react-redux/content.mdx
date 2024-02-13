@@ -86,13 +86,13 @@ Here's the same counter app that we built in the [Redux article](/redux) but usi
 
 ```jsx
 function MyConnectedCounter(props) {
-  return {
+  return (
     <div>
       <button onClick={props.decrement}>-</button>
       <div>{props.counter}</div>
       <button onClick={props.increment}>+</button>
     </div>
-  }
+  )
 }
 
 function mapStateToProps(currentState) {
@@ -132,13 +132,13 @@ export default function MyConnectedCounter(props) {
   const dispatch = useDispatch();
   const counter = useSelector((currentState) => currentState.counter);
 
-  return {
+  return (
     <div>
       <button onClick={dispatch({ type: 'SUBTRACT' })}>-</button>
       <div>{counter}</div>
       <button onClick={dispatch({ type: 'ADD' })}>+</button>
     </div>
-  }
+  )
 }
 ```
 

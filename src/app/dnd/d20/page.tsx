@@ -1,8 +1,10 @@
 'use client';
 
-import { Card } from '@/components/ds/card';
-import { Counter } from '@/components/ds/counter';
-import { Selector } from '@/components/ds/selector';
+import { Card } from '@/ds/card';
+import { Counter } from '@/ds/counter';
+import { Selector } from '@/ds/selector';
+import { vStack } from '@/ds/styles/v-stack-style';
+import { Text } from '@/ds/text';
 import { css } from '@/panda/css';
 import * as React from 'react';
 
@@ -74,73 +76,49 @@ const D20: React.FC = () => {
 
   return (
     <>
-      <h2>Hit Chance</h2>
+      <h2>Roll Chance</h2>
       <p className={css({ mb: 'lg' })}>
         Calculate your chance to meet a certain threshold with a D20 roll.
       </p>
-      <div
-        className={css({
-          display: 'grid',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          gap: 'md',
-        })}
-      >
-        <div className={css({ gridColumn: 'span 6' })}>
-          <form
-            className={css({
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 'md',
-            })}
-            onSubmit={(event) => {
-              event.preventDefault();
-            }}
-          >
-            <Counter
-              label="Threshold (e.g. AC or DC)"
-              min={0}
-              value={d20FormData.threshold}
-              onChange={(number) => {
-                updateD20FormData({ threshold: number });
-              }}
-            />
-            <Counter
-              label="Modifier"
-              value={d20FormData.modifier}
-              onChange={(number) => {
-                updateD20FormData({ modifier: number });
-              }}
-            />
-            <Selector
-              label="Advantage"
-              value={d20FormData.advantage}
-              onChange={(value) => {
-                updateD20FormData({
-                  advantage: value as Advantage,
-                });
-              }}
-              items={ADVANTAGE_SELECTOR_ITEMS}
-            />
-          </form>
-        </div>
-        <Card
-          className={css({
-            gridColumn: 'span 6',
-
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          })}
+      <Card className={css({ width: 'max-content' })}>
+        <h4>Chance</h4>
+        <Text variant="display" className={css({ mb: 'md' })}>
+          {(calculateHitChance(d20FormData) * 100).toFixed(2)}%
+        </Text>
+        <hr className={css({ mb: 'md' })} />
+        <form
+          className={vStack({ gap: 'md' })}
+          onSubmit={(event) => {
+            event.preventDefault();
+          }}
         >
-          <p
-            className={css({
-              fontSize: '3xl',
-            })}
-          >
-            {(calculateHitChance(d20FormData) * 100).toFixed(2)}%
-          </p>
-        </Card>
-      </div>
+          <Counter
+            label="Threshold (e.g. AC or DC)"
+            min={0}
+            value={d20FormData.threshold}
+            onChange={(number) => {
+              updateD20FormData({ threshold: number });
+            }}
+          />
+          <Counter
+            label="Modifier"
+            value={d20FormData.modifier}
+            onChange={(number) => {
+              updateD20FormData({ modifier: number });
+            }}
+          />
+          <Selector
+            label="Advantage"
+            value={d20FormData.advantage}
+            onChange={(value) => {
+              updateD20FormData({
+                advantage: value as Advantage,
+              });
+            }}
+            items={ADVANTAGE_SELECTOR_ITEMS}
+          />
+        </form>
+      </Card>
     </>
   );
 };

@@ -2,75 +2,14 @@
 
 import fs from 'fs/promises';
 import path from 'path';
-import graymatter from 'gray-matter';
 import { MDXArticleMetadata } from '@/types/mdx-article-metadata';
-
-const REPO_ROOT = path.resolve('.');
-const APP_ROOT = path.join(REPO_ROOT, '/src/app');
-const ARTICLES_ROOT = path.join(APP_ROOT, '/articles');
-
-const CONTENT_FILENAME = 'content.mdx';
-const PAGE_FILENAME = 'page.tsx';
-const METADATA_FILENAME = 'metadata.json';
-
-const articleStats: Record<string, MDXArticleMetadata> = {};
-
-async function readDirectory(dir: string): Promise<
-  Readonly<{
-    subDirectories: ReadonlyArray<string>;
-    article: {
-      contentFile: string;
-      metadataFile: string;
-      pageFile: string | null;
-    } | null;
-    otherFiles: ReadonlyArray<string>;
-  }>
-> {
-  const entries = await fs.readdir(dir, { withFileTypes: true });
-  const subDirectories = [];
-  const otherFiles = [];
-  let contentFile = null;
-  let metadataFile = null;
-  let pageFile = null;
-
-  for (const entry of entries) {
-    const fullPath = path.resolve(dir, entry.name);
-    if (entry.isDirectory()) {
-      subDirectories.push(fullPath);
-    } else if (entry.name === CONTENT_FILENAME) {
-      contentFile = fullPath;
-    } else if (entry.name === METADATA_FILENAME) {
-      metadataFile = fullPath;
-    } else if (entry.name === PAGE_FILENAME) {
-      pageFile = fullPath;
-    } else {
-      otherFiles.push(fullPath);
-    }
-  }
-
-  let article = null;
-  if ([contentFile, metadataFile, pageFile].some((f) => f != null)) {
-    // at least one file is defined, so we have an article
-
-    if (contentFile == null || metadataFile == null) {
-      throw new Error(
-        `Malformed article found in ${dir}. Articles must have both a content.mdx and a metadata.json`,
-      );
-    }
-
-    article = {
-      contentFile,
-      metadataFile,
-      pageFile,
-    };
-  }
-
-  return {
-    subDirectories,
-    otherFiles,
-    article,
-  };
-}
+import {
+  APP_ROOT,
+  ARTICLES_ROOT,
+  ARTICLE_CONTENT_FILENAME,
+  Directory,
+  REPO_ROOT,
+} from './gen';
 
 function getArticleDisplayName(contentOrMetadataFile: string): string {
   const p = path.parse(contentOrMetadataFile);
@@ -125,7 +64,7 @@ async function getMetadata(metadataFile: string): Promise<MDXArticleMetadata> {
     date,
     tags,
     repoPath: path
-      .join(metadataFile, '..', CONTENT_FILENAME)
+      .join(metadataFile, '..', ARTICLE_CONTENT_FILENAME)
       .replace(REPO_ROOT, ''),
     uriPath: pageRoot.replace(APP_ROOT, ''),
   };
@@ -148,7 +87,7 @@ async function genPage(
  * re-gen command: npm run gen
  */
 
-import { MDXTemplate } from '@/app/articles/mdx-template';
+import { MDXTemplate } from '@/templates/mdx-template';
 import Content from './${p.name}${p.ext}';
 
 const meta = ${JSON.stringify(metadata, null, 2)};
@@ -162,41 +101,30 @@ export default function Page() {
 }
   `.trim();
 
-  await fs.writeFile(path.resolve(dir, 'page.tsx'), fileContents, {
+  await fs.writeFile(path.resolve(dir, 'page.gen.tsx'), fileContents, {
     encoding: 'utf-8',
   });
-
-  console.log('\x1b[32m%s\x1b[0m', `✔️ ${getArticleDisplayName(contentFile)}`);
 }
 
-async function processDirectory(dir: string): Promise<void> {
-  const { subDirectories, article } = await readDirectory(dir);
-
-  // kick off recursive work without blocking
-  const processSubDirectoryPromises = subDirectories.map((dir) =>
-    processDirectory(dir),
+export async function genArticles(directory: Directory): Promise<void> {
+  const contentFile = directory.files.find((file) =>
+    file.tags.has('article-content'),
   );
 
-  if (article != null) {
-    const { contentFile, metadataFile, pageFile } = article;
-
-    // clean
-    if (pageFile != null) {
-      await fs.rm(pageFile);
-    }
-
-    // gen
-    await genPage(contentFile, metadataFile);
+  if (contentFile == null) {
+    return;
   }
 
-  // wait for recursive work to finish
-  await Promise.all(processSubDirectoryPromises);
+  const metadataFile = directory.files.find((file) =>
+    file.tags.has('article-meta'),
+  );
+
+  if (metadataFile == null) {
+    throw new Error(
+      'Articles must have a metadata.json file in the directory.',
+    );
+  }
+
+  // gen
+  await genPage(contentFile.path, metadataFile.path);
 }
-
-async function main() {
-  console.log('\x1b[36m%s\x1b[0m', `Generating pages from MDX files\n`);
-
-  processDirectory(ARTICLES_ROOT);
-}
-
-main();

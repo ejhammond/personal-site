@@ -1,30 +1,79 @@
-import { Config, PropertyConfig, defineConfig } from '@pandacss/dev';
+import { defineConfig } from '@pandacss/dev';
 import pandaTheme from '@pandacss/preset-panda';
 import { utilities } from './panda-config/utilities';
-import { conditions } from './panda-config/conditions';
 
-function withColorMode({
-  light,
-  dark,
-}: Readonly<{ light: string; dark: string }>) {
+type Conditions = Readonly<{
+  [condition: `_${string}`]: Style;
+}>;
+
+type StyleObject = Readonly<{
+  base: Style;
+}> &
+  Conditions;
+type FlatStyleObject = Readonly<{
+  base: string;
+}> &
+  Conditions;
+
+type Style = string | StyleObject;
+type FlatStyle = string | FlatStyleObject;
+
+function flatten(style: string): string;
+function flatten(style: StyleObject): FlatStyleObject;
+function flatten(style: Style): FlatStyle {
+  if (typeof style === 'string') {
+    return style;
+  }
+
+  const { base, ...styles } = style;
+
+  if (typeof base === 'string') {
+    return {
+      base,
+      ...styles,
+    };
+  }
+
   return {
-    base: dark,
-    _light: light,
-    _osLight: light,
-    _dark: dark,
-    _osDark: dark,
+    ...styles,
+    ...flatten(base),
   };
 }
 
+function withColorMode({
+  base,
+  light,
+}: Readonly<{ base: Style; light: Style }>): FlatStyleObject {
+  return flatten({
+    base,
+    _colorModeLight: light,
+  });
+}
+
+function withSurfaceColor({
+  base,
+  brand,
+}: Readonly<{ base: Style; brand: Style }>): FlatStyleObject {
+  return flatten({
+    base,
+    _surfaceBrand: brand,
+  });
+}
+
 export default defineConfig({
-  eject: true, // removes default theme
+  eject: true, // removes base theme
   preflight: true, // adds reset css
   include: ['./src/**/*.{js,jsx,ts,tsx}'],
   exclude: [],
   jsxFramework: 'react',
   utilities,
-  conditions,
   outdir: 'src/panda',
+  conditions: {
+    extend: {
+      colorModeLight: '.light-mode &, [data-colormode="light"] &',
+      surfaceBrand: '.background-color_brand &',
+    },
+  },
   globalCss: {
     body: {
       fontFamily: 'normal',
@@ -108,40 +157,39 @@ export default defineConfig({
     semanticTokens: {
       colors: {
         'bg-base': {
-          value: withColorMode({ light: 'white', dark: '#181818' }),
+          value: withColorMode({ base: '#181818', light: 'white' }),
         },
         'bg-layer': {
           value: withColorMode({
+            base: '#262626',
             light: '{colors.bg-base}',
-            dark: '#262626',
           }),
         },
         'bg-code': {
-          value: withColorMode({
-            light: '#F3F3F3',
-            dark: '#262626',
-          }),
+          value: withColorMode({ base: '#262626', light: '#F3F3F3' }),
         },
         brand: {
-          value: withColorMode({ light: '#385170', dark: '#25364C' }),
+          value: withColorMode({ base: '#25364C', light: '#385170' }),
         },
         primary: {
-          value: withColorMode({ light: '#0C9479', dark: '#26CEAD' }),
+          value: withColorMode({ base: '#26CEAD', light: '#0C9479' }),
         },
         'text-primary': {
-          value: withColorMode({ light: '#333333', dark: '#DDDDDD' }),
-        },
-        'text-primary-inverted': {
-          value: withColorMode({ light: '#DDDDDD', dark: '#333333' }),
+          value: withSurfaceColor({
+            base: withColorMode({ base: '#DDDDDD', light: '#333333' }),
+            brand: '#DDDDDD',
+          }),
         },
         'text-secondary': { value: '#999999' },
         'text-heading': {
-          value: withColorMode({ light: 'black', dark: 'white' }),
+          value: withColorMode({ base: 'white', light: 'black' }),
         },
-        'text-on-brand': {
-          value: '#DDDDDD',
+        border: {
+          value: withSurfaceColor({
+            base: withColorMode({ base: '#DDDDDD', light: '#AAAAAA' }),
+            brand: '#DDDDDD',
+          }),
         },
-        border: { value: withColorMode({ light: '#AAAAAA', dark: '#DDDDDD' }) },
         danger: { value: '#F44336' },
       },
     },

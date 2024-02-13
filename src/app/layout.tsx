@@ -1,6 +1,6 @@
-import './panda.css';
+import './root.css';
 
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Montserrat, Fira_Code } from 'next/font/google';
 import ayhotaLogo from '@/images/ayhota-logo.png';
 import Image from 'next/image';
@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { cookies } from 'next/headers';
 import { css, cx } from '@/panda/css';
 import { ColorModeToggle } from '@/components/color-mode-toggle';
-import { Breadcrumbs } from '@/components/ds/breadcrumbs';
+import { Breadcrumbs } from '@/ds/breadcrumbs';
 import { PostHydration } from '@/components/post-hydration';
 import {
   AppColorModePreference,
@@ -33,11 +33,14 @@ TODO: find a way to include this in the head
 export const metadata: Metadata = {
   title: 'Ayhota',
   applicationName: 'Ayhota',
-  themeColor: '#385170',
   other: {
     'apple-mobile-web-app-title': 'Ayhota',
     'msapplication-TileColor': '#385170',
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#385170',
 };
 
 function CappedWidth({
@@ -143,7 +146,6 @@ export default function RootLayout({
                     mr: 'sm',
                   })}
                 />
-                Ayhota
               </Link>
             </h1>
             <PostHydration fallback={null}>

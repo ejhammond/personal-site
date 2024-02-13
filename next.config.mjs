@@ -3,28 +3,24 @@ import prettyCode from 'rehype-pretty-code';
 import toc from 'remark-toc';
 import autoLinkHeadings from 'rehype-autolink-headings';
 
+/** @type {import('rehype-pretty-code').Options} */
+const prettyCodeOptions = {
+  theme: { light: 'github-light', dark: 'github-dark-dimmed' },
+  keepBackground: false,
+  defaultLang: 'ts',
+};
+
 const withMDX = createMDXPlugin({
   extension: /\.mdx?$/,
   options: {
     remarkPlugins: [toc],
-    rehypePlugins: [
-      [
-        prettyCode,
-        {
-          theme: { light: 'github-light', dark: 'github-dark-dimmed' },
-          keepBackground: false,
-        },
-      ],
-      autoLinkHeadings,
-    ],
+    rehypePlugins: [[prettyCode, prettyCodeOptions], autoLinkHeadings],
   },
 });
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverActions: true,
-  },
+  pageExtensions: ['ts', 'tsx', 'gen.ts', 'gen.tsx'],
   images: {
     remotePatterns: [
       {

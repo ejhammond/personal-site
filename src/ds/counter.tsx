@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { css } from '@/panda/css';
-import { Button } from '@/components/ds/button';
+import { Button } from '@/ds/button';
 import { Label } from 'react-aria-components';
 import { Card } from './card';
 
@@ -44,15 +44,16 @@ export function Counter({
         >
           <span aria-hidden>-</span>
         </Button>
-        <Card
+        <div
           className={css({
-            width: 40,
+            width: 32,
             display: 'flex',
             justifyContent: 'center',
+            fontSize: 'lg',
           })}
         >
           {value}
-        </Card>
+        </div>
         <Button
           aria-label="Increment"
           className={css({ width: 40 })}

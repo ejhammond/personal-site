@@ -1,6 +1,7 @@
 'use client';
 
 import { css } from '@/panda/css';
+import { makeHeading } from '@/utils/string';
 import Link from 'next/link';
 import { useSelectedLayoutSegments } from 'next/navigation';
 
@@ -22,11 +23,11 @@ export function Breadcrumbs({
   const breadcrumbs =
     currentPart !== undefined
       ? [
-          <li key="ayhota">
-            <Link href="/">Ayhota</Link>
+          <li key="home">
+            <Link href="/">Home</Link>
           </li>,
         ]
-      : [];
+      : [<li key="home">Home</li>];
 
   for (let i = 0; i < previousParts.length; ++i) {
     const part = previousParts[i];
@@ -36,7 +37,7 @@ export function Breadcrumbs({
 
     breadcrumbs.push(
       <li key={part}>
-        <Link href={url}>{part}</Link>
+        <Link href={url}>{makeHeading(part)}</Link>
       </li>,
     );
   }
@@ -44,7 +45,7 @@ export function Breadcrumbs({
   if (currentPart !== undefined) {
     breadcrumbs.push(<Slash key={`slash-${currentPart}`} />);
 
-    breadcrumbs.push(<li key={currentPart}>{currentPart}</li>);
+    breadcrumbs.push(<li key={currentPart}>{makeHeading(currentPart)}</li>);
   }
 
   return (

@@ -8,6 +8,7 @@ import Link from 'next/link';
 
 import { MDXArticleMetadata } from '@/types/mdx-article-metadata';
 import profileImage from '@/images/profile-pic.jpeg';
+import { VStack } from '@/ds/v-stack';
 
 const GITHUB_USERNAME = 'ejhammond';
 const GITHUB_REPO_NAME = 'personal-site';
@@ -54,7 +55,6 @@ export function MDXTemplate({
         <div
           className={css({
             display: 'flex',
-            alignItems: 'center',
             gap: 'md',
           })}
         >
@@ -68,7 +68,7 @@ export function MDXTemplate({
             })}
           />
           <div>
-            <p className={css({ my: 0, display: 'flex', gap: 'sm' })}>
+            <VStack>
               <strong className={css({ mr: 1 })}>EJ Hammond</strong>
               <Link
                 href={`https://twitter.com/ejhammond`}
@@ -81,10 +81,7 @@ export function MDXTemplate({
                 <FaTwitter size="0.8em" />
                 {'@ejhammond'}
               </Link>
-            </p>
-            <p className={css({ my: 0 })}>
-              is a Boston-based min-maxer and web developer.
-            </p>
+            </VStack>
           </div>
         </div>
       </footer>

@@ -1,0 +1,32 @@
+@layer reset, base, tokens, recipes, utilities;
+
+/*
+Color mode
+
+In some cases it's convenient to simply render 2 versions of some element--a
+dark-mode version and a light-mode version--and to hide whichever one is not
+relevant.
+
+This provides a CSS-only solution, but costs bytes and rendering overhead, so
+there is a tradeoff.
+*/
+
+/* explicit color mode */
+.light-mode [data-colormode='dark'],
+.dark-mode [data-colormode='light'] {
+  display: none;
+}
+
+/* implicit dark mode */
+@media (prefers-color-scheme: dark), (prefers-color-scheme: no-preference) {
+  [data-colormode='light']:not(.light-mode *) {
+    display: none;
+  }
+}
+
+/* implicit light mode */
+@media (prefers-color-scheme: light) {
+  [data-colormode='dark']:not(.dark-mode *) {
+    display: none;
+  }
+}

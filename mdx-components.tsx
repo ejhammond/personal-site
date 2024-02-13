@@ -2,7 +2,7 @@ import type { MDXComponents } from 'mdx/types';
 import Image from 'next/image';
 import { ColorModeSwitch } from '@/components/color-mode-switch';
 import { ColorModeImage } from '@/components/color-mode-image';
-import { Counter } from '@/components/ds/counter';
+import { Counter } from '@/ds/counter';
 
 // This file is required to use MDX in `app` directory.
 export function useMDXComponents(components: MDXComponents): MDXComponents {

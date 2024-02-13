@@ -5,8 +5,8 @@ import useLocalStorageState from 'use-local-storage-state';
 import { FaSun, FaMoon } from 'react-icons/fa';
 import { useMediaQuery } from '@/utils/use-media-query';
 import { css } from '@/panda/css';
-import { Selector, TSelectorItem } from './ds/selector';
-import { Button } from './ds/button';
+import { Selector, TSelectorItem } from '../ds/selector';
+import { Button } from '../ds/button';
 import {
   AppColorModePreference,
   COLOR_MODE_STORAGE_KEY,
@@ -78,11 +78,7 @@ export function ColorModeToggle({
       onChange={setAppPreference}
       button={
         <Button variant="flat">
-          {colorMode === 'dark' ? (
-            <FaMoon className={css({ color: 'text-on-brand' })} />
-          ) : (
-            <FaSun className={css({ color: 'text-on-brand' })} />
-          )}
+          {colorMode === 'dark' ? <FaMoon /> : <FaSun />}
         </Button>
       }
       items={SELECTOR_ITEMS}

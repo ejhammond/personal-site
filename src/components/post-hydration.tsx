@@ -4,7 +4,8 @@ import { useIsHydrated } from '@/utils/use-is-on-client';
 import React from 'react';
 
 /**
- * Returns the given children only after the document has been hydrated by React
+ * Returns the given children only after the document has been hydrated by React.
+ *
  * During server rendering and during the initial client render (aka pre-
  * hydration) it will render the given fallback.
  *
