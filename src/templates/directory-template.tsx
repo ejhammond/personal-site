@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Directory } from '@/types/directory';
 import { css } from '@/panda/css';
+import { useMemo } from 'react';
 
 function DirListing({
   selectedDirectories,
@@ -25,6 +26,7 @@ function DirListing({
         const isSelected = selectedDirectories.has(dir);
         return (
           <div
+            key={dir}
             className={css({
               boxSizing: 'border-box',
               px: 'sm',
@@ -42,7 +44,6 @@ function DirListing({
               label
             ) : (
               <Link
-                key={dir}
                 href={dir}
                 className={css({
                   display: 'block',
@@ -63,18 +64,35 @@ function DirListing({
 }
 
 export function DirectoryTemplate() {
-  const path = usePathname();
-  const pathParts = path.split('/');
-  const subPaths: Array<string> = [];
-  while (pathParts.length > 0) {
-    subPaths.push(pathParts.join('/'));
-    pathParts.pop();
-  }
+  const uriPath = usePathname();
 
-  const directories: ReadonlyArray<Directory | undefined> = subPaths
-    .reverse()
-    .map((p) => (p === '' ? '/' : p))
-    .map((p) => directoryIndex.get(p));
+  const directories = useMemo<ReadonlyArray<Directory>>(() => {
+    if (uriPath === '/') {
+      const directory = directoryIndex.get('/');
+      return directory != null ? [directory] : [];
+    }
+
+    const pathParts = uriPath.split('/');
+
+    const subPaths: Array<string> = [];
+    while (pathParts.length > 0) {
+      if (pathParts.length === 1) {
+        subPaths.push('/');
+      } else {
+        subPaths.push(pathParts.join('/'));
+      }
+      pathParts.pop();
+    }
+
+    const nonNullDirectories = [];
+    for (const subPath of subPaths.reverse()) {
+      const directory = directoryIndex.get(subPath);
+      if (directory != null) {
+        nonNullDirectories.push(directory);
+      }
+    }
+    return nonNullDirectories;
+  }, [uriPath]);
 
   if (directories.length == 0) {
     return null;
@@ -88,7 +106,7 @@ export function DirectoryTemplate() {
             <DirListing
               key={directory.path}
               directories={directory.subDirectories}
-              selectedDirectories={new Set(subPaths)}
+              selectedDirectories={new Set(directories.map((d) => d.path))}
             />
           ),
       )}
