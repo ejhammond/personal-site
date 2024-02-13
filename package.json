@@ -8,9 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier . --write --ignore-path .gitignore",
-    "gen": "panda codegen && ts-node ./scripts/gen.ts",
+    "gen": "panda codegen --silent && ts-node ./scripts/gen.ts",
     "prepare": "npm run gen",
-    "clean": "npx rimraf --glob src/**/*.gen.*",
+    "clean": "npx rimraf --glob src/**/*.gen.tsx",
     "check": "npx tsc"
   },
   "dependencies": {

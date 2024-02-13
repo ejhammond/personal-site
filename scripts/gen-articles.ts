@@ -7,9 +7,11 @@ import {
   APP_ROOT,
   ARTICLES_ROOT,
   ARTICLE_CONTENT_FILENAME,
-  Directory,
   REPO_ROOT,
-} from './gen';
+  toFilePath,
+  traverseDirectory,
+} from './traverse';
+import { DirectoryIndex } from '@/types/directory';
 
 function getArticleDisplayName(contentOrMetadataFile: string): string {
   const p = path.parse(contentOrMetadataFile);
@@ -106,25 +108,28 @@ export default function Page() {
   });
 }
 
-export async function genArticles(directory: Directory): Promise<void> {
-  const contentFile = directory.files.find((file) =>
-    file.tags.has('article-content'),
-  );
-
-  if (contentFile == null) {
-    return;
-  }
-
-  const metadataFile = directory.files.find((file) =>
-    file.tags.has('article-meta'),
-  );
-
-  if (metadataFile == null) {
-    throw new Error(
-      'Articles must have a metadata.json file in the directory.',
+export async function genArticles(
+  directoryIndex: DirectoryIndex,
+): Promise<void> {
+  traverseDirectory(directoryIndex, async (dir) => {
+    const contentFile = dir.files.find((file) =>
+      file.tags.has('article-content'),
     );
-  }
 
-  // gen
-  await genPage(contentFile.path, metadataFile.path);
+    if (contentFile == null) {
+      return;
+    }
+
+    const metadataFile = dir.files.find((file) =>
+      file.tags.has('article-meta'),
+    );
+
+    if (metadataFile == null) {
+      throw new Error(
+        'Articles must have a metadata.json file in the directory.',
+      );
+    }
+
+    await genPage(toFilePath(contentFile.path), toFilePath(metadataFile.path));
+  });
 }

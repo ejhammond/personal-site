@@ -53,10 +53,12 @@ function withColorMode({
 function withSurfaceColor({
   base,
   brand,
-}: Readonly<{ base: Style; brand: Style }>): FlatStyleObject {
+  accent,
+}: Readonly<{ base: Style; brand: Style; accent: Style }>): FlatStyleObject {
   return flatten({
     base,
     _surfaceBrand: brand,
+    _surfaceAccent: accent,
   });
 }
 
@@ -72,6 +74,7 @@ export default defineConfig({
     extend: {
       colorModeLight: '.light-mode &, [data-colormode="light"] &',
       surfaceBrand: '.background-color_brand &',
+      surfaceAccent: '.background-color_accent &',
     },
   },
   globalCss: {
@@ -81,7 +84,7 @@ export default defineConfig({
       backgroundColor: 'bg-base',
     },
     a: {
-      color: 'primary',
+      color: 'text-accent',
       textDecoration: 'none',
       '&:hover': {
         textDecoration: 'underline',
@@ -171,23 +174,28 @@ export default defineConfig({
         brand: {
           value: withColorMode({ base: '#25364C', light: '#385170' }),
         },
-        primary: {
+        accent: {
           value: withColorMode({ base: '#26CEAD', light: '#0C9479' }),
         },
         'text-primary': {
           value: withSurfaceColor({
             base: withColorMode({ base: '#DDDDDD', light: '#333333' }),
             brand: '#DDDDDD',
+            accent: '#333333',
           }),
         },
         'text-secondary': { value: '#999999' },
         'text-heading': {
           value: withColorMode({ base: 'white', light: 'black' }),
         },
+        'text-accent': {
+          value: withColorMode({ base: '#26CEAD', light: '#0C9479' }),
+        },
         border: {
           value: withSurfaceColor({
             base: withColorMode({ base: '#DDDDDD', light: '#AAAAAA' }),
             brand: '#DDDDDD',
+            accent: '#AAAAAA',
           }),
         },
         danger: { value: '#F44336' },
