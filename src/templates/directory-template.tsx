@@ -116,6 +116,7 @@ export function DirectoryTemplate() {
           directories={directories[3].subDirectories}
           selectedDirectories={selectedDirectories}
           className={css({
+            minWidth: 0,
             display: {
               base: 'none',
               '@/800': 'flex',
@@ -131,6 +132,7 @@ export function DirectoryTemplate() {
           directories={directories[2].subDirectories}
           selectedDirectories={selectedDirectories}
           className={css({
+            minWidth: 0,
             display: {
               base: 'none',
               '@/600': 'flex',
@@ -149,6 +151,7 @@ export function DirectoryTemplate() {
           directories={directories[1].subDirectories}
           selectedDirectories={selectedDirectories}
           className={css({
+            minWidth: 0,
             display: {
               base: 'none',
               '@/400': 'flex',
@@ -168,6 +171,7 @@ export function DirectoryTemplate() {
           directories={directories[0].subDirectories}
           selectedDirectories={selectedDirectories}
           className={css({
+            minWidth: 0,
             flexGrow: 1,
             flexBasis: {
               base: 1,
