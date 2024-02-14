@@ -80,6 +80,7 @@ export default defineConfig({
   globalCss: {
     body: {
       fontFamily: 'normal',
+      fontSize: 'md',
       color: 'text-primary',
       backgroundColor: 'bg-base',
     },
@@ -116,10 +117,13 @@ export default defineConfig({
   },
   theme: {
     containerSizes: {
+      '200': '200px',
       '300': '300px',
       '400': '400px',
       '500': '500px',
       '600': '600px',
+      '700': '700px',
+      '800': '800px',
     },
     tokens: {
       colors: pandaTheme.theme.tokens.colors,
@@ -139,11 +143,11 @@ export default defineConfig({
       },
       fontSizes: {
         sm: { value: '.875em' },
-        md: { value: '1em' },
-        lg: { value: '1.25em' },
-        xl: { value: '1.5em' },
-        '2xl': { value: '1.75em' },
-        '3xl': { value: '2em' },
+        md: { value: '1.25em' },
+        lg: { value: '1.5em' },
+        xl: { value: '1.75em' },
+        '2xl': { value: '2em' },
+        '3xl': { value: '2.25em' },
       },
       lineHeights: {
         tight: { value: 1.25 },

@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { MDXArticleMetadata } from '@/types/mdx-article-metadata';
 import profileImage from '@/images/profile-pic.jpeg';
 import { VStack } from '@/ds/v-stack';
+import { HStack } from '@/ds/h-stack';
 
 const GITHUB_USERNAME = 'ejhammond';
 const GITHUB_REPO_NAME = 'personal-site';
@@ -33,7 +34,7 @@ export function MDXTemplate({
   tags,
   children,
 }: MDXArticleMetadata & Readonly<{ children: React.ReactNode }>) {
-  const editOnGitHubURL = `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO_NAME}/edit/${GITHUB_MAIN_BRANCH}/${repoPath}`;
+  const editOnGitHubURL = `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO_NAME}/edit/${GITHUB_MAIN_BRANCH}${repoPath}`;
 
   const parsedDate = new Date(date);
 
@@ -52,12 +53,7 @@ export function MDXTemplate({
       <Link href={editOnGitHubURL}>Edit on GitHub</Link>
       <hr className={css({ my: 'xl' })} />
       <footer>
-        <div
-          className={css({
-            display: 'flex',
-            gap: 'md',
-          })}
-        >
+        <HStack gap="md" vAlign="center">
           <Image
             src={profileImage}
             alt="EJ Hammond profile"
@@ -65,6 +61,7 @@ export function MDXTemplate({
             height={50}
             className={css({
               borderRadius: 'circle',
+              flexShrink: 0,
             })}
           />
           <div>
@@ -83,7 +80,7 @@ export function MDXTemplate({
               </Link>
             </VStack>
           </div>
-        </div>
+        </HStack>
       </footer>
     </article>
   );

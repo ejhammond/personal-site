@@ -92,6 +92,7 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
       "path": "/articles",
       "files": [],
       "subDirectories": [
+        "/articles/personal-finance",
         "/articles/react-children",
         "/articles/redux",
         "/articles/responsive-react-components"
@@ -329,6 +330,65 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
       "files": [
         {
           "path": "/articles/react-children/images/think-of-the-children.jpg",
+          "tags": []
+        }
+      ],
+      "subDirectories": []
+    }
+  ],
+  [
+    "/articles/personal-finance",
+    {
+      "path": "/articles/personal-finance",
+      "files": [
+        {
+          "path": "/articles/personal-finance/content.mdx",
+          "tags": [
+            "article-content"
+          ]
+        },
+        {
+          "path": "/articles/personal-finance/metadata.json",
+          "tags": [
+            "article-meta"
+          ]
+        },
+        {
+          "path": "/articles/personal-finance/page.gen.tsx",
+          "tags": [
+            "page",
+            "generated"
+          ]
+        }
+      ],
+      "subDirectories": [
+        "/articles/personal-finance/images"
+      ]
+    }
+  ],
+  [
+    "/articles/personal-finance/images",
+    {
+      "path": "/articles/personal-finance/images",
+      "files": [
+        {
+          "path": "/articles/personal-finance/images/bank-teller.jpeg",
+          "tags": []
+        },
+        {
+          "path": "/articles/personal-finance/images/buried-candy.jpeg",
+          "tags": []
+        },
+        {
+          "path": "/articles/personal-finance/images/knight-money.jpeg",
+          "tags": []
+        },
+        {
+          "path": "/articles/personal-finance/images/money-choices.jpeg",
+          "tags": []
+        },
+        {
+          "path": "/articles/personal-finance/images/stock-market.jpeg",
           "tags": []
         }
       ],

@@ -7,34 +7,21 @@ import { makeHeading } from '@/utils/string';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Directory } from '@/types/directory';
-import { css } from '@/panda/css';
+import { css, cx } from '@/panda/css';
 import { useMemo } from 'react';
 
 function DirListing({
   selectedDirectories,
   directories,
-  isCurrentDirectory,
+  className,
 }: Readonly<{
   selectedDirectories: ReadonlySet<string>;
   directories: ReadonlyArray<string>;
-  isCurrentDirectory: boolean;
+  className?: string;
 }>) {
   const sortedDirectories = useMemo(() => directories.toSorted(), directories);
   return (
-    <VStack
-      className={css({
-        flexWrap: 'wrap',
-        flexBasis: 300,
-        minWidth: 150,
-        maxWidth: 300,
-        display: {
-          // always show the current directory
-          base: isCurrentDirectory ? 'block' : 'block',
-          // start showing the other directories at 600+px
-          '@/600': 'block',
-        },
-      })}
-    >
+    <VStack className={className} gap="sm">
       {sortedDirectories.map((dir) => {
         const parts = dir.split('/');
         const name = parts.at(-1);
@@ -50,7 +37,6 @@ function DirListing({
               color: 'text-primary',
               fontWeight: isSelected ? 'bold' : 'inherit',
               outline: isSelected ? '1px solid {colors.accent}' : 'none',
-              mb: 'sm',
               '&:hover': {
                 outline: '1px solid {colors.accent}',
               },
@@ -82,6 +68,9 @@ function DirListing({
 export function DirectoryTemplate() {
   const uriPath = usePathname();
 
+  /**
+   * List of directories with the current directory first
+   */
   const directories = useMemo<ReadonlyArray<Directory>>(() => {
     if (uriPath === '/') {
       const directory = directoryIndex.get('/');
@@ -101,30 +90,94 @@ export function DirectoryTemplate() {
     }
 
     const nonNullDirectories = [];
-    for (const subPath of subPaths.reverse()) {
+    for (const subPath of subPaths) {
       const directory = directoryIndex.get(subPath);
       if (directory != null) {
         nonNullDirectories.push(directory);
       }
     }
-    // show max of 3 layers
-    return nonNullDirectories.slice(-3);
+
+    return nonNullDirectories;
   }, [uriPath]);
+
+  const selectedDirectories = useMemo(() => {
+    return new Set(directories.map((d) => d.path));
+  }, [directories]);
 
   if (directories.length == 0) {
     return null;
   }
 
   return (
-    <HStack gap="lg" className={css({ containerType: 'size' })}>
-      {directories.map((directory, index) => (
+    <HStack gap="lg" className={css({ containerType: 'inline-size' })}>
+      {directories[3] != null && (
         <DirListing
-          key={directory.path}
-          directories={directory.subDirectories}
-          selectedDirectories={new Set(directories.map((d) => d.path))}
-          isCurrentDirectory={index === directories.length - 1}
+          key={directories[3].path}
+          directories={directories[3].subDirectories}
+          selectedDirectories={selectedDirectories}
+          className={css({
+            display: {
+              base: 'none',
+              '@/800': 'flex',
+            },
+            flexGrow: 1,
+            flexBasis: 1 / 4,
+          })}
         />
-      ))}
+      )}
+      {directories[2] != null && (
+        <DirListing
+          key={directories[2].path}
+          directories={directories[2].subDirectories}
+          selectedDirectories={selectedDirectories}
+          className={css({
+            display: {
+              base: 'none',
+              '@/600': 'flex',
+            },
+            flexGrow: 1,
+            flexBasis: {
+              base: 1 / 3,
+              '@/800': 1 / 4,
+            },
+          })}
+        />
+      )}
+      {directories[1] != null && (
+        <DirListing
+          key={directories[1].path}
+          directories={directories[1].subDirectories}
+          selectedDirectories={selectedDirectories}
+          className={css({
+            display: {
+              base: 'none',
+              '@/400': 'flex',
+            },
+            flexGrow: 1,
+            flexBasis: {
+              base: 1 / 2,
+              '@/600': 1 / 3,
+              '@/800': 1 / 4,
+            },
+          })}
+        />
+      )}
+      {directories[0] != null && (
+        <DirListing
+          key={directories[0].path}
+          directories={directories[0].subDirectories}
+          selectedDirectories={selectedDirectories}
+          className={css({
+            flexGrow: 1,
+            flexBasis: {
+              base: 1,
+              '@/400': 1 / 2,
+              '@/600': 1 / 3,
+              '@/800': 1 / 4,
+            },
+          })}
+        />
+      )}
     </HStack>
   );
 }

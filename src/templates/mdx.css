@@ -39,7 +39,7 @@
 .mdx {
   /* add standard spacing after every block */
   & > * {
-    margin-block-end: var(--spacing-md);
+    margin-block-end: var(--spacing-lg);
   }
 
   & blockquote {
@@ -47,7 +47,7 @@
     padding-left: var(--spacing-md);
     border-left-width: 4px;
     border-left-style: solid;
-    border-left-color: var(--colors-primary);
+    border-left-color: var(--colors-accent);
     font-style: italic;
   }
 
@@ -75,5 +75,16 @@
       padding-inline: 5px;
       border-radius: 4px;
     }
+  }
+
+  & ul,
+  ol {
+    list-style-position: inside;
+  }
+  & ul {
+    list-style-type: disc;
+  }
+  & ol {
+    list-style-type: decimal;
   }
 }
