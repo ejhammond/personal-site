@@ -9,6 +9,7 @@ import { usePathname } from 'next/navigation';
 import { Directory } from '@/types/directory';
 import { css, cx } from '@/panda/css';
 import { useMemo } from 'react';
+import { FaFolder, FaFile } from 'react-icons/fa';
 
 function DirListing({
   selectedDirectories,
@@ -23,10 +24,27 @@ function DirListing({
   return (
     <VStack className={className} gap="sm">
       {sortedDirectories.map((dir) => {
+        const directory = directoryIndex.get(dir);
+        const isPage = directory?.files?.some((f) => f.tags.has('page'));
         const parts = dir.split('/');
         const name = parts.at(-1);
         const label = name != null ? makeHeading(name) : null;
         const isSelected = selectedDirectories.has(dir);
+        const labelContent = (
+          <HStack vAlign="center" gap="md">
+            {isPage ? <FaFile /> : <FaFolder />}{' '}
+            <span
+              className={css({
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              })}
+            >
+              {label}
+            </span>
+          </HStack>
+        );
+
         return (
           <div
             key={dir}
@@ -43,19 +61,17 @@ function DirListing({
             })}
           >
             {selectedDirectories.has(dir) ? (
-              label
+              labelContent
             ) : (
               <Link
                 href={dir}
-                className={css({
-                  display: 'block',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  textDecoration: 'none',
-                })}
+                className={cx(
+                  css({
+                    textDecoration: 'none',
+                  }),
+                )}
               >
-                {label}
+                {labelContent}
               </Link>
             )}
           </div>
@@ -108,11 +124,17 @@ export function DirectoryTemplate() {
     return null;
   }
 
+  const flexBasis = {
+    base: 1,
+    '@/400': 1 / 2,
+    '@/600': 1 / 3,
+    '@/800': 1 / 4,
+  };
+
   return (
     <HStack gap="lg" className={css({ containerType: 'inline-size' })}>
       {directories[3] != null && (
         <DirListing
-          key={directories[3].path}
           directories={directories[3].subDirectories}
           selectedDirectories={selectedDirectories}
           className={css({
@@ -122,13 +144,12 @@ export function DirectoryTemplate() {
               '@/800': 'flex',
             },
             flexGrow: 1,
-            flexBasis: 1 / 4,
+            flexBasis,
           })}
         />
       )}
       {directories[2] != null && (
         <DirListing
-          key={directories[2].path}
           directories={directories[2].subDirectories}
           selectedDirectories={selectedDirectories}
           className={css({
@@ -138,16 +159,12 @@ export function DirectoryTemplate() {
               '@/600': 'flex',
             },
             flexGrow: 1,
-            flexBasis: {
-              base: 1 / 3,
-              '@/800': 1 / 4,
-            },
+            flexBasis,
           })}
         />
       )}
       {directories[1] != null && (
         <DirListing
-          key={directories[1].path}
           directories={directories[1].subDirectories}
           selectedDirectories={selectedDirectories}
           className={css({
@@ -157,11 +174,7 @@ export function DirectoryTemplate() {
               '@/400': 'flex',
             },
             flexGrow: 1,
-            flexBasis: {
-              base: 1 / 2,
-              '@/600': 1 / 3,
-              '@/800': 1 / 4,
-            },
+            flexBasis,
           })}
         />
       )}
@@ -173,12 +186,7 @@ export function DirectoryTemplate() {
           className={css({
             minWidth: 0,
             flexGrow: 1,
-            flexBasis: {
-              base: 1,
-              '@/400': 1 / 2,
-              '@/600': 1 / 3,
-              '@/800': 1 / 4,
-            },
+            flexBasis: {},
           })}
         />
       )}
