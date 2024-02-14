@@ -10,6 +10,7 @@
     "format": "prettier . --write --ignore-path .gitignore",
     "gen": "panda codegen --silent && ts-node ./scripts/gen.ts",
     "prepare": "npm run gen",
+    "postinstall": "npx patch-package",
     "clean": "npx rimraf --glob src/**/*.gen.tsx",
     "check": "npx tsc"
   },
