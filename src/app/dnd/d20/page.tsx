@@ -81,9 +81,9 @@ const D20: React.FC = () => {
       <p className={css({ mb: 'lg' })}>
         Calculate your chance to meet a certain threshold with a D20 roll.
       </p>
-      <Card css={{ width: 'min-content' }}>
+      <Card css={{ maxWidth: '600', mx: 'auto' }}>
         <h4>Chance</h4>
-        <Text variant="display" className={css({ mb: 'md' })}>
+        <Text className={css({ mb: 'md', fontSize: 'xl' })}>
           {(calculateHitChance(d20FormData) * 100).toFixed(2)}%
         </Text>
         <hr className={css({ mb: 'md' })} />
@@ -93,7 +93,7 @@ const D20: React.FC = () => {
             event.preventDefault();
           }}
         >
-          <HStack gap="lg">
+          <HStack gap="lg" wrap="wrap">
             <Counter
               label="Threshold"
               min={0}
@@ -109,17 +109,17 @@ const D20: React.FC = () => {
                 updateD20FormData({ modifier: number });
               }}
             />
+            <Selector
+              label="Advantage"
+              value={d20FormData.advantage}
+              onChange={(value) => {
+                updateD20FormData({
+                  advantage: value as Advantage,
+                });
+              }}
+              items={ADVANTAGE_SELECTOR_ITEMS}
+            />
           </HStack>
-          <Selector
-            label="Advantage"
-            value={d20FormData.advantage}
-            onChange={(value) => {
-              updateD20FormData({
-                advantage: value as Advantage,
-              });
-            }}
-            items={ADVANTAGE_SELECTOR_ITEMS}
-          />
         </form>
       </Card>
     </>

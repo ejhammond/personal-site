@@ -88,10 +88,16 @@ const Damage: React.FC = () => {
       <p className={css({ mb: 'lg' })}>
         Calculate the expected damage of an attack.
       </p>
-      <Card css={{ maxWidth: 'min-content' }}>
+      <Card css={{ maxWidth: '600', mx: 'auto', containerType: 'inline-size' }}>
         <div className={css({ mb: 'md' })}>
           <h4>Roll</h4>
-          <Text aria-hidden variant="display" className={css({ mb: 'md' })}>
+          <Text
+            aria-hidden
+            className={css({
+              mb: 'md',
+              fontSize: { base: 'md', '@/500': 'lg' },
+            })}
+          >
             {rollToString(roll)}
           </Text>
           <HStack gap="md">
@@ -130,60 +136,54 @@ const Damage: React.FC = () => {
             event.preventDefault();
           }}
         >
-          <VStack gap="md">
-            <HStack gap="lg">
-              <Counter
-                label="D4"
-                min={0}
-                value={damageFormData.d4}
-                onChange={(number) => {
-                  updateDamageFormData({ d4: number });
-                }}
-              />
-              <Counter
-                label="D6"
-                min={0}
-                value={damageFormData.d6}
-                onChange={(number) => {
-                  updateDamageFormData({ d6: number });
-                }}
-              />
-            </HStack>
-            <HStack gap="lg">
-              <Counter
-                label="D8"
-                min={0}
-                value={damageFormData.d8}
-                onChange={(number) => {
-                  updateDamageFormData({ d8: number });
-                }}
-              />
-              <Counter
-                label="D10"
-                min={0}
-                value={damageFormData.d10}
-                onChange={(number) => {
-                  updateDamageFormData({ d10: number });
-                }}
-              />
-            </HStack>
-            <HStack gap="lg">
-              <Counter
-                label="D12"
-                min={0}
-                value={damageFormData.d12}
-                onChange={(number) => {
-                  updateDamageFormData({ d12: number });
-                }}
-              />
-              <Counter
-                label="Modifier"
-                value={damageFormData.modifier}
-                onChange={(number) => {
-                  updateDamageFormData({ modifier: number });
-                }}
-              />
-            </HStack>
+          <HStack gap="lg" wrap="wrap">
+            <Counter
+              label="D4"
+              min={0}
+              value={damageFormData.d4}
+              onChange={(number) => {
+                updateDamageFormData({ d4: number });
+              }}
+            />
+            <Counter
+              label="D6"
+              min={0}
+              value={damageFormData.d6}
+              onChange={(number) => {
+                updateDamageFormData({ d6: number });
+              }}
+            />
+            <Counter
+              label="D8"
+              min={0}
+              value={damageFormData.d8}
+              onChange={(number) => {
+                updateDamageFormData({ d8: number });
+              }}
+            />
+            <Counter
+              label="D10"
+              min={0}
+              value={damageFormData.d10}
+              onChange={(number) => {
+                updateDamageFormData({ d10: number });
+              }}
+            />
+            <Counter
+              label="D12"
+              min={0}
+              value={damageFormData.d12}
+              onChange={(number) => {
+                updateDamageFormData({ d12: number });
+              }}
+            />
+            <Counter
+              label="Modifier"
+              value={damageFormData.modifier}
+              onChange={(number) => {
+                updateDamageFormData({ modifier: number });
+              }}
+            />
             <Checkbox
               label="Critical Hit"
               subLabel="Doubles the dice rolls"
@@ -192,7 +192,7 @@ const Damage: React.FC = () => {
                 updateDamageFormData({ critical: isCritical });
               }}
             />
-          </VStack>
+          </HStack>
         </form>
       </Card>
     </>

@@ -5,6 +5,7 @@ import { css } from '@/panda/css';
 import { Button } from '@/ds/button';
 import { Label } from 'react-aria-components';
 import { Card } from './card';
+import { HStack } from './h-stack';
 
 type Props = Readonly<{
   label: string;
@@ -24,16 +25,10 @@ export function Counter({
   return (
     <div>
       <Label className={css({ display: 'block', mb: 'sm' })}>{label}</Label>
-      <div
-        className={css({
-          display: 'flex',
-          alignItems: 'center',
-          gap: 'sm',
-        })}
-      >
+      <HStack vAlign="center" gap="sm">
         <Button
           aria-label="Decrement"
-          className={css({ width: 40 })}
+          className={css({ width: 48, flexShrink: 0 })}
           variant="flat"
           onPress={() => {
             const next = value - 1;
@@ -50,13 +45,14 @@ export function Counter({
             display: 'flex',
             justifyContent: 'center',
             fontSize: 'lg',
+            flexShrink: 0,
           })}
         >
           {value}
         </div>
         <Button
           aria-label="Increment"
-          className={css({ width: 40 })}
+          className={css({ width: 48, flexShrink: 0 })}
           variant="flat"
           onPress={() => {
             const next = value + 1;
@@ -67,7 +63,7 @@ export function Counter({
         >
           <span aria-hidden>+</span>
         </Button>
-      </div>
+      </HStack>
     </div>
   );
 }

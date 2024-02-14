@@ -10,11 +10,15 @@ export function Stack({
   crossAlign,
   direction,
   display,
+  wrap,
   ...htmlProps
 }: Props) {
   return (
     <div
-      className={cx(stack({ gap, crossAlign, direction, display }), className)}
+      className={cx(
+        stack({ gap, crossAlign, direction, display, wrap }),
+        className,
+      )}
       {...htmlProps}
     />
   );

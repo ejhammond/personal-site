@@ -4,12 +4,14 @@ type TDirection = 'horizontal' | 'vertical';
 type TCrossAlign = 'stretch' | 'center' | 'start' | 'end';
 type TDisplay = 'block' | 'inline';
 type TGap = 'sm' | 'md' | 'lg';
+type TWrap = 'wrap' | 'nowrap';
 
 export type StackOptions = Readonly<{
   gap?: TGap;
   direction: TDirection;
   crossAlign?: TCrossAlign;
   display?: TDisplay;
+  wrap?: TWrap;
 }>;
 
 const directionStyles: Record<TDirection, string> = {
@@ -35,16 +37,23 @@ const gapStyles: Record<TGap, string> = {
   lg: css({ gap: 'lg' }),
 };
 
+const wrapStyles: Record<TWrap, string> = {
+  wrap: css({ flexWrap: 'wrap' }),
+  nowrap: css({ flexWrap: 'nowrap' }),
+};
+
 export function stack({
   display = 'block',
   direction,
   gap,
   crossAlign,
+  wrap,
 }: StackOptions): string {
   return cx(
     displayStyles[display],
     directionStyles[direction],
     crossAlign != null && crossAlignStyles[crossAlign],
     gap != null && gapStyles[gap],
+    wrap != null && wrapStyles[wrap],
   );
 }

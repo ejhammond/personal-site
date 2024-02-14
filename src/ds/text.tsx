@@ -1,7 +1,7 @@
 import React from 'react';
 import { css, cx } from '@/panda/css';
 
-type TVariant = 'standard' | 'supporting' | 'display';
+type TVariant = 'standard' | 'supporting';
 type TDisplay = 'block' | 'inline';
 type Props = Readonly<{
   variant?: TVariant;
@@ -16,10 +16,6 @@ const variantStyles: Record<TVariant, string> = {
   supporting: css({
     color: 'text-secondary',
     fontSize: 'sm',
-  }),
-  display: css({
-    color: 'text-primary',
-    fontSize: '2xl',
   }),
 };
 
