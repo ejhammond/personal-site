@@ -1,4 +1,11 @@
-@layer reset, base, tokens, recipes, utilities;
+body {
+  margin: 0;
+}
+
+:root {
+  --brand-color: #385170;
+  --accent-color: #0c9479;
+}
 
 /*
 Color mode
@@ -11,22 +18,14 @@ This provides a CSS-only solution, but costs bytes and rendering overhead, so
 there is a tradeoff.
 */
 
-/* explicit color mode */
-.light-mode [data-colormode='dark'],
-.dark-mode [data-colormode='light'] {
-  display: none;
-}
-
-/* implicit dark mode */
 @media (prefers-color-scheme: dark), (prefers-color-scheme: no-preference) {
-  [data-colormode='light']:not(.light-mode *) {
+  [data-colormode='light'] {
     display: none;
   }
 }
 
-/* implicit light mode */
 @media (prefers-color-scheme: light) {
-  [data-colormode='dark']:not(.dark-mode *) {
+  [data-colormode='dark'] {
     display: none;
   }
 }

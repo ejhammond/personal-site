@@ -1,29 +1,11 @@
 /* https://rehype-pretty-code.netlify.app/#multiple-themes-dark-and-light-mode */
 
-/* explicit light mode */
-.light-mode {
-  code[data-theme*=' '],
-  code[data-theme*=' '] span {
-    color: var(--shiki-light);
-    background-color: var(--shiki-light-bg);
-  }
-}
-
 /* implicit light mode */
 @media (prefers-color-scheme: light) {
   code[data-theme*=' '],
   code[data-theme*=' '] span {
     color: var(--shiki-light);
     background-color: var(--shiki-light-bg);
-  }
-}
-
-/* explicit dark mode */
-.dark-mode {
-  code[data-theme*=' '],
-  code[data-theme*=' '] span {
-    color: var(--shiki-dark);
-    background-color: var(--shiki-dark-bg);
   }
 }
 
@@ -39,12 +21,21 @@
 .mdx {
   /* add standard spacing after every block */
   & > * {
-    margin-block-end: var(--spacing-lg);
+    margin-block-end: 16px;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    padding-block-start: 6px;
   }
 
   & blockquote {
     margin-left: 0;
-    padding-left: var(--spacing-md);
+    padding-left: 8px;
     border-left-width: 4px;
     border-left-style: solid;
     border-left-color: var(--colors-accent);
@@ -60,14 +51,14 @@
 
     & code {
       width: max-content;
-      padding: var(--spacing-md);
+      padding: 16px;
     }
   }
 
   /* inline code is code with no pre parent */
 
   & code {
-    font-family: var(--fonts-monospace);
+    font-family: var(--global-fonts-monospace);
 
     &:not(pre code) {
       background-color: var(--colors-bg-code);

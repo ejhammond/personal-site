@@ -7,6 +7,7 @@
     "outdir",
     "pandacss",
     "rehype",
+    "shiki",
     "subdir"
   ]
 }

@@ -1,6 +1,5 @@
 import './mdx.css';
 
-import { css } from '@/panda/css';
 import React from 'react';
 import { FaTwitter } from 'react-icons/fa';
 import Image from 'next/image';
@@ -40,7 +39,7 @@ export function MDXTemplate({
 
   return (
     <article className="mdx">
-      <header className={css({ mb: 'lg' })}>
+      <header style={{ marginBlockEnd: '32px' }}>
         <h1>{title}</h1>
         <div>
           {parsedDate.toLocaleDateString('en-US', {
@@ -51,7 +50,7 @@ export function MDXTemplate({
       </header>
       {children}
       <Link href={editOnGitHubURL}>Edit on GitHub</Link>
-      <hr className={css({ my: 'xl' })} />
+      <hr style={{ marginBlock: '40px' }} />
       <footer>
         <HStack gap="md" vAlign="center">
           <Image
@@ -59,21 +58,21 @@ export function MDXTemplate({
             alt="EJ Hammond profile"
             width={50}
             height={50}
-            className={css({
-              borderRadius: 'circle',
+            style={{
+              borderRadius: '50%',
               flexShrink: 0,
-            })}
+            }}
           />
           <div>
             <VStack>
-              <strong className={css({ mr: 1 })}>EJ Hammond</strong>
+              <strong style={{ marginBlockEnd: '8px' }}>EJ Hammond</strong>
               <Link
                 href={`https://twitter.com/ejhammond`}
-                className={css({
+                style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: 'xs',
-                })}
+                  gap: '4px',
+                }}
               >
                 <FaTwitter size="0.8em" />
                 {'@ejhammond'}

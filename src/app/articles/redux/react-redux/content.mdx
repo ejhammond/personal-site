@@ -17,6 +17,9 @@
       width={491}
       src="https://res.cloudinary.com/ejhammond/image/upload/v1577720577/logos/react-logo_elm9gj.svg"
       alt="React logo"
+      style={{
+        height: 'auto',
+      }}
     />
   </div>
   <span
@@ -40,6 +43,9 @@
       width={2500}
       src="https://res.cloudinary.com/ejhammond/image/upload/v1577720577/logos/redux-logo_d1kpyb.svg"
       alt="Redux logo"
+      style={{
+        height: 'auto',
+      }}
     />
   </div>
 </div>
@@ -88,27 +94,38 @@ Here's the same counter app that we built in the [Redux article](/redux) but usi
 function MyConnectedCounter(props) {
   return (
     <div>
-      <button onClick={props.decrement}>-</button>
+      <button onClick={props.decrement}>
+        -
+      </button>
       <div>{props.counter}</div>
-      <button onClick={props.increment}>+</button>
+      <button onClick={props.increment}>
+        +
+      </button>
     </div>
-  )
+  );
 }
 
 function mapStateToProps(currentState) {
   return {
-    counter: currentState.counter
-  }
+    counter: currentState.counter,
+  };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    increment: dispatch({ type: 'ADD' }),
-    decrement: dispatch({ type: 'SUBTRACT' })
-  }
+    increment: dispatch({
+      type: 'ADD',
+    }),
+    decrement: dispatch({
+      type: 'SUBTRACT',
+    }),
+  };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MyComponent);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(MyComponent);
 ```
 
 You tell Connect which pieces of state that your component cares about via the `mapStateToProps` function which accepts the current state, and returns a trimmed-down version. Connect then injects that trimmed-down state into your component as props.
@@ -128,17 +145,34 @@ Finally, `useSelector` sets up a store-subscription (like `connect`'s) so that y
 Here's the counter app one more time, using `useDispatch` and `useSelector` rather than `connect`:
 
 ```jsx
-export default function MyConnectedCounter(props) {
+export default function MyConnectedCounter(
+  props,
+) {
   const dispatch = useDispatch();
-  const counter = useSelector((currentState) => currentState.counter);
+  const counter = useSelector(
+    (currentState) =>
+      currentState.counter,
+  );
 
   return (
     <div>
-      <button onClick={dispatch({ type: 'SUBTRACT' })}>-</button>
+      <button
+        onClick={dispatch({
+          type: 'SUBTRACT',
+        })}
+      >
+        -
+      </button>
       <div>{counter}</div>
-      <button onClick={dispatch({ type: 'ADD' })}>+</button>
+      <button
+        onClick={dispatch({
+          type: 'ADD',
+        })}
+      >
+        +
+      </button>
     </div>
-  )
+  );
 }
 ```
 

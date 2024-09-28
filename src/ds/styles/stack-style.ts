@@ -1,4 +1,5 @@
 import { css, cx } from '@/panda/css';
+import { CSSProperties } from 'react';
 
 type TDirection = 'horizontal' | 'vertical';
 type TCrossAlign = 'stretch' | 'center' | 'start' | 'end';
@@ -14,32 +15,32 @@ export type StackOptions = Readonly<{
   wrap?: TWrap;
 }>;
 
-const directionStyles: Record<TDirection, string> = {
-  horizontal: css({ flexDirection: 'row' }),
-  vertical: css({ flexDirection: 'column' }),
+const directionStyles: Record<TDirection, CSSProperties> = {
+  horizontal: { flexDirection: 'row' },
+  vertical: { flexDirection: 'column' },
 };
 
-const crossAlignStyles: Record<TCrossAlign, string> = {
-  stretch: css({ alignItems: 'stretch' }),
-  center: css({ alignItems: 'center' }),
-  start: css({ alignItems: 'start' }),
-  end: css({ alignItems: 'end' }),
+const crossAlignStyles: Record<TCrossAlign, CSSProperties> = {
+  stretch: { alignItems: 'stretch' },
+  center: { alignItems: 'center' },
+  start: { alignItems: 'start' },
+  end: { alignItems: 'end' },
 };
 
-const displayStyles: Record<TDisplay, string> = {
-  block: css({ display: 'flex' }),
-  inline: css({ display: 'inline-flex' }),
+const displayStyles: Record<TDisplay, CSSProperties> = {
+  block: { display: 'flex' },
+  inline: { display: 'inline-flex' },
 };
 
-const gapStyles: Record<TGap, string> = {
-  sm: css({ gap: 'sm' }),
-  md: css({ gap: 'md' }),
-  lg: css({ gap: 'lg' }),
+const gapStyles: Record<TGap, CSSProperties> = {
+  sm: { gap: '8px' },
+  md: { gap: '16px' },
+  lg: { gap: '32px' },
 };
 
-const wrapStyles: Record<TWrap, string> = {
-  wrap: css({ flexWrap: 'wrap' }),
-  nowrap: css({ flexWrap: 'nowrap' }),
+const wrapStyles: Record<TWrap, CSSProperties> = {
+  wrap: { flexWrap: 'wrap' },
+  nowrap: { flexWrap: 'nowrap' },
 };
 
 export function stack({
@@ -48,12 +49,12 @@ export function stack({
   gap,
   crossAlign,
   wrap,
-}: StackOptions): string {
-  return cx(
-    displayStyles[display],
-    directionStyles[direction],
-    crossAlign != null && crossAlignStyles[crossAlign],
-    gap != null && gapStyles[gap],
-    wrap != null && wrapStyles[wrap],
-  );
+}: StackOptions): CSSProperties {
+  return {
+    ...displayStyles[display],
+    ...directionStyles[direction],
+    ...(crossAlign != null ? crossAlignStyles[crossAlign] : {}),
+    ...(gap != null ? gapStyles[gap] : {}),
+    ...(wrap != null ? wrapStyles[wrap] : {}),
+  };
 }

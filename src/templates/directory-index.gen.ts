@@ -41,8 +41,27 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
       ],
       "subDirectories": [
         "/articles",
-        "/dnd"
+        "/dnd",
+        "/finance"
       ]
+    }
+  ],
+  [
+    "/finance",
+    {
+      "path": "/finance",
+      "files": [],
+      "subDirectories": [
+        "/finance/mortgage"
+      ]
+    }
+  ],
+  [
+    "/finance/mortgage",
+    {
+      "path": "/finance/mortgage",
+      "files": [],
+      "subDirectories": []
     }
   ],
   [

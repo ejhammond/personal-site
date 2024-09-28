@@ -2,6 +2,7 @@ import createMDXPlugin from '@next/mdx';
 import prettyCode from 'rehype-pretty-code';
 import toc from 'remark-toc';
 import autoLinkHeadings from 'rehype-autolink-headings';
+import { glob } from 'glob';
 
 /** @type {import('rehype-pretty-code').Options} */
 const prettyCodeOptions = {
@@ -31,6 +32,11 @@ const nextConfig = {
       },
     ],
   },
+  transpilePackages: [
+    '@adobe/react-spectrum',
+    '@react-spectrum/*',
+    '@spectrum-icons/*',
+  ].flatMap((spec) => glob.sync(`${spec}`, { cwd: 'node_modules/' })),
 };
 
 export default withMDX(nextConfig);
