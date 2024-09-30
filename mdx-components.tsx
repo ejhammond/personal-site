@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { ColorModeSwitch } from '@/components/color-mode-switch';
 import { ColorModeImage } from '@/components/color-mode-image';
 import { Counter } from '@/ds/counter';
+import { Link } from '@/ds/link';
 
 // This file is required to use MDX in `app` directory.
 export function useMDXComponents(components: MDXComponents): MDXComponents {
@@ -13,5 +14,6 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     Counter: (props) => <Counter {...props} />,
     ColorModeSwitch, // not used yet
     ColorModeImage,
+    a: ({ href, children }) => <Link href={href} children={children} />,
   };
 }

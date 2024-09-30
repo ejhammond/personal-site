@@ -35,6 +35,10 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
           "tags": []
         },
         {
+          "path": "/reset.css",
+          "tags": []
+        },
+        {
           "path": "/root.css",
           "tags": []
         }

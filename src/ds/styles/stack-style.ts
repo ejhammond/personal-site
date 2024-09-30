@@ -1,10 +1,9 @@
-import { css, cx } from '@/panda/css';
 import { CSSProperties } from 'react';
 
 type TDirection = 'horizontal' | 'vertical';
 type TCrossAlign = 'stretch' | 'center' | 'start' | 'end';
 type TDisplay = 'block' | 'inline';
-type TGap = 'sm' | 'md' | 'lg';
+type TGap = 'xs' | 'sm' | 'md' | 'lg';
 type TWrap = 'wrap' | 'nowrap';
 
 export type StackOptions = Readonly<{
@@ -33,6 +32,7 @@ const displayStyles: Record<TDisplay, CSSProperties> = {
 };
 
 const gapStyles: Record<TGap, CSSProperties> = {
+  xs: { gap: '4px' },
   sm: { gap: '8px' },
   md: { gap: '16px' },
   lg: { gap: '32px' },

@@ -3,10 +3,9 @@
 import { Card } from '@/ds/card';
 import { Counter } from '@/ds/counter';
 import { HStack } from '@/ds/h-stack';
-import { Selector } from '@/ds/selector';
+import { Select, SelectItem } from '@/ds/select';
 import { vStack } from '@/ds/styles/v-stack-style';
 import { Text } from '@/ds/text';
-import { css } from '@/panda/css';
 import * as React from 'react';
 
 type Advantage = 'none' | 'advantage' | 'disadvantage';
@@ -78,17 +77,18 @@ const D20: React.FC = () => {
   return (
     <>
       <h2>Roll Chance</h2>
-      <p className={css({ mb: 'lg' })}>
+      <p style={{ marginBlockEnd: '16px' }}>
         Calculate your chance to meet a certain threshold with a D20 roll.
       </p>
-      <Card css={{ maxWidth: '600', mx: 'auto' }}>
-        <h4>Chance</h4>
-        <Text className={css({ mb: 'md', fontSize: 'xl' })}>
-          {(calculateHitChance(d20FormData) * 100).toFixed(2)}%
-        </Text>
-        <hr className={css({ mb: 'md' })} />
+      <Card
+        style={{
+          maxWidth: '600',
+          marginInline: 'auto',
+          ...vStack({ gap: 'md' }),
+        }}
+      >
         <form
-          className={vStack({ gap: 'md' })}
+          style={vStack({ gap: 'md' })}
           onSubmit={(event) => {
             event.preventDefault();
           }}
@@ -105,22 +105,31 @@ const D20: React.FC = () => {
             <Counter
               label="Modifier"
               value={d20FormData.modifier}
+              min={-19}
+              max={19}
               onChange={(number) => {
+                console.log('change', number);
                 updateD20FormData({ modifier: number });
               }}
             />
-            <Selector
+            <Select
               label="Advantage"
-              value={d20FormData.advantage}
-              onChange={(value) => {
+              selectedKey={d20FormData.advantage}
+              onSelectionChange={(value) => {
                 updateD20FormData({
                   advantage: value as Advantage,
                 });
               }}
               items={ADVANTAGE_SELECTOR_ITEMS}
-            />
+            >
+              {(item) => <SelectItem id={item.value}>{item.label}</SelectItem>}
+            </Select>
           </HStack>
         </form>
+        <hr />
+        <Text style={{ fontSize: '24px' }}>
+          {(calculateHitChance(d20FormData) * 100).toFixed(2)}%
+        </Text>
       </Card>
     </>
   );

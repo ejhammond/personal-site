@@ -5,9 +5,9 @@ import type { Metadata, Viewport } from 'next';
 import { Montserrat, Fira_Code } from 'next/font/google';
 import ayhotaLogo from '@/images/ayhota-logo.png';
 import Image from 'next/image';
-import Link from 'next/link';
-import { Breadcrumbs } from '@/ds/breadcrumbs';
-import SpectrumRoot from './spectrum-root';
+import { SiteBreadcrumbs } from '@/components/site-breadcrumbs';
+import { Link } from '@/ds/link';
+import { RootProviders } from './root-providers';
 
 const normalFont = Montserrat({
   subsets: ['latin'],
@@ -79,23 +79,12 @@ export default function RootLayout({
           height: 0,
         }}
       >
-        <SpectrumRoot
-          height="100%"
-          minHeight="100%"
-          UNSAFE_style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'stretch',
-            gap: '16px',
-
-            paddingBlockEnd: '32px',
-            overflow: 'scroll',
-          }}
-        >
+        <RootProviders>
           <header
             style={{
-              backgroundColor: 'var(--brand-color)',
+              backgroundColor: 'var(--color-brand)',
               paddingBlock: '16px',
+              marginBlockEnd: '16px',
             }}
           >
             <CappedWidth style={{ flexGrow: 1, display: 'flex' }}>
@@ -120,11 +109,18 @@ export default function RootLayout({
               </h1>
             </CappedWidth>
           </header>
-          <CappedWidth>
-            <Breadcrumbs />
+          <CappedWidth
+            style={{
+              display: 'flex',
+              gap: '16px',
+              flexDirection: 'column',
+              paddingBlockEnd: '32px',
+            }}
+          >
+            <SiteBreadcrumbs />
             <main>{children}</main>
           </CappedWidth>
-        </SpectrumRoot>
+        </RootProviders>
       </body>
     </html>
   );

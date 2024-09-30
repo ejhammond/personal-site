@@ -3,12 +3,12 @@ import './mdx.css';
 import React from 'react';
 import { FaTwitter } from 'react-icons/fa';
 import Image from 'next/image';
-import Link from 'next/link';
 
 import { MDXArticleMetadata } from '@/types/mdx-article-metadata';
 import profileImage from '@/images/profile-pic.jpeg';
 import { VStack } from '@/ds/v-stack';
 import { HStack } from '@/ds/h-stack';
+import { Link } from '@/ds/link';
 
 const GITHUB_USERNAME = 'ejhammond';
 const GITHUB_REPO_NAME = 'personal-site';
@@ -63,22 +63,20 @@ export function MDXTemplate({
               flexShrink: 0,
             }}
           />
-          <div>
-            <VStack>
-              <strong style={{ marginBlockEnd: '8px' }}>EJ Hammond</strong>
-              <Link
-                href={`https://twitter.com/ejhammond`}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                }}
-              >
-                <FaTwitter size="0.8em" />
-                {'@ejhammond'}
-              </Link>
-            </VStack>
-          </div>
+          <VStack>
+            <strong>EJ Hammond</strong>
+            <Link
+              href={`https://twitter.com/ejhammond`}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '4px',
+              }}
+            >
+              <FaTwitter size="0.8em" />
+              {'@ejhammond'}
+            </Link>
+          </VStack>
         </HStack>
       </footer>
     </article>

@@ -1,5 +1,4 @@
 import React from 'react';
-import { css, cx } from '@/panda/css';
 
 type TVariant = 'standard' | 'supporting';
 type TDisplay = 'block' | 'inline';
@@ -9,30 +8,28 @@ type Props = Readonly<{
 }> &
   React.ComponentProps<'span'>;
 
-const variantStyles: Record<TVariant, string> = {
-  standard: css({
-    color: 'text-primary',
-  }),
-  supporting: css({
-    color: 'text-secondary',
-    fontSize: 'sm',
-  }),
+const variantStyles: Record<TVariant, React.CSSProperties> = {
+  standard: {},
+  supporting: {
+    color: 'var(--text-color-secondary)',
+    fontSize: '14px',
+  },
 };
 
-const displayStyles: Record<TDisplay, string> = {
-  block: css({ display: 'block' }),
-  inline: css({ display: 'inline' }),
+const displayStyles: Record<TDisplay, React.CSSProperties> = {
+  block: { display: 'block' },
+  inline: { display: 'inline' },
 };
 
 export function Text({
   variant = 'standard',
   display = 'block',
-  className,
+  style,
   ...htmlProps
 }: Props) {
   return (
     <span
-      className={cx(variantStyles[variant], displayStyles[display], className)}
+      style={{ ...variantStyles[variant], ...displayStyles[display], ...style }}
       {...htmlProps}
     />
   );

@@ -32,11 +32,6 @@ const nextConfig = {
       },
     ],
   },
-  transpilePackages: [
-    '@adobe/react-spectrum',
-    '@react-spectrum/*',
-    '@spectrum-icons/*',
-  ].flatMap((spec) => glob.sync(`${spec}`, { cwd: 'node_modules/' })),
 };
 
 export default withMDX(nextConfig);

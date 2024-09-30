@@ -4,9 +4,9 @@ import { Card } from '@/ds/card';
 import { Checkbox } from '@/ds/checkbox';
 import { Counter } from '@/ds/counter';
 import { HStack } from '@/ds/h-stack';
+import { vStack } from '@/ds/styles/v-stack-style';
 import { Text } from '@/ds/text';
 import { VStack } from '@/ds/v-stack';
-import { css } from '@/panda/css';
 import { Roll, rollToString } from '@/utils/dnd';
 import { useCallback, useState } from 'react';
 
@@ -85,52 +85,17 @@ const Damage: React.FC = () => {
   return (
     <>
       <h2>Damage</h2>
-      <p className={css({ mb: 'lg' })}>
+      <p style={{ marginBlockEnd: '16px' }}>
         Calculate the expected damage of an attack.
       </p>
-      <Card css={{ maxWidth: '600', mx: 'auto', containerType: 'inline-size' }}>
-        <div className={css({ mb: 'md' })}>
-          <h4>Roll</h4>
-          <Text
-            aria-hidden
-            className={css({
-              mb: 'md',
-              fontSize: { base: 'md', '@/500': 'lg' },
-            })}
-          >
-            {rollToString(roll)}
-          </Text>
-          <HStack gap="md">
-            <VStack>
-              <h4>Min</h4>
-              <Text>
-                {calculateAverageDamage({
-                  ...damageFormData,
-                  minAvgMax: 'min',
-                })}
-              </Text>
-            </VStack>
-            <VStack>
-              <h4>Avg</h4>
-              <Text>
-                {calculateAverageDamage({
-                  ...damageFormData,
-                  minAvgMax: 'avg',
-                })}
-              </Text>
-            </VStack>
-            <VStack>
-              <h4>Max</h4>
-              <Text>
-                {calculateAverageDamage({
-                  ...damageFormData,
-                  minAvgMax: 'max',
-                })}
-              </Text>
-            </VStack>
-          </HStack>
-        </div>
-        <hr className={css({ mb: 'md' })} />
+      <Card
+        style={{
+          maxWidth: '600',
+          marginInline: 'auto',
+          containerType: 'inline-size',
+          ...vStack({ gap: 'md' }),
+        }}
+      >
         <form
           onSubmit={(event) => {
             event.preventDefault();
@@ -185,15 +150,50 @@ const Damage: React.FC = () => {
               }}
             />
             <Checkbox
-              label="Critical Hit"
-              subLabel="Doubles the dice rolls"
-              checked={damageFormData.critical}
+              isSelected={damageFormData.critical}
               onChange={(isCritical) => {
                 updateDamageFormData({ critical: isCritical });
               }}
-            />
+            >
+              Critical
+            </Checkbox>
           </HStack>
         </form>
+        <Text aria-hidden style={{ fontSize: '24px' }}>
+          {rollToString(roll)}
+        </Text>
+        <hr />
+        <div>
+          <HStack gap="md">
+            <VStack>
+              <h4>Min</h4>
+              <Text>
+                {calculateAverageDamage({
+                  ...damageFormData,
+                  minAvgMax: 'min',
+                })}
+              </Text>
+            </VStack>
+            <VStack>
+              <h4>Avg</h4>
+              <Text>
+                {calculateAverageDamage({
+                  ...damageFormData,
+                  minAvgMax: 'avg',
+                })}
+              </Text>
+            </VStack>
+            <VStack>
+              <h4>Max</h4>
+              <Text>
+                {calculateAverageDamage({
+                  ...damageFormData,
+                  minAvgMax: 'max',
+                })}
+              </Text>
+            </VStack>
+          </HStack>
+        </div>
       </Card>
     </>
   );

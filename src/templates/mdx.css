@@ -1,20 +1,18 @@
 /* https://rehype-pretty-code.netlify.app/#multiple-themes-dark-and-light-mode */
 
+/* implicit dark mode */
+code[data-theme*=' '],
+code[data-theme*=' '] span {
+  color: var(--shiki-dark);
+  background-color: var(--shiki-dark-bg);
+}
+
 /* implicit light mode */
 @media (prefers-color-scheme: light) {
   code[data-theme*=' '],
   code[data-theme*=' '] span {
     color: var(--shiki-light);
     background-color: var(--shiki-light-bg);
-  }
-}
-
-/* implicit dark mode */
-@media (prefers-color-scheme: dark), (prefers-color-scheme: no-preference) {
-  code[data-theme*=' '],
-  code[data-theme*=' '] span {
-    color: var(--shiki-dark);
-    background-color: var(--shiki-dark-bg);
   }
 }
 
@@ -30,7 +28,11 @@
   h4,
   h5,
   h6 {
-    padding-block-start: 6px;
+    padding-block-start: 8px;
+  }
+
+  img {
+    height: auto;
   }
 
   & blockquote {
@@ -38,7 +40,7 @@
     padding-left: 8px;
     border-left-width: 4px;
     border-left-style: solid;
-    border-left-color: var(--colors-accent);
+    border-left-color: var(--color-accent);
     font-style: italic;
   }
 
@@ -47,7 +49,7 @@
   & pre {
     overflow: auto;
     border-radius: 4px;
-    background-color: var(--colors-bg-code);
+    background-color: var(--overlay-background);
 
     & code {
       width: max-content;
@@ -61,7 +63,7 @@
     font-family: var(--global-fonts-monospace);
 
     &:not(pre code) {
-      background-color: var(--colors-bg-code);
+      background-color: var(--overlay-background);
       padding-block: 2px;
       padding-inline: 5px;
       border-radius: 4px;

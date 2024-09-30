@@ -1,10 +1,10 @@
-body {
-  margin: 0;
-}
+@import './theme.css';
 
 :root {
-  --brand-color: #385170;
-  --accent-color: #0c9479;
+  background: var(--background-color);
+  font-family: var(--global-font-normal);
+  color: var(--text-color);
+  font-size: 18px;
 }
 
 /*
@@ -18,10 +18,8 @@ This provides a CSS-only solution, but costs bytes and rendering overhead, so
 there is a tradeoff.
 */
 
-@media (prefers-color-scheme: dark), (prefers-color-scheme: no-preference) {
-  [data-colormode='light'] {
-    display: none;
-  }
+[data-colormode='light'] {
+  display: none;
 }
 
 @media (prefers-color-scheme: light) {

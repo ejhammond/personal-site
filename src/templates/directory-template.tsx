@@ -4,7 +4,7 @@ import { directoryIndex } from '@/templates/directory-index.gen';
 import { HStack } from '@/ds/h-stack';
 import { VStack } from '@/ds/v-stack';
 import { makeHeading } from '@/utils/string';
-import Link from 'next/link';
+import { Link } from '@/ds/link';
 import { usePathname } from 'next/navigation';
 import { Directory } from '@/types/directory';
 import { useMemo } from 'react';
@@ -52,10 +52,8 @@ function DirListing({
             style={{
               boxSizing: 'border-box',
               paddingInline: '8px',
-              backgroundColor: isSelected ? 'accent' : 'inherit',
-              color: 'text-primary',
               fontWeight: isSelected ? 'bold' : 'inherit',
-              outline: isSelected ? '1px solid var(--accent-color)' : 'none',
+              outline: isSelected ? '1px solid var(--border-color)' : 'none',
               // '&:hover': {
               //   outline: '1px solid {colors.accent}',
               // },
