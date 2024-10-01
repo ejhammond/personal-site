@@ -9,6 +9,8 @@ import { Text } from '@/ds/text';
 import cx from '@/utils/cx';
 import * as React from 'react';
 
+import './page.css';
+
 type Advantage = 'none' | 'advantage' | 'disadvantage';
 
 type D20FormData = {
