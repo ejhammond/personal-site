@@ -27,7 +27,7 @@ export function SiteBreadcrumbs() {
   }
 
   return (
-    <Breadcrumbs items={breadcrumbs}>
+    <Breadcrumbs key={breadcrumbs.join('.')} items={breadcrumbs}>
       {(item) => (
         <Breadcrumb>
           <Link href={item.href}>{makeHeading(item.id)}</Link>

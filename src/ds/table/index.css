@@ -12,7 +12,7 @@
   outline: none;
   border-spacing: 0;
   min-height: 100px;
-  align-self: start;
+  align-self: flex-start;
   max-width: 100%;
   word-break: break-word;
   forced-color-adjust: none;

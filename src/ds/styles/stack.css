@@ -19,13 +19,13 @@
 /* align items */
 
 .stack-align-items-start {
-  align-items: start;
+  align-items: flex-start;
 }
 .stack-align-items-center {
   align-items: center;
 }
 .stack-align-items-end {
-  align-items: end;
+  align-items: flex-end;
 }
 .stack-align-items-stretch {
   align-items: stretch;
