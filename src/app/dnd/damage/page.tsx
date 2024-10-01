@@ -7,6 +7,7 @@ import { HStack } from '@/ds/h-stack';
 import { vStack } from '@/ds/styles/v-stack-style';
 import { Text } from '@/ds/text';
 import { VStack } from '@/ds/v-stack';
+import cx from '@/utils/cx';
 import { Roll, rollToString } from '@/utils/dnd';
 import { useCallback, useState } from 'react';
 
@@ -88,14 +89,7 @@ const Damage: React.FC = () => {
       <p style={{ marginBlockEnd: '16px' }}>
         Calculate the expected damage of an attack.
       </p>
-      <Card
-        style={{
-          maxWidth: '600',
-          marginInline: 'auto',
-          containerType: 'inline-size',
-          ...vStack({ gap: 'md' }),
-        }}
-      >
+      <Card className={cx('damage-card', vStack({ gap: 'md' }))}>
         <form
           onSubmit={(event) => {
             event.preventDefault();

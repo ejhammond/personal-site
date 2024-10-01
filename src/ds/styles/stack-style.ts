@@ -1,3 +1,4 @@
+import cx from '@/utils/cx';
 import './stack.css';
 
 type TDirection = 'horizontal' | 'vertical';
@@ -50,13 +51,11 @@ export function stack({
   crossAlign,
   wrap,
 }: StackOptions): string {
-  return [
+  return cx(
     displayStyles[display],
     directionStyles[direction],
     crossAlign != null && crossAlignStyles[crossAlign],
     gap != null && gapStyles[gap],
     wrap != null && wrapStyles[wrap],
-  ]
-    .filter(Boolean)
-    .join(' ');
+  );
 }

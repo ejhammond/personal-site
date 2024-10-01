@@ -6,6 +6,7 @@ import { HStack } from '@/ds/h-stack';
 import { Select, SelectItem } from '@/ds/select';
 import { vStack } from '@/ds/styles/v-stack-style';
 import { Text } from '@/ds/text';
+import cx from '@/utils/cx';
 import * as React from 'react';
 
 type Advantage = 'none' | 'advantage' | 'disadvantage';
@@ -80,15 +81,9 @@ const D20: React.FC = () => {
       <p style={{ marginBlockEnd: '16px' }}>
         Calculate your chance to meet a certain threshold with a D20 roll.
       </p>
-      <Card
-        style={{
-          maxWidth: '600',
-          marginInline: 'auto',
-          ...vStack({ gap: 'md' }),
-        }}
-      >
+      <Card className={cx('d20-card', vStack({ gap: 'md' }))}>
         <form
-          style={vStack({ gap: 'md' })}
+          className={vStack({ gap: 'md' })}
           onSubmit={(event) => {
             event.preventDefault();
           }}

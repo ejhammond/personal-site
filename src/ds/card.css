@@ -1,0 +1,9 @@
+.card {
+  background-color: var(--overlay-background);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border-color);
+  padding: 32px;
+  box-shadow: 0 8px 20px rgba(0 0 0 / 0.1);
+  border-radius: 6px;
+}
