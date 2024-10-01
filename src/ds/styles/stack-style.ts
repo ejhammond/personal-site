@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react';
+import './stack.css';
 
 type TDirection = 'horizontal' | 'vertical';
 type TCrossAlign = 'stretch' | 'center' | 'start' | 'end';
@@ -14,33 +14,33 @@ export type StackOptions = Readonly<{
   wrap?: TWrap;
 }>;
 
-const directionStyles: Record<TDirection, CSSProperties> = {
-  horizontal: { flexDirection: 'row' },
-  vertical: { flexDirection: 'column' },
+const directionStyles: Record<TDirection, string> = {
+  horizontal: 'stack-direction-row',
+  vertical: 'stack-direction-column',
 };
 
-const crossAlignStyles: Record<TCrossAlign, CSSProperties> = {
-  stretch: { alignItems: 'stretch' },
-  center: { alignItems: 'center' },
-  start: { alignItems: 'start' },
-  end: { alignItems: 'end' },
+const crossAlignStyles: Record<TCrossAlign, string> = {
+  stretch: 'stack-align-items-stretch',
+  center: 'stack-align-items-center',
+  start: 'stack-align-items-start',
+  end: 'stack-align-items-end',
 };
 
-const displayStyles: Record<TDisplay, CSSProperties> = {
-  block: { display: 'flex' },
-  inline: { display: 'inline-flex' },
+const displayStyles: Record<TDisplay, string> = {
+  block: 'stack-display-flex',
+  inline: 'stack-display-inline-flex',
 };
 
-const gapStyles: Record<TGap, CSSProperties> = {
-  xs: { gap: '4px' },
-  sm: { gap: '8px' },
-  md: { gap: '16px' },
-  lg: { gap: '32px' },
+const gapStyles: Record<TGap, string> = {
+  xs: 'stack-gap-4',
+  sm: 'stack-gap-8',
+  md: 'stack-gap-16',
+  lg: 'stack-gap-32',
 };
 
-const wrapStyles: Record<TWrap, CSSProperties> = {
-  wrap: { flexWrap: 'wrap' },
-  nowrap: { flexWrap: 'nowrap' },
+const wrapStyles: Record<TWrap, string> = {
+  wrap: 'stack-wrap-wrap',
+  nowrap: 'stack-wrap-nowrap',
 };
 
 export function stack({
@@ -49,12 +49,14 @@ export function stack({
   gap,
   crossAlign,
   wrap,
-}: StackOptions): CSSProperties {
-  return {
-    ...displayStyles[display],
-    ...directionStyles[direction],
-    ...(crossAlign != null ? crossAlignStyles[crossAlign] : {}),
-    ...(gap != null ? gapStyles[gap] : {}),
-    ...(wrap != null ? wrapStyles[wrap] : {}),
-  };
+}: StackOptions): string {
+  return [
+    displayStyles[display],
+    directionStyles[direction],
+    crossAlign != null && crossAlignStyles[crossAlign],
+    gap != null && gapStyles[gap],
+    wrap != null && wrapStyles[wrap],
+  ]
+    .filter(Boolean)
+    .join(' ');
 }

@@ -39,7 +39,15 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
           "tags": []
         },
         {
+          "path": "/root-providers.tsx",
+          "tags": []
+        },
+        {
           "path": "/root.css",
+          "tags": []
+        },
+        {
+          "path": "/theme.css",
           "tags": []
         }
       ],

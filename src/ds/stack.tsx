@@ -9,15 +9,17 @@ export function Stack({
   direction,
   display,
   wrap,
-  style,
+  className,
   ...htmlProps
 }: Props) {
   return (
     <div
-      style={{
-        ...stack({ gap, crossAlign, direction, display, wrap }),
-        ...style,
-      }}
+      className={[
+        stack({ gap, crossAlign, direction, display, wrap }),
+        className,
+      ]
+        .filter(Boolean)
+        .join(' ')}
       {...htmlProps}
     />
   );

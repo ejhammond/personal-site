@@ -10,6 +10,8 @@ import { Directory } from '@/types/directory';
 import { useMemo } from 'react';
 import { FaFolder, FaFile } from 'react-icons/fa';
 
+import './directory-template.css';
+
 function DirListing({
   selectedDirectories,
   directories,
@@ -33,7 +35,11 @@ function DirListing({
         const isSelected = selectedDirectories.has(dir);
         const labelContent = (
           <HStack vAlign="center" gap="md">
-            {isPage ? <FaFile /> : <FaFolder />}{' '}
+            {isPage ? (
+              <FaFile style={{ flexShrink: 0 }} />
+            ) : (
+              <FaFolder style={{ flexShrink: 0 }} />
+            )}{' '}
             <span
               style={{
                 whiteSpace: 'nowrap',
@@ -125,46 +131,31 @@ export function DirectoryTemplate() {
     <HStack gap="lg" style={{ containerType: 'inline-size' }}>
       {directories[3] != null && (
         <DirListing
+          className="dir-listing dir-listing-layer-4"
           directories={directories[3].subDirectories}
           selectedDirectories={selectedDirectories}
-          style={{
-            display: 'flex',
-            minWidth: 0,
-            flexGrow: 1,
-          }}
         />
       )}
       {directories[2] != null && (
         <DirListing
+          className="dir-listing dir-listing-layer-3"
           directories={directories[2].subDirectories}
           selectedDirectories={selectedDirectories}
-          style={{
-            display: 'flex',
-            minWidth: 0,
-            flexGrow: 1,
-          }}
         />
       )}
       {directories[1] != null && (
         <DirListing
+          className="dir-listing dir-listing-layer-2"
           directories={directories[1].subDirectories}
           selectedDirectories={selectedDirectories}
-          style={{
-            display: 'flex',
-            minWidth: 0,
-            flexGrow: 1,
-          }}
         />
       )}
       {directories[0] != null && (
         <DirListing
+          className="dir-listing dir-listing-layer-1"
           key={directories[0].path}
           directories={directories[0].subDirectories}
           selectedDirectories={selectedDirectories}
-          style={{
-            minWidth: 0,
-            flexGrow: 1,
-          }}
         />
       )}
     </HStack>

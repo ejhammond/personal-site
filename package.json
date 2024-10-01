@@ -34,10 +34,10 @@
     "@types/react-dom": "latest",
     "eslint": "latest",
     "eslint-config-next": "latest",
-    "eslint-config-prettier": "^9.1.0",
-    "glob": "^10.4.5",
+    "eslint-config-prettier": "latest",
+    "glob": "latest",
     "gray-matter": "^4.0.3",
-    "prettier": "^3.2.5",
+    "prettier": "latest",
     "sharp": "^0.33.2",
     "ts-node": "^10.9.2",
     "typescript": "latest"

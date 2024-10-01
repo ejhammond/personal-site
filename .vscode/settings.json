@@ -4,10 +4,12 @@
     "graymatter",
     "Inconsolata",
     "msapplication",
+    "nextjs",
     "outdir",
     "pandacss",
     "rehype",
     "shiki",
+    "stylexjs",
     "subdir"
   ]
 }
