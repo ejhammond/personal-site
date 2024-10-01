@@ -11,6 +11,8 @@ import cx from '@/utils/cx';
 import { Roll, rollToString } from '@/utils/dnd';
 import { useCallback, useState } from 'react';
 
+import './page.css';
+
 type DamageFormData = Roll & {
   critical: boolean;
 };
@@ -95,7 +97,7 @@ const Damage: React.FC = () => {
             event.preventDefault();
           }}
         >
-          <HStack gap="lg" wrap="wrap">
+          <HStack gap="md" wrap="wrap">
             <Counter
               label="D4"
               min={0}
@@ -153,12 +155,12 @@ const Damage: React.FC = () => {
             </Checkbox>
           </HStack>
         </form>
-        <Text aria-hidden style={{ fontSize: '24px' }}>
+        <Text aria-hidden className="damage-output">
           {rollToString(roll)}
         </Text>
         <hr />
         <div>
-          <HStack gap="md">
+          <HStack className="damage-output" gap="md">
             <VStack>
               <h4>Min</h4>
               <Text>

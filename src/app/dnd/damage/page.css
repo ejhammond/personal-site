@@ -2,3 +2,7 @@
   max-width: 600;
   margin-inline: auto;
 }
+
+.damage-output {
+  font-size: 1.25rem;
+}

@@ -2,7 +2,6 @@
 @import '../form/index.css';
 
 .react-aria-NumberField {
-  margin-bottom: 8px;
   color: var(--text-color);
 
   .react-aria-Group {

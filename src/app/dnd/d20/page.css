@@ -1,4 +1,8 @@
-.damage-card {
+.d20-card {
   max-width: 600;
   margin-inline: auto;
+}
+
+.d20-output {
+  font-size: 1.25rem;
 }

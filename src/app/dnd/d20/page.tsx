@@ -88,7 +88,7 @@ const D20: React.FC = () => {
             event.preventDefault();
           }}
         >
-          <HStack gap="lg" wrap="wrap">
+          <HStack gap="md" wrap="wrap">
             <Counter
               label="Threshold"
               min={0}
@@ -122,7 +122,7 @@ const D20: React.FC = () => {
           </HStack>
         </form>
         <hr />
-        <Text style={{ fontSize: '24px' }}>
+        <Text className="d20-output">
           {(calculateHitChance(d20FormData) * 100).toFixed(2)}%
         </Text>
       </Card>
