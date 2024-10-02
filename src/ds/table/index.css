@@ -13,6 +13,7 @@
   border-spacing: 0;
   min-height: 100px;
   align-self: flex-start;
+  min-width: 0;
   max-width: 100%;
   word-break: break-word;
   forced-color-adjust: none;
@@ -47,7 +48,6 @@
     outline: none;
     cursor: default;
     color: var(--text-color);
-    font-size: 1.072rem;
     position: relative;
     transform: scale(1);
 
@@ -79,7 +79,6 @@
   .react-aria-Cell,
   .react-aria-Column {
     padding: 4px 8px;
-    text-align: left;
     outline: none;
 
     &[data-focus-visible] {
@@ -163,7 +162,6 @@
     --background-color: var(--overlay-background);
     flex: 1;
     font: inherit;
-    text-align: start;
     color: inherit;
     overflow: hidden;
     text-overflow: ellipsis;

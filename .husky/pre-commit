@@ -1,4 +1,5 @@
 npm run gen
+git add .
 npm run format
 npm run check
 npm run lint

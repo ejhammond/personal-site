@@ -1,0 +1,18 @@
+#mortgage-table {
+  overflow: scroll;
+  margin-block-start: 32px;
+  container-type: inline-size;
+
+  table {
+    font-family: var(--global-font-monospace);
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
+    text-align: end;
+  }
+}
+
+@container (width < 600px) {
+  #mortgage-table table {
+    font-size: 0.8rem;
+  }
+}
