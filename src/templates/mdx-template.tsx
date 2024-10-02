@@ -23,14 +23,9 @@ const GITHUB_MAIN_BRANCH = 'main';
  * The alternative is to use Next's dynamic route segments
  */
 export function MDXTemplate({
-  articleKey,
   title,
-  description,
   date,
-  author,
-  uriPath,
   repoPath,
-  tags,
   children,
 }: MDXArticleMetadata & Readonly<{ children: React.ReactNode }>) {
   const editOnGitHubURL = `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO_NAME}/edit/${GITHUB_MAIN_BRANCH}${repoPath}`;

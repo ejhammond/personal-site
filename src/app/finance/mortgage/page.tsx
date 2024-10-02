@@ -13,16 +13,9 @@ export default function Mortgage() {
   const [rate, setRate] = useState(0.055);
 
   const termMonths = term * 12;
-  const monthlyRate = rate / 12;
-
-  const minimumPayment = (
-    (amount * (monthlyRate * Math.pow(1 + monthlyRate, termMonths))) /
-    (Math.pow(1 + monthlyRate, termMonths) - 1)
-  ).toFixed(2);
 
   const payoff = getMortgagePayoff(amount, rate, termMonths);
 
-  console.log(JSON.stringify(payoff.data[0]));
   return (
     <>
       <h2>Mortgage Calculator</h2>

@@ -23,7 +23,10 @@ function DirListing({
   className?: string;
   style?: React.CSSProperties;
 }>) {
-  const sortedDirectories = useMemo(() => directories.toSorted(), directories);
+  const sortedDirectories = useMemo(
+    () => directories.toSorted(),
+    [directories],
+  );
   return (
     <VStack className={className} style={style} gap="sm">
       {sortedDirectories.map((dir) => {

@@ -7,8 +7,10 @@ import {
 
 import './index.css';
 
-export interface ColorWheelProps
-  extends Omit<AriaColorWheelProps, 'outerRadius' | 'innerRadius'> {}
+export type ColorWheelProps = Omit<
+  AriaColorWheelProps,
+  'outerRadius' | 'innerRadius'
+>;
 
 export function ColorWheel(props: ColorWheelProps) {
   return (

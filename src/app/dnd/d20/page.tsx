@@ -1,12 +1,8 @@
 'use client';
 
-import { Card } from '@/ds/card';
 import { Counter } from '@/ds/counter';
-import { HStack } from '@/ds/h-stack';
 import { Select, SelectItem } from '@/ds/select';
-import { vStack } from '@/ds/styles/v-stack-style';
 import { Text } from '@/ds/text';
-import cx from '@/utils/cx';
 import * as React from 'react';
 
 import './page.css';

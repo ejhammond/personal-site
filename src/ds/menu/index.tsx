@@ -33,7 +33,7 @@ export function MenuButton<T extends object>({
 }
 
 export function MenuItem(props: MenuItemProps) {
-  let textValue =
+  const textValue =
     props.textValue ||
     (typeof props.children === 'string' ? props.children : undefined);
   return (

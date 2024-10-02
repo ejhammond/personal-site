@@ -1,0 +1,4 @@
+npm run gen
+npm run format
+npm run check
+npm run lint

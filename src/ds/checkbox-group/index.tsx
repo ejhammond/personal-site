@@ -1,7 +1,6 @@
 import {
   CheckboxGroup as AriaCheckboxGroup,
   CheckboxGroupProps as AriaCheckboxGroupProps,
-  CheckboxProps as AriaCheckboxProps,
   FieldError,
   Label,
   Text,

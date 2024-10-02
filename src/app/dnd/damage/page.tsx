@@ -1,13 +1,10 @@
 'use client';
 
-import { Card } from '@/ds/card';
 import { Checkbox } from '@/ds/checkbox';
 import { Counter } from '@/ds/counter';
 import { HStack } from '@/ds/h-stack';
-import { vStack } from '@/ds/styles/v-stack-style';
 import { Text } from '@/ds/text';
 import { VStack } from '@/ds/v-stack';
-import cx from '@/utils/cx';
 import { Roll, rollToString } from '@/utils/dnd';
 import { useCallback, useState } from 'react';
 
