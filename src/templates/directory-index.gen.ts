@@ -63,7 +63,12 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
     '/finance/mortgage',
     {
       path: '/finance/mortgage',
-      files: [],
+      files: [
+        {
+          path: '/finance/mortgage/page.tsx',
+          tags: ['page'],
+        },
+      ],
       subDirectories: [],
     },
   ],
@@ -81,6 +86,10 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
       path: '/dnd/damage',
       files: [
         {
+          path: '/dnd/damage/page.css',
+          tags: [],
+        },
+        {
           path: '/dnd/damage/page.tsx',
           tags: ['page'],
         },
@@ -93,6 +102,10 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
     {
       path: '/dnd/d20',
       files: [
+        {
+          path: '/dnd/d20/page.css',
+          tags: [],
+        },
         {
           path: '/dnd/d20/page.tsx',
           tags: ['page'],

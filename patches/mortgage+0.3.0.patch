@@ -1,0 +1,17 @@
+diff --git a/node_modules/mortgage/lib/index.d.ts b/node_modules/mortgage/lib/index.d.ts
+index ab93814..e14d452 100644
+--- a/node_modules/mortgage/lib/index.d.ts
++++ b/node_modules/mortgage/lib/index.d.ts
+@@ -16,5 +16,11 @@ export declare const getMortgagePayoff: (loan: number, interestRate: number, loa
+     startDate: Date;
+     endDate: Date;
+     defaultEndDate: Date;
+-    data: {};
++    data: {
++      principal: number;
++      balance: number;
++      interest: number;
++      date: Date;
++      principalExtra: number;
++    }[];
+ };

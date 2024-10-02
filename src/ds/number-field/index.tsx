@@ -16,21 +16,23 @@ export interface NumberFieldProps extends AriaNumberFieldProps {
   label?: string;
   description?: string;
   errorMessage?: string | ((validation: ValidationResult) => string);
+  hasButtons?: boolean;
 }
 
 export function NumberField({
   label,
   description,
   errorMessage,
+  hasButtons = false,
   ...props
 }: NumberFieldProps) {
   return (
     <AriaNumberField {...props}>
       <Label>{label}</Label>
       <Group>
-        <Button slot="decrement">-</Button>
+        {hasButtons && <Button slot="decrement">-</Button>}
         <Input />
-        <Button slot="increment">+</Button>
+        {hasButtons && <Button slot="increment">+</Button>}
       </Group>
       {description && <Text slot="description">{description}</Text>}
       <FieldError>{errorMessage}</FieldError>

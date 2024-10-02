@@ -3,11 +3,12 @@
 
 .react-aria-NumberField {
   color: var(--text-color);
+  width: 100%;
 
   .react-aria-Group {
     display: flex;
-    width: fit-content;
     border-radius: 4px;
+    min-width: 0;
 
     &[data-focus-within] {
       outline: 1px solid var(--focus-ring-color);
@@ -44,8 +45,8 @@
     font-size: 1rem;
     padding: 0.429rem 0.571rem;
     outline: none;
-    width: 6rem;
-    flex: 1;
+    flex-grow: 1;
+    min-width: 0;
   }
 
   &[data-invalid] {
@@ -72,6 +73,7 @@
   }
 
   .react-aria-Button {
+    flex-shrink: 0;
     &[data-disabled] {
       border-color: var(--border-color-disabled);
       color: var(--text-color-disabled);

@@ -10,6 +10,7 @@ import cx from '@/utils/cx';
 import * as React from 'react';
 
 import './page.css';
+import { Form } from '@/ds/form';
 
 type Advantage = 'none' | 'advantage' | 'disadvantage';
 
@@ -83,51 +84,42 @@ const D20: React.FC = () => {
       <p style={{ marginBlockEnd: '16px' }}>
         Calculate your chance to meet a certain threshold with a D20 roll.
       </p>
-      <Card className={cx('d20-card', vStack({ gap: 'md' }))}>
-        <form
-          className={vStack({ gap: 'md' })}
-          onSubmit={(event) => {
-            event.preventDefault();
+      <Form>
+        <Counter
+          label="Threshold"
+          min={0}
+          value={d20FormData.threshold}
+          onChange={(number) => {
+            updateD20FormData({ threshold: number });
           }}
+        />
+        <Counter
+          label="Modifier"
+          value={d20FormData.modifier}
+          min={-19}
+          max={19}
+          onChange={(number) => {
+            console.log('change', number);
+            updateD20FormData({ modifier: number });
+          }}
+        />
+        <Select
+          label="Advantage"
+          selectedKey={d20FormData.advantage}
+          onSelectionChange={(value) => {
+            updateD20FormData({
+              advantage: value as Advantage,
+            });
+          }}
+          items={ADVANTAGE_SELECTOR_ITEMS}
         >
-          <HStack gap="md" wrap="wrap">
-            <Counter
-              label="Threshold"
-              min={0}
-              value={d20FormData.threshold}
-              onChange={(number) => {
-                updateD20FormData({ threshold: number });
-              }}
-            />
-            <Counter
-              label="Modifier"
-              value={d20FormData.modifier}
-              min={-19}
-              max={19}
-              onChange={(number) => {
-                console.log('change', number);
-                updateD20FormData({ modifier: number });
-              }}
-            />
-            <Select
-              label="Advantage"
-              selectedKey={d20FormData.advantage}
-              onSelectionChange={(value) => {
-                updateD20FormData({
-                  advantage: value as Advantage,
-                });
-              }}
-              items={ADVANTAGE_SELECTOR_ITEMS}
-            >
-              {(item) => <SelectItem id={item.value}>{item.label}</SelectItem>}
-            </Select>
-          </HStack>
-        </form>
-        <hr />
-        <Text className="d20-output">
-          {(calculateHitChance(d20FormData) * 100).toFixed(2)}%
-        </Text>
-      </Card>
+          {(item) => <SelectItem id={item.value}>{item.label}</SelectItem>}
+        </Select>
+      </Form>
+      <hr style={{ marginBlock: 16 }} />
+      <Text className="d20-output">
+        {(calculateHitChance(d20FormData) * 100).toFixed(2)}%
+      </Text>
     </>
   );
 };

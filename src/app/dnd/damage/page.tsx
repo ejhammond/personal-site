@@ -12,6 +12,7 @@ import { Roll, rollToString } from '@/utils/dnd';
 import { useCallback, useState } from 'react';
 
 import './page.css';
+import { Form } from '@/ds/form';
 
 type DamageFormData = Roll & {
   critical: boolean;
@@ -91,106 +92,98 @@ const Damage: React.FC = () => {
       <p style={{ marginBlockEnd: '16px' }}>
         Calculate the expected damage of an attack.
       </p>
-      <Card className={cx('damage-card', vStack({ gap: 'md' }))}>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault();
+      <Form>
+        <Counter
+          label="D4"
+          min={0}
+          value={damageFormData.d4}
+          onChange={(number) => {
+            updateDamageFormData({ d4: number });
+          }}
+        />
+        <Counter
+          label="D6"
+          min={0}
+          value={damageFormData.d6}
+          onChange={(number) => {
+            updateDamageFormData({ d6: number });
+          }}
+        />
+        <Counter
+          label="D8"
+          min={0}
+          value={damageFormData.d8}
+          onChange={(number) => {
+            updateDamageFormData({ d8: number });
+          }}
+        />
+        <Counter
+          label="D10"
+          min={0}
+          value={damageFormData.d10}
+          onChange={(number) => {
+            updateDamageFormData({ d10: number });
+          }}
+        />
+        <Counter
+          label="D12"
+          min={0}
+          value={damageFormData.d12}
+          onChange={(number) => {
+            updateDamageFormData({ d12: number });
+          }}
+        />
+        <Counter
+          label="Modifier"
+          value={damageFormData.modifier}
+          onChange={(number) => {
+            updateDamageFormData({ modifier: number });
+          }}
+        />
+        <Checkbox
+          isSelected={damageFormData.critical}
+          onChange={(isCritical) => {
+            updateDamageFormData({ critical: isCritical });
           }}
         >
-          <HStack gap="md" wrap="wrap">
-            <Counter
-              label="D4"
-              min={0}
-              value={damageFormData.d4}
-              onChange={(number) => {
-                updateDamageFormData({ d4: number });
-              }}
-            />
-            <Counter
-              label="D6"
-              min={0}
-              value={damageFormData.d6}
-              onChange={(number) => {
-                updateDamageFormData({ d6: number });
-              }}
-            />
-            <Counter
-              label="D8"
-              min={0}
-              value={damageFormData.d8}
-              onChange={(number) => {
-                updateDamageFormData({ d8: number });
-              }}
-            />
-            <Counter
-              label="D10"
-              min={0}
-              value={damageFormData.d10}
-              onChange={(number) => {
-                updateDamageFormData({ d10: number });
-              }}
-            />
-            <Counter
-              label="D12"
-              min={0}
-              value={damageFormData.d12}
-              onChange={(number) => {
-                updateDamageFormData({ d12: number });
-              }}
-            />
-            <Counter
-              label="Modifier"
-              value={damageFormData.modifier}
-              onChange={(number) => {
-                updateDamageFormData({ modifier: number });
-              }}
-            />
-            <Checkbox
-              isSelected={damageFormData.critical}
-              onChange={(isCritical) => {
-                updateDamageFormData({ critical: isCritical });
-              }}
-            >
-              Critical
-            </Checkbox>
-          </HStack>
-        </form>
-        <Text aria-hidden className="damage-output">
-          {rollToString(roll)}
-        </Text>
-        <hr />
-        <div>
-          <HStack className="damage-output" gap="md">
-            <VStack>
-              <h4>Min</h4>
-              <Text>
-                {calculateAverageDamage({
-                  ...damageFormData,
-                  minAvgMax: 'min',
-                })}
-              </Text>
-            </VStack>
-            <VStack>
-              <h4>Avg</h4>
-              <Text>
-                {calculateAverageDamage({
-                  ...damageFormData,
-                  minAvgMax: 'avg',
-                })}
-              </Text>
-            </VStack>
-            <VStack>
-              <h4>Max</h4>
-              <Text>
-                {calculateAverageDamage({
-                  ...damageFormData,
-                  minAvgMax: 'max',
-                })}
-              </Text>
-            </VStack>
-          </HStack>
-        </div>
-      </Card>
+          Critical
+        </Checkbox>
+      </Form>
+      <Text aria-hidden className="damage-output">
+        {rollToString(roll)}
+      </Text>
+      <hr style={{ marginBlock: 16 }} />
+      <div>
+        <HStack className="damage-output" gap="md">
+          <VStack>
+            <h4>Min</h4>
+            <Text>
+              {calculateAverageDamage({
+                ...damageFormData,
+                minAvgMax: 'min',
+              })}
+            </Text>
+          </VStack>
+          <VStack>
+            <h4>Avg</h4>
+            <Text>
+              {calculateAverageDamage({
+                ...damageFormData,
+                minAvgMax: 'avg',
+              })}
+            </Text>
+          </VStack>
+          <VStack>
+            <h4>Max</h4>
+            <Text>
+              {calculateAverageDamage({
+                ...damageFormData,
+                minAvgMax: 'max',
+              })}
+            </Text>
+          </VStack>
+        </HStack>
+      </div>
     </>
   );
 };
