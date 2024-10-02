@@ -1,5 +1,5 @@
 npm run gen
-git add .
 npm run format
+git add -A
 npm run check
 npm run lint
