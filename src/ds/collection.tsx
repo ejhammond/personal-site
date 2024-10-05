@@ -79,6 +79,7 @@ export default function Collection<TItem extends { id: string }>({
                   id={formID}
                   onSubmit={(event) => {
                     event.preventDefault();
+                    event.stopPropagation();
 
                     onAdd(draftItem);
                     close();

@@ -72,6 +72,26 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
           path: '/finance/mortgage/page.tsx',
           tags: ['page'],
         },
+        {
+          path: '/finance/mortgage/use-one-off-extra-paymentsParam.ts',
+          tags: [],
+        },
+        {
+          path: '/finance/mortgage/use-original-loan-param.ts',
+          tags: [],
+        },
+        {
+          path: '/finance/mortgage/use-recurring-extra-payments-param.ts',
+          tags: [],
+        },
+        {
+          path: '/finance/mortgage/use-refinances-param.ts',
+          tags: [],
+        },
+        {
+          path: '/finance/mortgage/use-save-params.ts',
+          tags: [],
+        },
       ],
       subDirectories: [],
     },

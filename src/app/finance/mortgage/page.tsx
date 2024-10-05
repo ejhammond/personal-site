@@ -2,127 +2,31 @@
 
 import { NumberField } from '@/ds/number-field';
 import { Column, Row, Table, TableHeader } from '@/ds/table';
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { TableBody } from 'react-aria-components';
-import { z } from 'zod';
 import './page.css';
 import {
   Amortization,
   Amortizations,
   amortize,
-  Loan,
   OneOffExtraPayment,
   RecurringExtraPayment,
   Refinance,
 } from '@/utils/loan';
 import { Button } from '@/ds/button';
 import { createUniqueID, WithID } from '@/utils/id';
-import { arrayToMap, removeFromMap, setInMap, sortMap } from '@/utils/map';
 import Collection from '@/ds/collection';
 import { Form } from '@/ds/form';
-import useAutoFocusRef from '@/ds/useAutoFocus';
+import useAutoFocusRef from '@/ds/use-auto-focus';
 import { VStack } from '@/ds/v-stack';
 import { plural } from '@/utils/string';
 import { Checkbox } from '@/ds/checkbox';
-import { useSearchParams, usePathname } from 'next/navigation';
-
-const originalLoanSchema = z.object({
-  principal: z.number().positive().optional(),
-  annualizedInterestRate: z.number().positive().max(1).optional(),
-  years: z.number().positive().optional(),
-});
-
-const recurringExtraPaymentSchema = z.object({
-  id: z.string(),
-  startingMonth: z.number().positive(),
-  amount: z.number().positive(),
-});
-
-const oneOffExtraPaymentSchema = z.object({
-  id: z.string(),
-  month: z.number().positive(),
-  amount: z.number().positive(),
-});
-
-const refinanceSchema = z.object({
-  id: z.string(),
-  principal: z.number().positive().nullable(),
-  annualizedInterestRate: z.number().positive().max(1),
-  years: z.number().positive(),
-  month: z.number().positive(),
-});
-
-function deserializeParams(params: URLSearchParams): {
-  originalLoan: Partial<Loan>;
-  recurringExtraPayments: WithID<RecurringExtraPayment>[];
-  oneOffExtraPayments: WithID<OneOffExtraPayment>[];
-  refinances: WithID<Refinance>[];
-} | null {
-  const version = params.get('dataVersion');
-
-  if (version == null) {
-    return null;
-  }
-
-  const data = params.get('data');
-
-  if (data == null) {
-    return null;
-  }
-
-  const parsed = JSON.parse(data);
-
-  const originalLoan = originalLoanSchema.safeParse(parsed.originalLoan);
-  const recurringExtraPayments = z
-    .array(recurringExtraPaymentSchema)
-    .safeParse(parsed.recurringExtraPayments);
-  const oneOffExtraPayments = z
-    .array(oneOffExtraPaymentSchema)
-    .safeParse(parsed.oneOffExtraPayments);
-  const refinances = z.array(refinanceSchema).safeParse(parsed.refinances);
-
-  return {
-    originalLoan: originalLoan.success ? originalLoan.data : {},
-    recurringExtraPayments: recurringExtraPayments.success
-      ? recurringExtraPayments.data
-      : [],
-    oneOffExtraPayments: oneOffExtraPayments.success
-      ? oneOffExtraPayments.data
-      : [],
-    refinances: refinances.success ? refinances.data : [],
-  };
-}
-
-function serializeParams({
-  originalLoan,
-  recurringExtraPayments,
-  oneOffExtraPayments,
-  refinances,
-}: {
-  originalLoan: Loan;
-  recurringExtraPayments: RecurringExtraPayment[];
-  oneOffExtraPayments: OneOffExtraPayment[];
-  refinances: Refinance[];
-}) {
-  return new URLSearchParams({
-    dataVersion: '1',
-    data: JSON.stringify({
-      originalLoan,
-      recurringExtraPayments,
-      oneOffExtraPayments,
-      refinances,
-    }),
-  });
-}
-
-function formatUSD(value: number): string {
-  return Intl.NumberFormat([], {
-    style: 'currency',
-    currencySign: 'standard',
-    currency: 'USD',
-    currencyDisplay: 'symbol',
-  }).format(value);
-}
+import { formatUSD } from '@/utils/currency';
+import useOriginalLoanParam from './use-original-loan-param';
+import useRecurringExtraPaymentsParam from './use-recurring-extra-payments-param';
+import useOneOffExtraPaymentsParam from './use-one-off-extra-paymentsParam';
+import useRefinancesParam from './use-refinances-param';
+import useSaveParams from './use-save-params';
 
 function formatPercent(value: number, fractionDigits: number): string {
   return Intl.NumberFormat([], {
@@ -335,66 +239,20 @@ function AmortizationTable({ amortization }: { amortization: Amortization }) {
 }
 
 export default function Mortgage() {
-  const params = useSearchParams();
-  const pathname = usePathname();
+  const saveParams = useSaveParams();
 
-  const paramInputs = deserializeParams(params);
-
-  const [amount, setAmount] = useState<number>(
-    paramInputs?.originalLoan?.principal ?? 100000,
-  );
-  const [term, setTerm] = useState<number>(
-    paramInputs?.originalLoan?.years ?? 30,
-  );
-  const [rate, setRate] = useState<number>(
-    paramInputs?.originalLoan?.annualizedInterestRate ?? 0.055,
-  );
-
-  const [recurringExtraPaymentsMap, setRecurringExtraPayments] = useState<
-    ReadonlyMap<string, WithID<RecurringExtraPayment>>
-  >(arrayToMap(paramInputs?.recurringExtraPayments ?? [], ({ id }) => id));
-
-  const addRecurringExtraPayment = useCallback(
-    (recurringExtraPayment: WithID<RecurringExtraPayment>) => {
-      setRecurringExtraPayments((p) =>
-        setInMap(p, recurringExtraPayment.id, recurringExtraPayment),
-      );
-    },
-    [],
-  );
-
-  const removeRecurringExtraPayment = useCallback((id: string) => {
-    setRecurringExtraPayments((p) => removeFromMap(p, id));
-  }, []);
-
-  const [oneOffExtraPaymentsMap, setOneOffExtraPayments] = useState<
-    ReadonlyMap<string, WithID<OneOffExtraPayment>>
-  >(arrayToMap(paramInputs?.oneOffExtraPayments ?? [], ({ id }) => id));
-
-  const addOneOffExtraPayment = useCallback(
-    (oneOffExtraPayment: WithID<OneOffExtraPayment>) => {
-      setOneOffExtraPayments((p) =>
-        setInMap(p, oneOffExtraPayment.id, oneOffExtraPayment),
-      );
-    },
-    [],
-  );
-
-  const removeOneOffExtraPayment = useCallback((id: string) => {
-    setOneOffExtraPayments((p) => removeFromMap(p, id));
-  }, []);
-
-  const [refinancesMap, setRefinances] = useState<
-    ReadonlyMap<string, WithID<Refinance>>
-  >(arrayToMap(paramInputs?.refinances ?? [], ({ id }) => id));
-
-  const addRefinance = useCallback((refinance: WithID<Refinance>) => {
-    setRefinances((p) => setInMap(p, refinance.id, refinance));
-  }, []);
-
-  const removeRefinance = useCallback((id: string) => {
-    setRefinances((p) => removeFromMap(p, id));
-  }, []);
+  const { originalLoan, setOriginalLoan } = useOriginalLoanParam();
+  const {
+    recurringExtraPayments,
+    addRecurringExtraPayment,
+    removeRecurringExtraPayment,
+  } = useRecurringExtraPaymentsParam();
+  const {
+    oneOffExtraPayments,
+    addOneOffExtraPayment,
+    removeOneOffExtraPayment,
+  } = useOneOffExtraPaymentsParam();
+  const { refinances, addRefinance, removeRefinance } = useRefinancesParam();
 
   const [amortizations, setAmortizations] = useState<{
     base: Amortizations;
@@ -438,32 +296,6 @@ export default function Mortgage() {
         onSubmit={(event) => {
           event.preventDefault();
 
-          // sort the collections to tidy up the ui
-          setRecurringExtraPayments((p) =>
-            sortMap(p, (a, b) => a.startingMonth - b.startingMonth),
-          );
-
-          setOneOffExtraPayments((p) =>
-            sortMap(p, (a, b) => a.month - b.month),
-          );
-
-          setOneOffExtraPayments((p) =>
-            sortMap(p, (a, b) => a.month - b.month),
-          );
-
-          const originalLoan = {
-            principal: amount,
-            annualizedInterestRate: rate,
-            years: term,
-          };
-          const recurringExtraPayments = Array.from(
-            recurringExtraPaymentsMap.values(),
-          );
-          const oneOffExtraPayments = Array.from(
-            oneOffExtraPaymentsMap.values(),
-          );
-          const refinances = Array.from(refinancesMap.values());
-
           setAmortizations({
             base: amortize({
               originalLoan,
@@ -480,18 +312,12 @@ export default function Mortgage() {
             }),
           });
 
-          const params = serializeParams({
+          saveParams({
             originalLoan,
             recurringExtraPayments,
             oneOffExtraPayments,
             refinances,
           });
-
-          window.history.pushState(
-            null, // data
-            '', // "unused"
-            pathname + '?' + params.toString(),
-          );
         }}
         footer={
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -506,8 +332,10 @@ export default function Mortgage() {
           label="Amount"
           isRequired
           minValue={1}
-          value={amount}
-          onChange={setAmount}
+          value={originalLoan.principal}
+          onChange={(principal) =>
+            setOriginalLoan((p) => ({ ...p, principal }))
+          }
           formatOptions={{
             style: 'currency',
             currencySign: 'standard',
@@ -520,8 +348,8 @@ export default function Mortgage() {
           label="Term"
           minValue={1}
           isRequired
-          value={term}
-          onChange={setTerm}
+          value={originalLoan.years}
+          onChange={(years) => setOriginalLoan((p) => ({ ...p, years }))}
           formatOptions={{
             style: 'unit',
             unit: 'year',
@@ -533,8 +361,10 @@ export default function Mortgage() {
           isRequired
           minValue={0}
           maxValue={1}
-          value={rate}
-          onChange={setRate}
+          value={originalLoan.annualizedInterestRate}
+          onChange={(annualizedInterestRate) =>
+            setOriginalLoan((p) => ({ ...p, annualizedInterestRate }))
+          }
           formatOptions={{
             style: 'percent',
             minimumFractionDigits: 3,
@@ -542,7 +372,7 @@ export default function Mortgage() {
         />
         <Collection<WithID<RecurringExtraPayment>>
           itemName="Recurring extra payment"
-          items={Array.from(recurringExtraPaymentsMap.values())}
+          items={recurringExtraPayments}
           initializeDraftItem={() => ({
             id: createUniqueID(),
             amount: 100,
@@ -567,7 +397,7 @@ export default function Mortgage() {
         />
         <Collection<WithID<OneOffExtraPayment>>
           itemName="One-off extra payment"
-          items={Array.from(oneOffExtraPaymentsMap.values())}
+          items={oneOffExtraPayments}
           initializeDraftItem={() => ({
             id: createUniqueID(),
             amount: 100,
@@ -591,11 +421,11 @@ export default function Mortgage() {
         />
         <Collection<WithID<Refinance>>
           itemName="Refinance"
-          items={Array.from(refinancesMap.values())}
+          items={refinances}
           initializeDraftItem={() => ({
             id: createUniqueID(),
             month: 12,
-            principal: 100000,
+            principal: null,
             annualizedInterestRate: 0.05,
             years: 30,
           })}
@@ -620,7 +450,7 @@ export default function Mortgage() {
         />
       </Form>
       <hr style={{ alignSelf: 'stretch', marginBlock: 16 }} />
-      {savings?.refinance != null && refinancesMap.size > 0 && (
+      {savings?.refinance != null && refinances.length > 0 && (
         <>
           <h3>Savings due to refinancing</h3>
           <span
@@ -635,8 +465,8 @@ export default function Mortgage() {
         </>
       )}
       {savings?.prepayment != null &&
-        (recurringExtraPaymentsMap.size > 0 ||
-          oneOffExtraPaymentsMap.size > 0) && (
+        (recurringExtraPayments.length > 0 ||
+          oneOffExtraPayments.length > 0) && (
           <>
             <h3>Savings due to extra payments</h3>
             <span

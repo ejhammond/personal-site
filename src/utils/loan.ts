@@ -1,14 +1,12 @@
 'use strict';
 
+import { roundCurrency } from './currency';
+
 export type Loan = {
   principal: number;
   annualizedInterestRate: number;
   years: number;
 };
-
-function roundCurrency(number: number) {
-  return parseFloat(Math.round(parseFloat(number + 'e+2')) + 'e-2');
-}
 
 /*
  * Calculate the min monthly payment for a loan
