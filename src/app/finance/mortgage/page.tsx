@@ -2,23 +2,27 @@
 
 import { NumberField } from '@/ds/number-field';
 import { Column, Row, Table, TableHeader } from '@/ds/table';
-import { useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { TableBody } from 'react-aria-components';
 
 import './page.css';
 import {
   Amortization,
+  Amortizations,
   amortize,
   OneOffExtraPayment,
   RecurringExtraPayment,
+  Refinance,
 } from '@/utils/loan';
-import { HStack } from '@/ds/h-stack';
 import { Button } from '@/ds/button';
 import { createUniqueID, WithID } from '@/utils/id';
 import { removeFromMap, setInMap, sortMap } from '@/utils/map';
 import Collection from '@/ds/collection';
 import { Form } from '@/ds/form';
 import useAutoFocusRef from '@/ds/useAutoFocus';
+import { VStack } from '@/ds/v-stack';
+import { plural } from '@/utils/string';
+import { Checkbox } from '@/ds/checkbox';
 
 function formatUSD(value: number): string {
   return Intl.NumberFormat([], {
@@ -29,7 +33,14 @@ function formatUSD(value: number): string {
   }).format(value);
 }
 
-function RecurringExtraPaymentForm({
+function formatPercent(value: number, fractionDigits: number): string {
+  return Intl.NumberFormat([], {
+    style: 'percent',
+    minimumFractionDigits: fractionDigits,
+  }).format(value);
+}
+
+function RecurringExtraPaymentFields({
   id,
   startingMonth,
   amount,
@@ -43,7 +54,7 @@ function RecurringExtraPaymentForm({
   const autoFocusRef = useAutoFocusRef();
 
   return (
-    <HStack vAlign="end" wrap="wrap" gap="sm">
+    <>
       <NumberField
         ref={autoFocusRef}
         label="Starting month"
@@ -63,14 +74,14 @@ function RecurringExtraPaymentForm({
           currencySign: 'standard',
           currency: 'USD',
           currencyDisplay: 'symbol',
-          maximumFractionDigits: 0,
+          maximumFractionDigits: 2,
         }}
       />
-    </HStack>
+    </>
   );
 }
 
-function OneOffExtraPaymentForm({
+function OneOffExtraPaymentFields({
   id,
   month,
   amount,
@@ -79,12 +90,12 @@ function OneOffExtraPaymentForm({
   id: string;
   month: number;
   amount: number;
-  set: (recurringExtraPayment: WithID<OneOffExtraPayment>) => void;
+  set: (oneOffExtraPayment: WithID<OneOffExtraPayment>) => void;
 }) {
   const autoFocusRef = useAutoFocusRef();
 
   return (
-    <HStack vAlign="end" wrap="wrap" gap="sm">
+    <>
       <NumberField
         ref={autoFocusRef}
         label="Month"
@@ -104,10 +115,127 @@ function OneOffExtraPaymentForm({
           currencySign: 'standard',
           currency: 'USD',
           currencyDisplay: 'symbol',
-          maximumFractionDigits: 0,
+          maximumFractionDigits: 2,
         }}
       />
-    </HStack>
+    </>
+  );
+}
+
+function RefinanceFields({
+  id,
+  month,
+  principal,
+  annualizedInterestRate,
+  years,
+  set,
+}: {
+  id: string;
+  month: number;
+  principal: number | null;
+  annualizedInterestRate: number;
+  years: number;
+  set: (refinance: WithID<Refinance>) => void;
+}) {
+  const autoFocusRef = useAutoFocusRef();
+
+  const [isPrincipalSpecified, setIsPrincipalSpecified] = useState(false);
+
+  return (
+    <>
+      <NumberField
+        ref={autoFocusRef}
+        label="Month"
+        isRequired
+        minValue={0}
+        value={month}
+        onChange={(value) =>
+          set({ id, principal, annualizedInterestRate, years, month: value })
+        }
+      />
+      <NumberField
+        label="Term"
+        minValue={1}
+        isRequired
+        value={years}
+        onChange={(value) =>
+          set({ id, principal, annualizedInterestRate, years: value, month })
+        }
+        formatOptions={{
+          style: 'unit',
+          unit: 'year',
+          unitDisplay: 'long',
+        }}
+      />
+      <NumberField
+        label="Rate"
+        isRequired
+        minValue={0}
+        maxValue={1}
+        value={annualizedInterestRate}
+        onChange={(value) =>
+          set({ id, principal, annualizedInterestRate: value, years, month })
+        }
+        formatOptions={{
+          style: 'percent',
+          minimumFractionDigits: 3,
+        }}
+      />
+      <Checkbox
+        isSelected={isPrincipalSpecified}
+        onChange={setIsPrincipalSpecified}
+      >
+        Specify exact amount?
+      </Checkbox>
+      {isPrincipalSpecified && (
+        <NumberField
+          label="Amount"
+          minValue={1}
+          value={principal ?? NaN}
+          onChange={(value) =>
+            set({ id, principal: value, annualizedInterestRate, years, month })
+          }
+          formatOptions={{
+            style: 'currency',
+            currencySign: 'standard',
+            currency: 'USD',
+            currencyDisplay: 'symbol',
+            maximumFractionDigits: 0,
+          }}
+        />
+      )}
+    </>
+  );
+}
+
+function AmortizationTable({ amortization }: { amortization: Amortization }) {
+  return (
+    <div className="mortgage-table">
+      <Table aria-label="Loan amortization schedule">
+        <TableHeader>
+          <Column isRowHeader>Month</Column>
+          <Column>Interest</Column>
+          <Column>Principal</Column>
+          <Column>Extra</Column>
+          <Column>Balance</Column>
+        </TableHeader>
+        <TableBody>
+          {amortization.map(
+            ({ month, interest, principal, balance, extra }) => {
+              return (
+                <Row key={month}>
+                  <Column>{month}</Column>
+                  <Column>{formatUSD(interest)}</Column>
+                  <Column>{formatUSD(principal)}</Column>
+                  <Column>{formatUSD(extra)}</Column>
+                  <Column>{formatUSD(balance)}</Column>
+                </Row>
+              );
+            },
+          )}
+        </TableBody>
+      </Table>
+    </div>
   );
 }
 
@@ -150,27 +278,47 @@ export default function Mortgage() {
     setOneOffExtraPayments((p) => removeFromMap(p, id));
   }, []);
 
-  const [amortization, setAmortization] = useState<{
-    expected: Amortization;
-    actual: Amortization;
+  const [refinances, setRefinances] = useState<
+    ReadonlyMap<string, WithID<Refinance>>
+  >(new Map());
+
+  const addRefinance = useCallback((refinance: WithID<Refinance>) => {
+    setRefinances((p) => setInMap(p, refinance.id, refinance));
+  }, []);
+
+  const removeRefinance = useCallback((id: string) => {
+    setRefinances((p) => removeFromMap(p, id));
+  }, []);
+
+  const [amortizations, setAmortizations] = useState<{
+    expected: Amortizations;
+    actual: Amortizations;
   } | null>(null);
 
   const autoFocusRef = useAutoFocusRef();
 
   const moneySaved =
-    amortization != null
-      ? amortization.expected.reduce((acc, { interest }) => acc + interest, 0) -
-        amortization.actual.reduce((acc, { interest }) => acc + interest, 0)
+    amortizations != null
+      ? amortizations.expected
+          .flatMap(({ amortization }) =>
+            amortization.map(({ interest }) => interest),
+          )
+          .reduce((acc, interest) => acc + interest, 0) -
+        amortizations.actual
+          .flatMap(({ amortization }) =>
+            amortization.map(({ interest }) => interest),
+          )
+          .reduce((acc, interest) => acc + interest, 0)
       : 0;
 
   return (
-    <>
+    <VStack gap="md">
       <h2>Mortgage Calculator</h2>
       <Form
         onSubmit={(event) => {
           event.preventDefault();
 
-          // sort the extra payments in the ui to tidy up
+          // sort the collections to tidy up the ui
           setRecurringExtraPayments((p) =>
             sortMap(p, (a, b) => a.startingMonth - b.startingMonth),
           );
@@ -179,16 +327,21 @@ export default function Mortgage() {
             sortMap(p, (a, b) => a.month - b.month),
           );
 
-          setAmortization({
+          setOneOffExtraPayments((p) =>
+            sortMap(p, (a, b) => a.month - b.month),
+          );
+
+          setAmortizations({
             expected: amortize({
-              loan: {
+              originalLoan: {
                 principal: amount,
                 annualizedInterestRate: rate,
                 years: term,
               },
+              refinances: Array.from(refinances.values()),
             }),
             actual: amortize({
-              loan: {
+              originalLoan: {
                 principal: amount,
                 annualizedInterestRate: rate,
                 years: term,
@@ -197,9 +350,17 @@ export default function Mortgage() {
                 recurringExtraPayments.values(),
               ),
               oneOffExtraPayments: Array.from(oneOffExtraPayments.values()),
+              refinances: Array.from(refinances.values()),
             }),
           });
         }}
+        footer={
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Button type="submit" variant="primary">
+              Calculate
+            </Button>
+          </div>
+        }
       >
         <NumberField
           ref={autoFocusRef}
@@ -237,10 +398,10 @@ export default function Mortgage() {
           onChange={setRate}
           formatOptions={{
             style: 'percent',
-            minimumFractionDigits: 2,
+            minimumFractionDigits: 3,
           }}
         />
-        <Collection<RecurringExtraPayment & { id: string }>
+        <Collection<WithID<RecurringExtraPayment>>
           itemName="Recurring extra payment"
           items={Array.from(recurringExtraPayments.values())}
           initializeDraftItem={() => ({
@@ -250,8 +411,8 @@ export default function Mortgage() {
           })}
           onAdd={addRecurringExtraPayment}
           onRemove={removeRecurringExtraPayment}
-          renderEditForm={(draftItem, setDraftItem) => (
-            <RecurringExtraPaymentForm
+          renderEditFormFields={(draftItem, setDraftItem) => (
+            <RecurringExtraPaymentFields
               id={draftItem.id}
               amount={draftItem.amount}
               startingMonth={draftItem.startingMonth}
@@ -275,8 +436,8 @@ export default function Mortgage() {
           })}
           onAdd={addOneOffExtraPayment}
           onRemove={removeOneOffExtraPayment}
-          renderEditForm={(draftItem, setDraftItem) => (
-            <OneOffExtraPaymentForm
+          renderEditFormFields={(draftItem, setDraftItem) => (
+            <OneOffExtraPaymentFields
               id={draftItem.id}
               amount={draftItem.amount}
               month={draftItem.month}
@@ -289,42 +450,65 @@ export default function Mortgage() {
             </span>
           )}
         />
-        <hr style={{ alignSelf: 'stretch', marginBlock: 16 }} />
-        <HStack gap="md" vAlign="center">
-          <Button type="submit" variant="primary">
-            Calculate
-          </Button>
-          {moneySaved > 0 && <strong>Saved {formatUSD(moneySaved)}</strong>}
-        </HStack>
+        <Collection<WithID<Refinance>>
+          itemName="Refinance"
+          items={Array.from(refinances.values())}
+          initializeDraftItem={() => ({
+            id: createUniqueID(),
+            month: 12,
+            principal: 100000,
+            annualizedInterestRate: 0.05,
+            years: 30,
+          })}
+          onAdd={addRefinance}
+          onRemove={removeRefinance}
+          renderEditFormFields={(draftItem, setDraftItem) => (
+            <RefinanceFields
+              id={draftItem.id}
+              month={draftItem.month}
+              principal={draftItem.principal}
+              annualizedInterestRate={draftItem.annualizedInterestRate}
+              years={draftItem.years}
+              set={setDraftItem}
+            />
+          )}
+          renderItem={(item) => (
+            <span>
+              {formatPercent(item.annualizedInterestRate, 3)} for {item.years}{' '}
+              {plural('year', 'years', item.years)} on month {item.month}
+            </span>
+          )}
+        />
       </Form>
-      {amortization != null && (
-        <div id="mortgage-table">
-          <Table aria-label="Loan amortization schedule">
-            <TableHeader>
-              <Column isRowHeader>Month</Column>
-              <Column>Interest</Column>
-              <Column>Principal</Column>
-              <Column>Extra</Column>
-              <Column>Balance</Column>
-            </TableHeader>
-            <TableBody>
-              {amortization.actual.map(
-                ({ month, interest, principal, balance, extra }) => {
-                  return (
-                    <Row key={month}>
-                      <Column>{month}</Column>
-                      <Column>{formatUSD(interest)}</Column>
-                      <Column>{formatUSD(principal)}</Column>
-                      <Column>{formatUSD(extra)}</Column>
-                      <Column>{formatUSD(balance)}</Column>
-                    </Row>
-                  );
-                },
-              )}
-            </TableBody>
-          </Table>
-        </div>
+      <hr style={{ alignSelf: 'stretch', marginBlock: 16 }} />
+      {moneySaved > 0 && (
+        <>
+          <h3>Savings due to prepayments</h3>
+          <span
+            style={{
+              fontSize: '20px',
+              fontWeight: 'bold',
+              color: 'var(--highlight-foreground)',
+            }}
+          >
+            {formatUSD(moneySaved)}
+          </span>
+        </>
       )}
-    </>
+      {amortizations != null && amortizations.actual.length > 0 && (
+        <VStack gap="md" hAlign="stretch">
+          {amortizations.actual.map(({ loan, amortization }, index) => (
+            <React.Fragment key={index}>
+              <h3>
+                Loan {index + 1} - {formatUSD(loan.principal)} at{' '}
+                {formatPercent(loan.annualizedInterestRate, 3)} for {loan.years}{' '}
+                {plural('year', 'years', loan.years)}
+              </h3>
+              <AmortizationTable amortization={amortization} />
+            </React.Fragment>
+          ))}
+        </VStack>
+      )}
+    </VStack>
   );
 }

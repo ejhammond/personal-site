@@ -14,7 +14,7 @@ export default function Collection<TItem extends { id: string }>({
   items,
   onAdd,
   onRemove,
-  renderEditForm,
+  renderEditFormFields,
   renderItem,
   initializeDraftItem,
 }: {
@@ -23,7 +23,7 @@ export default function Collection<TItem extends { id: string }>({
   items: TItem[];
   onAdd: (item: TItem) => void;
   onRemove: (id: string) => void;
-  renderEditForm: (
+  renderEditFormFields: (
     draftItem: TItem,
     setDraftItem: (item: TItem) => void,
   ) => React.ReactNode;
@@ -35,7 +35,7 @@ export default function Collection<TItem extends { id: string }>({
 
   return (
     <>
-      <VStack gap="sm" hAlign="start">
+      <VStack gap="xs" hAlign="start">
         {itemNamePlural ?? `${itemName}s`}
         <ul>
           {items.map((item) => (
@@ -83,24 +83,29 @@ export default function Collection<TItem extends { id: string }>({
                     onAdd(draftItem);
                     close();
                   }}
-                >
-                  {renderEditForm(draftItem, setDraftItem)}
-                  <HStack
-                    gap="sm"
-                    style={{ alignSelf: 'stretch', justifyContent: 'flex-end' }}
-                  >
-                    <Button
-                      type="button"
-                      variant="flat"
-                      onPress={close}
-                      form={formID}
+                  footer={
+                    <HStack
+                      gap="sm"
+                      style={{
+                        alignSelf: 'stretch',
+                        justifyContent: 'flex-end',
+                      }}
                     >
-                      Cancel
-                    </Button>
-                    <Button type="submit" variant="primary" form={formID}>
-                      Save
-                    </Button>
-                  </HStack>
+                      <Button
+                        type="button"
+                        variant="flat"
+                        onPress={close}
+                        form={formID}
+                      >
+                        Cancel
+                      </Button>
+                      <Button type="submit" variant="primary" form={formID}>
+                        Save
+                      </Button>
+                    </HStack>
+                  }
+                >
+                  {renderEditFormFields(draftItem, setDraftItem)}
                 </Form>
               </VStack>
             )}

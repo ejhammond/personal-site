@@ -6,6 +6,10 @@ type Loan = {
   years: number;
 };
 
+function roundCurrency(number: number) {
+  return parseFloat(Math.round(parseFloat(number + 'e+2')) + 'e-2');
+}
+
 /*
  * Calculate the min monthly payment for a loan
  */
@@ -17,8 +21,8 @@ function getMinMonthlyPayment({
   const months = years * 12;
   const i = annualizedInterestRate / 12;
 
-  return (
-    principal * ((i * Math.pow(1 + i, months)) / (Math.pow(1 + i, months) - 1))
+  return roundCurrency(
+    principal * ((i * Math.pow(1 + i, months)) / (Math.pow(1 + i, months) - 1)),
   );
 }
 
@@ -39,7 +43,7 @@ function getAccruedInterest({
    */
   annualizedInterestRate: number;
 }) {
-  return principal * (annualizedInterestRate / 12);
+  return roundCurrency(principal * (annualizedInterestRate / 12));
 }
 
 export type RecurringExtraPayment = {
@@ -82,11 +86,44 @@ function getOneOffExtraPaymentForMonth(
   return oneOffExtraPayments.find(({ month: m }) => month === m)?.amount ?? 0;
 }
 
+export type Refinance = {
+  principal: number | null;
+  annualizedInterestRate: number;
+  years: number;
+  month: number;
+};
+
+function getRefinanceForMonth(
+  refinances: Refinance[],
+  month: number,
+): Refinance | null {
+  return refinances.find(({ month: m }) => month === m) ?? null;
+}
+
+function getLoanDurationInMonths({
+  originalLoan,
+  refinances,
+}: {
+  originalLoan: Loan;
+  refinances: Refinance[];
+}) {
+  if (refinances.length === 0) {
+    return originalLoan.years * 12;
+  }
+
+  const sortedRefinances = refinances.toSorted((a, b) => a.month - b.month);
+  const lastRefinance = sortedRefinances[sortedRefinances.length - 1];
+
+  // the total duration will be the duration of the last refinance + any months
+  // before that refinance
+  return lastRefinance.month + lastRefinance.years * 12;
+}
+
 type AmortizeInput = {
-  loan: Loan;
+  originalLoan: Loan;
   recurringExtraPayments?: RecurringExtraPayment[];
   oneOffExtraPayments?: OneOffExtraPayment[];
-  refinances?: Loan & { month: number }[];
+  refinances?: Refinance[];
 };
 
 export type Amortization = {
@@ -97,31 +134,42 @@ export type Amortization = {
   extra: number;
 }[];
 
+export type Amortizations = {
+  loan: Loan;
+  amortization: Amortization;
+}[];
+
 /*
  * Run the loan simulation and return expected vs actual results
  */
 export function amortize({
-  loan: { principal, annualizedInterestRate, years },
+  originalLoan,
   recurringExtraPayments = [],
   oneOffExtraPayments = [],
-  // refinances = [],
-}: AmortizeInput): Amortization {
-  const months = years * 12;
+  refinances = [],
+}: AmortizeInput): Amortizations {
+  const totalMonths = getLoanDurationInMonths({ originalLoan, refinances });
 
   const prePayment = getOneOffExtraPaymentForMonth(oneOffExtraPayments, 0);
 
-  const amortization: Amortization = [
+  const amortizations: { loan: Loan; amortization: Amortization }[] = [];
+
+  let amortization: Amortization = [
     {
       month: 0,
       interest: 0,
       principal: 0,
       extra: prePayment,
-      balance: principal - prePayment,
+      balance: originalLoan.principal - prePayment,
     },
   ];
 
-  let balance = principal - prePayment;
-  for (let i = 0; i < months; i++) {
+  let principal = originalLoan.principal;
+  let years = originalLoan.years;
+  let annualizedInterestRate = originalLoan.annualizedInterestRate;
+
+  let balance = originalLoan.principal - prePayment;
+  for (let i = 0; i < totalMonths; i++) {
     const month = i + 1;
 
     const minMonthlyPayment = getMinMonthlyPayment({
@@ -149,14 +197,21 @@ export function amortize({
 
     const extraPrincipalPayment = recurringExtraPayment + oneOffExtraPayment;
 
-    const principalPayment = basePrincipalPayment + extraPrincipalPayment;
+    const refinanceNextMonth = getRefinanceForMonth(refinances, month + 1);
+    let refinancePayoff = 0;
+    if (refinanceNextMonth != null) {
+      refinancePayoff = balance;
+    }
 
-    balance -= principalPayment;
+    const principalPayment =
+      basePrincipalPayment + extraPrincipalPayment + refinancePayoff;
 
-    if (balance <= 0) {
+    balance = balance - principalPayment;
+
+    // add tolerance for floating point math
+    if (balance <= 0.01) {
       // we "add" the balance in case it went negative. This will "refund" some principal
-      const finalMonthTotalPrincipalPayment =
-        basePrincipalPayment + extraPrincipalPayment + balance;
+      const finalMonthTotalPrincipalPayment = principalPayment + balance;
       // the base principal in the final month may be lower than the typical base principal
       const finalMonthBasePrincipalPayment = Math.min(
         basePrincipalPayment,
@@ -173,7 +228,41 @@ export function amortize({
         balance: Math.max(balance, 0),
       });
 
-      break;
+      amortizations.push({
+        loan: {
+          principal,
+          annualizedInterestRate,
+          years,
+        },
+        amortization,
+      });
+
+      // if we're refinancing next month, we'll keep iterating with new values
+      if (refinanceNextMonth != null) {
+        // if we don't have an explicit principal for the refinance, we'll
+        // assume that we're refinancing the exact previous balance
+        principal = refinanceNextMonth.principal ?? refinancePayoff;
+        years = refinanceNextMonth.years;
+        annualizedInterestRate = refinanceNextMonth.annualizedInterestRate;
+        balance = principal - extraPrincipalPayment;
+
+        amortization = [
+          {
+            month,
+            principal: 0,
+            interest: 0,
+            // since the new loan starts next month, there will be a lump-sum
+            // payoff for the current loan. Any extra payments that were
+            // scheduled for this month will be applied to the new loan instead
+            extra: extraPrincipalPayment,
+            balance,
+          },
+        ];
+        continue;
+      } else {
+        // otherwise we're done
+        break;
+      }
     }
 
     amortization.push({
@@ -185,5 +274,5 @@ export function amortize({
     });
   }
 
-  return amortization;
+  return amortizations;
 }

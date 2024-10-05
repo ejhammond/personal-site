@@ -1,9 +1,9 @@
-#mortgage-table {
+.mortgage-table {
   overflow: scroll;
-  margin-block-start: 16px;
   container-type: inline-size;
 
   table {
+    width: 100%;
     font-family: var(--global-font-monospace);
     text-wrap: nowrap;
     text-overflow: ellipsis;

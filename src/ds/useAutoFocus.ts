@@ -14,6 +14,8 @@ export default function useAutoFocusRef(): MutableRefObject<HTMLInputElement | n
       // using optional calls in case the el is not actually an input el
       elRef.current.focus?.();
       elRef.current.select?.();
+
+      didAutoFocusRef.current = true;
     }
   });
 
