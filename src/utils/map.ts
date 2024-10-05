@@ -29,3 +29,10 @@ export function sortMap<TKey, TValue>(
     Array.from(map.entries()).toSorted(([, a], [, b]) => compareFn(a, b)),
   );
 }
+
+export function arrayToMap<T>(
+  array: T[],
+  getID: (item: T) => string,
+): ReadonlyMap<string, T> {
+  return new Map(array.map((item) => [getID(item), item]));
+}

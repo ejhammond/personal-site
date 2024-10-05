@@ -1,6 +1,6 @@
 'use strict';
 
-type Loan = {
+export type Loan = {
   principal: number;
   annualizedInterestRate: number;
   years: number;
@@ -100,25 +100,6 @@ function getRefinanceForMonth(
   return refinances.find(({ month: m }) => month === m) ?? null;
 }
 
-function getLoanDurationInMonths({
-  originalLoan,
-  refinances,
-}: {
-  originalLoan: Loan;
-  refinances: Refinance[];
-}) {
-  if (refinances.length === 0) {
-    return originalLoan.years * 12;
-  }
-
-  const sortedRefinances = refinances.toSorted((a, b) => a.month - b.month);
-  const lastRefinance = sortedRefinances[sortedRefinances.length - 1];
-
-  // the total duration will be the duration of the last refinance + any months
-  // before that refinance
-  return lastRefinance.month + lastRefinance.years * 12;
-}
-
 type AmortizeInput = {
   originalLoan: Loan;
   recurringExtraPayments?: RecurringExtraPayment[];
@@ -148,8 +129,6 @@ export function amortize({
   oneOffExtraPayments = [],
   refinances = [],
 }: AmortizeInput): Amortizations {
-  const totalMonths = getLoanDurationInMonths({ originalLoan, refinances });
-
   const prePayment = getOneOffExtraPaymentForMonth(oneOffExtraPayments, 0);
 
   const amortizations: { loan: Loan; amortization: Amortization }[] = [];
@@ -169,9 +148,8 @@ export function amortize({
   let annualizedInterestRate = originalLoan.annualizedInterestRate;
 
   let balance = originalLoan.principal - prePayment;
-  for (let i = 0; i < totalMonths; i++) {
-    const month = i + 1;
-
+  let month = 0;
+  while (balance > 0) {
     const minMonthlyPayment = getMinMonthlyPayment({
       principal,
       annualizedInterestRate,
@@ -207,6 +185,7 @@ export function amortize({
       basePrincipalPayment + extraPrincipalPayment + refinancePayoff;
 
     balance = balance - principalPayment;
+    ++month;
 
     // add tolerance for floating point math
     if (balance <= 0.01) {
