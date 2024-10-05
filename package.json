@@ -9,7 +9,7 @@
     "lint": "next lint",
     "format": "prettier . --write --log-level warn --ignore-path .gitignore",
     "gen": "ts-node ./scripts/gen.ts",
-    "prepare": "husky",
+    "prepare": "husky && npm run gen",
     "postinstall": "npx patch-package",
     "clean": "npx rimraf --glob src/**/*.gen.tsx",
     "check": "npx tsc"
