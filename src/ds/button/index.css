@@ -29,6 +29,16 @@
     color: var(--text-color-disabled);
   }
 
+  &[data-variant='primary'] {
+    color: var(--highlight-foreground);
+    background: var(--highlight-background);
+
+    &[data-pressed] {
+      color: var(--highlight-foreground-pressed);
+      background: var(--highlight-background-pressed);
+    }
+  }
+
   &[data-variant='flat'] {
     border: none;
     background: none;

@@ -2,8 +2,8 @@ import { Button as AriaButton, ButtonProps } from 'react-aria-components';
 import './index.css';
 
 export function Button({
-  variant = 'primary',
+  variant = 'secondary',
   ...delegatedProps
-}: ButtonProps & { variant?: 'primary' | 'flat' }) {
+}: ButtonProps & { variant?: 'primary' | 'secondary' | 'flat' }) {
   return <AriaButton data-variant={variant} {...delegatedProps} />;
 }

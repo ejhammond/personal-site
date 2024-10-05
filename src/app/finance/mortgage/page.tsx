@@ -16,8 +16,9 @@ import { HStack } from '@/ds/h-stack';
 import { Button } from '@/ds/button';
 import { createUniqueID, WithID } from '@/utils/id';
 import { removeFromMap, setInMap, sortMap } from '@/utils/map';
-import { VStack } from '@/ds/v-stack';
 import Collection from '@/ds/collection';
+import { Form } from '@/ds/form';
+import useAutoFocusRef from '@/ds/useAutoFocus';
 
 function formatUSD(value: number): string {
   return Intl.NumberFormat([], {
@@ -39,16 +40,21 @@ function RecurringExtraPaymentForm({
   amount: number;
   set: (recurringExtraPayment: WithID<RecurringExtraPayment>) => void;
 }) {
+  const autoFocusRef = useAutoFocusRef();
+
   return (
     <HStack vAlign="end" wrap="wrap" gap="sm">
       <NumberField
+        ref={autoFocusRef}
         label="Starting month"
+        isRequired
         minValue={1}
         value={startingMonth}
         onChange={(value) => set({ id, amount, startingMonth: value })}
       />
       <NumberField
         label="Amount"
+        isRequired
         minValue={0}
         value={amount}
         onChange={(value) => set({ id, amount: value, startingMonth })}
@@ -75,16 +81,21 @@ function OneOffExtraPaymentForm({
   amount: number;
   set: (recurringExtraPayment: WithID<OneOffExtraPayment>) => void;
 }) {
+  const autoFocusRef = useAutoFocusRef();
+
   return (
     <HStack vAlign="end" wrap="wrap" gap="sm">
       <NumberField
+        ref={autoFocusRef}
         label="Month"
+        isRequired
         minValue={0}
         value={month}
         onChange={(value) => set({ id, amount, month: value })}
       />
       <NumberField
         label="Amount"
+        isRequired
         minValue={0}
         value={amount}
         onChange={(value) => set({ id, amount: value, month })}
@@ -101,9 +112,9 @@ function OneOffExtraPaymentForm({
 }
 
 export default function Mortgage() {
-  const [amount, setAmount] = useState(100000);
-  const [term, setTerm] = useState(30);
-  const [rate, setRate] = useState(0.055);
+  const [amount, setAmount] = useState<number>(100000);
+  const [term, setTerm] = useState<number>(30);
+  const [rate, setRate] = useState<number>(0.055);
 
   const [recurringExtraPayments, setRecurringExtraPayments] = useState<
     ReadonlyMap<string, WithID<RecurringExtraPayment>>
@@ -144,6 +155,8 @@ export default function Mortgage() {
     actual: Amortization;
   } | null>(null);
 
+  const autoFocusRef = useAutoFocusRef();
+
   const moneySaved =
     amortization != null
       ? amortization.expected.reduce((acc, { interest }) => acc + interest, 0) -
@@ -153,10 +166,46 @@ export default function Mortgage() {
   return (
     <>
       <h2>Mortgage Calculator</h2>
-      <VStack gap="md" hAlign="start">
+      <Form
+        onSubmit={(event) => {
+          event.preventDefault();
+
+          // sort the extra payments in the ui to tidy up
+          setRecurringExtraPayments((p) =>
+            sortMap(p, (a, b) => a.startingMonth - b.startingMonth),
+          );
+
+          setOneOffExtraPayments((p) =>
+            sortMap(p, (a, b) => a.month - b.month),
+          );
+
+          setAmortization({
+            expected: amortize({
+              loan: {
+                principal: amount,
+                annualizedInterestRate: rate,
+                years: term,
+              },
+            }),
+            actual: amortize({
+              loan: {
+                principal: amount,
+                annualizedInterestRate: rate,
+                years: term,
+              },
+              recurringExtraPayments: Array.from(
+                recurringExtraPayments.values(),
+              ),
+              oneOffExtraPayments: Array.from(oneOffExtraPayments.values()),
+            }),
+          });
+        }}
+      >
         <NumberField
+          ref={autoFocusRef}
           label="Amount"
-          minValue={0}
+          isRequired
+          minValue={1}
           value={amount}
           onChange={setAmount}
           formatOptions={{
@@ -170,6 +219,7 @@ export default function Mortgage() {
         <NumberField
           label="Term"
           minValue={1}
+          isRequired
           value={term}
           onChange={setTerm}
           formatOptions={{
@@ -180,6 +230,7 @@ export default function Mortgage() {
         />
         <NumberField
           label="Rate"
+          isRequired
           minValue={0}
           maxValue={1}
           value={rate}
@@ -239,39 +290,13 @@ export default function Mortgage() {
           )}
         />
         <hr style={{ alignSelf: 'stretch', marginBlock: 16 }} />
-        <Button
-          onPress={() => {
-            // sort the extra payments in the ui to tidy up
-            setRecurringExtraPayments((p) =>
-              sortMap(p, (a, b) => a.startingMonth - b.startingMonth),
-            );
-
-            setAmortization({
-              expected: amortize({
-                loan: {
-                  principal: amount,
-                  annualizedInterestRate: rate,
-                  years: term,
-                },
-              }),
-              actual: amortize({
-                loan: {
-                  principal: amount,
-                  annualizedInterestRate: rate,
-                  years: term,
-                },
-                recurringExtraPayments: Array.from(
-                  recurringExtraPayments.values(),
-                ),
-                oneOffExtraPayments: Array.from(oneOffExtraPayments.values()),
-              }),
-            });
-          }}
-        >
-          Calculate
-        </Button>
-        {moneySaved > 0 && <strong>Saved {formatUSD(moneySaved)}</strong>}
-      </VStack>
+        <HStack gap="md" vAlign="center">
+          <Button type="submit" variant="primary">
+            Calculate
+          </Button>
+          {moneySaved > 0 && <strong>Saved {formatUSD(moneySaved)}</strong>}
+        </HStack>
+      </Form>
       {amortization != null && (
         <div id="mortgage-table">
           <Table aria-label="Loan amortization schedule">

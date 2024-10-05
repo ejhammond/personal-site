@@ -9,6 +9,7 @@ import {
 } from 'react-aria-components';
 
 import './index.css';
+import { forwardRef } from 'react';
 
 export interface TextFieldProps extends AriaTextFieldProps {
   label?: string;
@@ -16,18 +17,20 @@ export interface TextFieldProps extends AriaTextFieldProps {
   errorMessage?: string | ((validation: ValidationResult) => string);
 }
 
-export function TextField({
-  label,
-  description,
-  errorMessage,
-  ...props
-}: TextFieldProps) {
-  return (
-    <AriaTextField {...props}>
-      <Label>{label}</Label>
-      <Input />
-      {description && <Text slot="description">{description}</Text>}
-      <FieldError>{errorMessage}</FieldError>
-    </AriaTextField>
-  );
-}
+export const TextField = forwardRef(
+  (
+    { label, description, errorMessage, ...props }: TextFieldProps,
+    ref: React.ForwardedRef<HTMLInputElement>,
+  ) => {
+    return (
+      <AriaTextField {...props}>
+        <Label>{label}</Label>
+        <Input ref={ref} />
+        {description && <Text slot="description">{description}</Text>}
+        <FieldError>{errorMessage}</FieldError>
+      </AriaTextField>
+    );
+  },
+);
+
+TextField.displayName = 'TextField';

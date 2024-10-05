@@ -1,4 +1,7 @@
-export default function debounce(fn: (...args: any[]) => any, ms: number) {
+export default function debounce(
+  fn: (...args: unknown[]) => unknown,
+  ms: number,
+) {
   let timerID: NodeJS.Timeout;
 
   return () => {
