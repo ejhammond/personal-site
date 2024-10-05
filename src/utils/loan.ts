@@ -108,9 +108,19 @@ export function amortize({
 }: AmortizeInput): Amortization {
   const months = years * 12;
 
-  const amortization: Amortization = [];
+  const prePayment = getOneOffExtraPaymentForMonth(oneOffExtraPayments, 0);
 
-  let balance = principal;
+  const amortization: Amortization = [
+    {
+      month: 0,
+      interest: 0,
+      principal: 0,
+      extra: prePayment,
+      balance: principal - prePayment,
+    },
+  ];
+
+  let balance = principal - prePayment;
   for (let i = 0; i < months; i++) {
     const month = i + 1;
 

@@ -18,7 +18,6 @@ import { createUniqueID, WithID } from '@/utils/id';
 import { removeFromMap, setInMap, sortMap } from '@/utils/map';
 import { VStack } from '@/ds/v-stack';
 import Collection from '@/ds/collection';
-import { printDurationFromMonths } from '@/utils/time';
 
 function formatUSD(value: number): string {
   return Intl.NumberFormat([], {
@@ -80,7 +79,7 @@ function OneOffExtraPaymentForm({
     <HStack vAlign="end" wrap="wrap" gap="sm">
       <NumberField
         label="Month"
-        minValue={1}
+        minValue={0}
         value={month}
         onChange={(value) => set({ id, amount, month: value })}
       />
@@ -144,6 +143,12 @@ export default function Mortgage() {
     expected: Amortization;
     actual: Amortization;
   } | null>(null);
+
+  const moneySaved =
+    amortization != null
+      ? amortization.expected.reduce((acc, { interest }) => acc + interest, 0) -
+        amortization.actual.reduce((acc, { interest }) => acc + interest, 0)
+      : 0;
 
   return (
     <>
@@ -265,15 +270,7 @@ export default function Mortgage() {
         >
           Calculate
         </Button>
-        {amortization != null &&
-          amortization.actual.length < amortization.expected.length && (
-            <span>
-              Saved{' '}
-              {printDurationFromMonths(
-                amortization.expected.length - amortization.actual.length,
-              )}
-            </span>
-          )}
+        {moneySaved > 0 && <strong>Saved {formatUSD(moneySaved)}</strong>}
       </VStack>
       {amortization != null && (
         <div id="mortgage-table">
