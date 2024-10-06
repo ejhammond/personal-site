@@ -1,5 +1,6 @@
 @import '../button/index.css';
 @import '../form/index.css';
+@import '../label/index.css';
 
 .react-aria-ColorField {
   display: flex;

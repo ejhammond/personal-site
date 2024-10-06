@@ -90,6 +90,22 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
           tags: [],
         },
         {
+          path: '/finance/mortgage/__private__/mortgage-form.tsx',
+          tags: [],
+        },
+        {
+          path: '/finance/mortgage/__private__/one-off-extra-payments-field.tsx',
+          tags: [],
+        },
+        {
+          path: '/finance/mortgage/__private__/recurring-extra-payments-field.tsx',
+          tags: [],
+        },
+        {
+          path: '/finance/mortgage/__private__/refinances-field.tsx',
+          tags: [],
+        },
+        {
           path: '/finance/mortgage/__private__/use-one-off-extra-paymentsParam.ts',
           tags: [],
         },

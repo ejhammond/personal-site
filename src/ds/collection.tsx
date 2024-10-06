@@ -7,6 +7,7 @@ import { idify } from '@/utils/id';
 import { Modal } from './modal';
 import { Dialog } from './dialog';
 import { Heading } from 'react-aria-components';
+import { Label } from './label';
 
 export default function Collection<TItem extends { id: string }>({
   itemName,
@@ -36,7 +37,7 @@ export default function Collection<TItem extends { id: string }>({
   return (
     <>
       <VStack gap="xs" hAlign="start">
-        {itemNamePlural ?? `${itemName}s`}
+        <Label>{itemNamePlural ?? `${itemName}s`}</Label>
         <ul>
           {items.map((item) => (
             <li key={item.id}>

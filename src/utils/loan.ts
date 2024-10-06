@@ -148,6 +148,8 @@ export function amortize({
   let balance = originalLoan.principal - prePayment;
   let month = 0;
   while (balance > 0) {
+    month++;
+
     const minMonthlyPayment = getMinMonthlyPayment({
       principal,
       annualizedInterestRate,
@@ -183,7 +185,6 @@ export function amortize({
       basePrincipalPayment + extraPrincipalPayment + refinancePayoff;
 
     balance = balance - principalPayment;
-    ++month;
 
     // add tolerance for floating point math
     if (balance <= 0.01) {

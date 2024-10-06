@@ -1,4 +1,5 @@
 @import '../number-field/index.css';
+@import '../label/index.css';
 
 .react-aria-Slider {
   display: grid;
