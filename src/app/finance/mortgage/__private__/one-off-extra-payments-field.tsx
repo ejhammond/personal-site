@@ -1,6 +1,5 @@
 import Collection from '@/ds/collection';
 import { NumberField } from '@/ds/number-field';
-import useAutoFocusRef from '@/ds/use-auto-focus';
 import { formatUSD } from '@/utils/currency';
 import { createUniqueID, WithID } from '@/utils/id';
 import { OneOffExtraPayment } from '@/utils/loan';
@@ -14,8 +13,6 @@ export default function OneOffExtraPaymentsField({
   add: (item: WithID<OneOffExtraPayment>) => void;
   remove: (id: string) => void;
 }) {
-  const autoFocusRef = useAutoFocusRef();
-
   return (
     <Collection<WithID<OneOffExtraPayment>>
       itemName="One-off extra payment"
@@ -30,7 +27,7 @@ export default function OneOffExtraPaymentsField({
       renderEditFormFields={({ month, id, amount }, setDraftItem) => (
         <>
           <NumberField
-            ref={autoFocusRef}
+            autoFocus
             label="Month"
             isRequired
             minValue={0}

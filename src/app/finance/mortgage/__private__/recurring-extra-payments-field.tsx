@@ -1,6 +1,5 @@
 import Collection from '@/ds/collection';
 import { NumberField } from '@/ds/number-field';
-import useAutoFocusRef from '@/ds/use-auto-focus';
 import { formatUSD } from '@/utils/currency';
 import { createUniqueID, WithID } from '@/utils/id';
 import { RecurringExtraPayment } from '@/utils/loan';
@@ -14,8 +13,6 @@ export default function RecurringExtraPaymentsField({
   add: (item: WithID<RecurringExtraPayment>) => void;
   remove: (id: string) => void;
 }) {
-  const autoFocusRef = useAutoFocusRef();
-
   return (
     <Collection<WithID<RecurringExtraPayment>>
       itemName="Recurring extra payment"
@@ -30,7 +27,7 @@ export default function RecurringExtraPaymentsField({
       renderEditFormFields={({ startingMonth, id, amount }, setDraftItem) => (
         <>
           <NumberField
-            ref={autoFocusRef}
+            autoFocus
             label="Starting month"
             isRequired
             minValue={1}

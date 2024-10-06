@@ -1,7 +1,6 @@
 import { Checkbox } from '@/ds/checkbox';
 import Collection from '@/ds/collection';
 import { NumberField } from '@/ds/number-field';
-import useAutoFocusRef from '@/ds/use-auto-focus';
 import { createUniqueID, WithID } from '@/utils/id';
 import { Refinance } from '@/utils/loan';
 import { formatPercent } from '@/utils/number';
@@ -16,8 +15,6 @@ export default function RefinancesField({
   add: (item: WithID<Refinance>) => void;
   remove: (id: string) => void;
 }) {
-  const autoFocusRef = useAutoFocusRef();
-
   return (
     <Collection<WithID<Refinance>>
       itemName="Refinance"
@@ -37,7 +34,7 @@ export default function RefinancesField({
       ) => (
         <>
           <NumberField
-            ref={autoFocusRef}
+            autoFocus
             label="Month"
             isRequired
             minValue={0}

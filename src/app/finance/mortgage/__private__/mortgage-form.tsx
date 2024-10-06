@@ -63,6 +63,7 @@ export default function MortgageForm({
       }
     >
       <NumberField
+        // using auto-focus hack bc autoFocus puts the cursor in front
         ref={autoFocusRef}
         label="Amount"
         isRequired
