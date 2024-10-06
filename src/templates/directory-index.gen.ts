@@ -72,24 +72,41 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
           path: '/finance/mortgage/page.tsx',
           tags: ['page'],
         },
+      ],
+      subDirectories: ['/finance/mortgage/__private__'],
+    },
+  ],
+  [
+    '/finance/mortgage/__private__',
+    {
+      path: '/finance/mortgage/__private__',
+      files: [
         {
-          path: '/finance/mortgage/use-one-off-extra-paymentsParam.ts',
+          path: '/finance/mortgage/__private__/amortization-table.tsx',
           tags: [],
         },
         {
-          path: '/finance/mortgage/use-original-loan-param.ts',
+          path: '/finance/mortgage/__private__/content.tsx',
           tags: [],
         },
         {
-          path: '/finance/mortgage/use-recurring-extra-payments-param.ts',
+          path: '/finance/mortgage/__private__/use-one-off-extra-paymentsParam.ts',
           tags: [],
         },
         {
-          path: '/finance/mortgage/use-refinances-param.ts',
+          path: '/finance/mortgage/__private__/use-original-loan-param.ts',
           tags: [],
         },
         {
-          path: '/finance/mortgage/use-save-params.ts',
+          path: '/finance/mortgage/__private__/use-recurring-extra-payments-param.ts',
+          tags: [],
+        },
+        {
+          path: '/finance/mortgage/__private__/use-refinances-param.ts',
+          tags: [],
+        },
+        {
+          path: '/finance/mortgage/__private__/use-save-params.ts',
           tags: [],
         },
       ],
