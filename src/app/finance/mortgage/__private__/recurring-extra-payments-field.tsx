@@ -50,7 +50,7 @@ export default function RecurringExtraPaymentsField({
             }
           />
           <CurrencyField
-            label="Amount"
+            label="Amount per month"
             isRequired
             hasSelectOnFocus
             value={amount}

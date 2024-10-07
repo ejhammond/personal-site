@@ -1,12 +1,23 @@
+import { Card } from '@/ds/card';
 import { formatUSD } from '@/utils/currency';
-import { formatMonths } from '@/utils/date';
+import { addMonths, formatMonths, MonthAndYear } from '@/utils/date';
 import { Amortizations } from '@/utils/loan';
+import { Text } from 'react-aria-components';
+
+function formatCompact(number: number): string {
+  return Intl.NumberFormat('en-US', {
+    notation: 'compact',
+    maximumFractionDigits: 1,
+  }).format(number);
+}
 
 export default function LoanStats({
+  startingMonthAndYear,
   amortizationsForOriginalLoan,
   amortizationsWithRefinances,
   amortizationsWithRefinancesAndPrepayments,
 }: {
+  startingMonthAndYear: MonthAndYear;
   amortizationsForOriginalLoan: Amortizations;
   amortizationsWithRefinances: Amortizations;
   amortizationsWithRefinancesAndPrepayments: Amortizations;
@@ -66,42 +77,66 @@ export default function LoanStats({
 
   const durationDifference = expectedDurationInMonths - durationInMonths;
 
+  const endDate = addMonths(startingMonthAndYear, durationInMonths);
+
   return (
-    <dl>
-      <dt>Principal paid</dt>
-      <dd>{formatUSD(totalPrincipalPaid)}</dd>
-      <dt>Expected interest paid</dt>
-      <dd>{formatUSD(expectedTotalInterestPaidForOriginalLoan)}</dd>
-      <dt>Actual interest paid</dt>
-      <dd>{formatUSD(totalInterestPaid)}</dd>
-      {interestSavings != 0 && (
-        <>
-          <dt>Interest savings</dt>
-          <dd>{formatUSD(interestSavings)}</dd>
-        </>
-      )}
-      {interestSavingsDueToRefinances != 0 && (
-        <>
-          <dt>Interest savings due to refinances</dt>
-          <dd>{formatUSD(interestSavingsDueToRefinances)}</dd>
-        </>
-      )}
-      {interestSavingsDueToPrepayments !== 0 && (
-        <>
-          <dt>Interest savings due to prepayments</dt>
-          <dd>{formatUSD(interestSavingsDueToPrepayments)}</dd>
-        </>
-      )}
-      <dt>Expected duration</dt>
-      <dd>{formatMonths(expectedDurationInMonths)}</dd>
-      <dt>Actual duration</dt>
-      <dd>{formatMonths(durationInMonths)}</dd>
-      {durationDifference !== 0 && (
-        <>
-          <dt>Duration difference</dt>
-          <dd>{formatMonths(durationDifference)}</dd>
-        </>
-      )}
-    </dl>
+    <div
+      style={{
+        display: 'grid',
+        gap: 16,
+        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+      }}
+    >
+      <Card>
+        <h3>Principal paid</h3>
+        <div className="content">
+          <div className="metric">
+            <Text slot="metric-compact">
+              ${formatCompact(totalPrincipalPaid)}
+            </Text>
+            <Text slot="supporting">{formatUSD(totalPrincipalPaid)}</Text>
+          </div>
+        </div>
+      </Card>
+      <Card>
+        <h3>Interest saved</h3>
+        <div className="content">
+          <div className="metric" style={{ marginBlockEnd: 16 }}>
+            <Text slot="metric-compact">${formatCompact(interestSavings)}</Text>
+            <Text slot="supporting">{formatUSD(interestSavings)}</Text>
+          </div>
+          <div>
+            {interestSavingsDueToRefinances !== 0 && (
+              <Text slot="supporting">
+                From refinance:{' '}
+                <strong>{formatUSD(interestSavingsDueToRefinances)}</strong>
+              </Text>
+            )}
+            {interestSavingsDueToPrepayments !== 0 && (
+              <Text slot="supporting">
+                From prepayment:{' '}
+                <strong>{formatUSD(interestSavingsDueToPrepayments)}</strong>
+              </Text>
+            )}
+          </div>
+        </div>
+      </Card>
+      <Card>
+        <h3>Time saved</h3>
+        <div className="content">
+          <div className="metric">
+            <Text slot="metric-compact">
+              {formatMonths(durationDifference, { compact: true })}
+            </Text>
+          </div>
+          <Text slot="supporting">
+            Mortgage free:{' '}
+            <strong>
+              {endDate.month} {endDate.year}
+            </strong>
+          </Text>
+        </div>
+      </Card>
+    </div>
   );
 }

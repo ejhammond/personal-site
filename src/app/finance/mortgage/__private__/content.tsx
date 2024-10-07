@@ -94,6 +94,7 @@ export default function Content() {
           <VStack gap="md">
             <h3>Statistics</h3>
             <LoanStats
+              startingMonthAndYear={startingMonthAndYear}
               amortizationsForOriginalLoan={amortizations.base}
               amortizationsWithRefinances={amortizations.withRefinances}
               amortizationsWithRefinancesAndPrepayments={

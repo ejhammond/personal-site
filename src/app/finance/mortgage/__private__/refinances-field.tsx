@@ -8,6 +8,7 @@ import { plural } from '@/utils/string';
 import MonthAndYearField from '../../../../ds/month-and-year-field';
 import { addMonths, MonthAndYear, monthDifference } from '@/utils/date';
 import { CurrencyField } from '@/ds/currency-field';
+import { formatUSD } from '@/utils/currency';
 
 export default function RefinancesField({
   startingMonthAndYear,
@@ -167,9 +168,10 @@ export default function RefinancesField({
         const monthAndYear = addMonths(startingMonthAndYear, item.month);
         return (
           <span>
+            {monthAndYear.month} {monthAndYear.year} -{' '}
+            {item.principal != null ? `${formatUSD(item.principal)} @ ` : ''}
             {formatPercent(item.annualizedInterestRate, 3)} for {item.years}{' '}
-            {plural('year', 'years', item.years)} in {monthAndYear.month}{' '}
-            {monthAndYear.year}
+            {plural('year', 'years', item.years)}
           </span>
         );
       }}

@@ -103,11 +103,18 @@ export function monthAndYearFromDate(date: Date): MonthAndYear {
   };
 }
 
-export function formatMonths(months: number): string {
+export function formatMonths(
+  months: number,
+  options?: { compact?: boolean },
+): string {
+  const { compact = false } = options ?? {};
+
   const y = Math.floor(months / 12);
   const m = months % 12;
 
+  const yearsLabel = compact ? 'Y' : ` ${plural('year', 'years', y)}`;
+  const monthsLabel = compact ? 'm' : ` ${plural('month', 'months', m)}`;
   return y > 0
-    ? `${y} ${plural('year', 'years', y)}${m > 0 ? ` and ${m} ${plural('month', 'months', m)}` : ''}`
-    : `${m} ${plural('month', 'months', m)}`;
+    ? `${y}${yearsLabel}${m > 0 ? `${compact ? ' ' : ' and '}${m}${monthsLabel}` : ''}`
+    : `${m}${monthsLabel}`;
 }
