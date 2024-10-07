@@ -30,7 +30,7 @@ export default function MonthAndYearField({
   return (
     <div>
       <Label>{label}</Label>
-      <Group style={{ display: 'flex', gap: '8px' }}>
+      <Group style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
         <Select
           autoFocus={autoFocus}
           isRequired={isRequired}

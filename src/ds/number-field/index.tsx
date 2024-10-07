@@ -41,6 +41,11 @@ export const NumberField = forwardRef(
           {hasButtons && <Button slot="decrement">-</Button>}
           <Input
             ref={ref}
+            onContextMenu={(event) => {
+              if (hasSelectOnFocus) {
+                event.preventDefault();
+              }
+            }}
             onFocus={(event) => {
               if (hasSelectOnFocus) {
                 event.currentTarget.select();

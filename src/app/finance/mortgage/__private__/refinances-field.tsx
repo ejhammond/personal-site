@@ -42,6 +42,7 @@ export default function RefinancesField({
             label="Month"
             isRequired
             autoFocus
+            hasSelectOnFocus
             minValue={startingMonthAndYear}
             value={addMonths(startingMonthAndYear, month)}
             onChange={(monthAndYear) =>
