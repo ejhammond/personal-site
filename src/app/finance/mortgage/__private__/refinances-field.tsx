@@ -39,7 +39,7 @@ export default function RefinancesField({
       ) => (
         <>
           <MonthAndYearField
-            label="Month"
+            label="Starting date"
             isRequired
             autoFocus
             hasSelectOnFocus

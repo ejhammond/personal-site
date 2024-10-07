@@ -42,6 +42,7 @@ export const NumberField = forwardRef(
           <Input
             ref={ref}
             onContextMenu={(event) => {
+              console.log(event);
               if (hasSelectOnFocus) {
                 event.preventDefault();
               }

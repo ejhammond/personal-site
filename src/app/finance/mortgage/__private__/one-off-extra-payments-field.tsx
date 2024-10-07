@@ -32,7 +32,7 @@ export default function OneOffExtraPaymentsField({
       renderEditFormFields={({ month, id, amount }, setDraftItem) => (
         <>
           <MonthAndYearField
-            label="Month"
+            label="Date"
             autoFocus
             isRequired
             hasSelectOnFocus

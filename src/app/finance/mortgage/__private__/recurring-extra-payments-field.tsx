@@ -32,7 +32,7 @@ export default function RecurringExtraPaymentsField({
       renderEditFormFields={({ startingMonth, id, amount }, setDraftItem) => (
         <>
           <MonthAndYearField
-            label="Starting month"
+            label="Starting date"
             isRequired
             autoFocus
             hasSelectOnFocus
