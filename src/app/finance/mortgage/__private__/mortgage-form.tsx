@@ -65,6 +65,7 @@ export default function MortgageForm({
       <NumberField
         label="Amount"
         isRequired
+        hasSelectOnFocus
         minValue={0}
         value={originalLoan.principal}
         onChange={(principal) => setOriginalLoan((p) => ({ ...p, principal }))}
@@ -80,6 +81,7 @@ export default function MortgageForm({
         label="Term"
         minValue={1}
         isRequired
+        hasSelectOnFocus
         value={originalLoan.years}
         onChange={(years) => setOriginalLoan((p) => ({ ...p, years }))}
         formatOptions={{
@@ -91,6 +93,7 @@ export default function MortgageForm({
       <NumberField
         label="Rate"
         isRequired
+        hasSelectOnFocus
         minValue={0}
         maxValue={1}
         value={originalLoan.annualizedInterestRate}
@@ -101,6 +104,12 @@ export default function MortgageForm({
           style: 'percent',
           minimumFractionDigits: 3,
         }}
+      />
+      <RefinancesField
+        startingMonthAndYear={startingMonthAndYear}
+        items={refinances}
+        add={addRefinance}
+        remove={removeRefinance}
       />
       <RecurringExtraPaymentsField
         startingMonthAndYear={startingMonthAndYear}
@@ -113,12 +122,6 @@ export default function MortgageForm({
         items={oneOffExtraPayments}
         add={addOneOffExtraPayment}
         remove={removeOneOffExtraPayment}
-      />
-      <RefinancesField
-        startingMonthAndYear={startingMonthAndYear}
-        items={refinances}
-        add={addRefinance}
-        remove={removeRefinance}
       />
     </Form>
   );

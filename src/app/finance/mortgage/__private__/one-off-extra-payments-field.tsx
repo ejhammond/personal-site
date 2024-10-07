@@ -35,17 +35,10 @@ export default function OneOffExtraPaymentsField({
             label="Month"
             autoFocus
             isRequired
+            hasSelectOnFocus
             minValue={startingMonthAndYear}
             value={addMonths(startingMonthAndYear, month)}
             onChange={(monthAndYear) => {
-              console.log(
-                monthAndYear,
-                monthDifference(startingMonthAndYear, monthAndYear),
-                addMonths(
-                  startingMonthAndYear,
-                  monthDifference(startingMonthAndYear, monthAndYear),
-                ),
-              );
               setDraftItem({
                 id,
                 amount,
@@ -56,6 +49,7 @@ export default function OneOffExtraPaymentsField({
           <NumberField
             label="Amount"
             isRequired
+            hasSelectOnFocus
             minValue={0}
             value={amount}
             onChange={(value) => setDraftItem({ id, amount: value, month })}

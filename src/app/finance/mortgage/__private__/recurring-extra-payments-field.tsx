@@ -35,6 +35,7 @@ export default function RecurringExtraPaymentsField({
             label="Starting month"
             isRequired
             autoFocus
+            hasSelectOnFocus
             minValue={startingMonthAndYear}
             value={addMonths(startingMonthAndYear, startingMonth)}
             onChange={(monthAndYear) =>
@@ -51,6 +52,7 @@ export default function RecurringExtraPaymentsField({
           <NumberField
             label="Amount"
             isRequired
+            hasSelectOnFocus
             minValue={0}
             value={amount}
             onChange={(value) =>

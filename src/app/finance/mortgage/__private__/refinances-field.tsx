@@ -58,6 +58,7 @@ export default function RefinancesField({
             label="Term"
             minValue={1}
             isRequired
+            hasSelectOnFocus
             value={years}
             onChange={(value) =>
               setDraftItem({
@@ -77,6 +78,7 @@ export default function RefinancesField({
           <NumberField
             label="Rate"
             isRequired
+            hasSelectOnFocus
             minValue={0}
             maxValue={1}
             value={annualizedInterestRate}
@@ -121,6 +123,7 @@ export default function RefinancesField({
           {principal != null && (
             <NumberField
               label="Amount"
+              hasSelectOnFocus
               minValue={0}
               value={principal ?? NaN}
               onChange={(value) =>

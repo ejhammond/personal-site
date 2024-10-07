@@ -18,6 +18,7 @@ export interface NumberFieldProps extends AriaNumberFieldProps {
   description?: string;
   errorMessage?: string | ((validation: ValidationResult) => string);
   hasButtons?: boolean;
+  hasSelectOnFocus?: boolean;
 }
 
 export const NumberField = forwardRef(
@@ -27,6 +28,8 @@ export const NumberField = forwardRef(
       description,
       errorMessage,
       hasButtons = false,
+      hasSelectOnFocus = false,
+      onFocus,
       ...props
     }: NumberFieldProps,
     ref: React.ForwardedRef<HTMLInputElement>,
@@ -36,7 +39,15 @@ export const NumberField = forwardRef(
         <Label>{label}</Label>
         <Group>
           {hasButtons && <Button slot="decrement">-</Button>}
-          <Input ref={ref} />
+          <Input
+            ref={ref}
+            onFocus={(event) => {
+              if (hasSelectOnFocus) {
+                event.currentTarget.select();
+              }
+              onFocus?.(event);
+            }}
+          />
           {hasButtons && <Button slot="increment">+</Button>}
         </Group>
         {description && <Text slot="description">{description}</Text>}

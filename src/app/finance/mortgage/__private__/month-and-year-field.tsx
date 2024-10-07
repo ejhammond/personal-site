@@ -17,6 +17,7 @@ export default function MonthAndYearField({
   minValue,
   isRequired,
   autoFocus,
+  hasSelectOnFocus = false,
 }: {
   label: string;
   value: MonthAndYear;
@@ -24,6 +25,7 @@ export default function MonthAndYearField({
   minValue?: MonthAndYear;
   isRequired?: boolean;
   autoFocus?: boolean;
+  hasSelectOnFocus?: boolean;
 }) {
   return (
     <div>
@@ -32,6 +34,7 @@ export default function MonthAndYearField({
         <Select
           autoFocus={autoFocus}
           isRequired={isRequired}
+          style={{ flexShrink: 0 }}
           aria-label={`${label} month`}
           selectedKey={value.month}
           // @ts-expect-error - I promise that each key is a Month
@@ -64,6 +67,7 @@ export default function MonthAndYearField({
         <NumberField
           aria-label={`${label} month`}
           isRequired={isRequired}
+          hasSelectOnFocus={hasSelectOnFocus}
           value={value.year}
           onChange={(year) => {
             if (

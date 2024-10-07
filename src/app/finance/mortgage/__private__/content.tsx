@@ -33,6 +33,7 @@ export default function Content() {
         <MonthAndYearField
           label="Starting date"
           isRequired
+          hasSelectOnFocus
           value={startingMonthAndYear}
           onChange={setStartingMonthAndYear}
         />
