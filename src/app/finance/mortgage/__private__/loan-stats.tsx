@@ -56,7 +56,7 @@ export default function LoanStats({
       <dd>{formatUSD(totalPrincipalPaid)}</dd>
       <dt>Expected interest paid</dt>
       <dd>{formatUSD(expectedTotalInterestPaidForOriginalLoan)}</dd>
-      <dt>Actual total interest paid</dt>
+      <dt>Actual interest paid</dt>
       <dd>{formatUSD(totalInterestPaid)}</dd>
       {interestSavingsDueToRefinances != 0 && (
         <>
