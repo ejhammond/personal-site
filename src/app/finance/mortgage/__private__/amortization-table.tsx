@@ -16,6 +16,7 @@ export default function AmortizationTable({
       <Table aria-label="Loan amortization schedule">
         <TableHeader>
           <Column isRowHeader>Date</Column>
+          <Column>Payment</Column>
           <Column>Interest</Column>
           <Column>Principal</Column>
           <Column>Extra</Column>
@@ -37,6 +38,11 @@ export default function AmortizationTable({
                 <Row key={month}>
                   <Column>
                     {monthAndYear.year} {monthAndYear.month}
+                  </Column>
+                  <Column>
+                    {formatUSD(
+                      interest + principal + extra + refinanceDisbursement,
+                    )}
                   </Column>
                   <Column>{formatUSD(interest)}</Column>
                   <Column>{formatUSD(principal)}</Column>
