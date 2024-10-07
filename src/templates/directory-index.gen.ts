@@ -90,6 +90,10 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
           tags: [],
         },
         {
+          path: '/finance/mortgage/__private__/loan-stats.tsx',
+          tags: [],
+        },
+        {
           path: '/finance/mortgage/__private__/month-and-year-field.tsx',
           tags: [],
         },

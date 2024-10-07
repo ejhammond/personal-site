@@ -16,3 +16,11 @@
     font-size: 0.8rem;
   }
 }
+
+dt {
+  font-weight: bold;
+}
+
+dd {
+  padding-inline-start: 8px;
+}

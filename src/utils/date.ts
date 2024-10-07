@@ -1,3 +1,5 @@
+import { plural } from './string';
+
 export type Month =
   | 'Jan'
   | 'Feb'
@@ -99,4 +101,13 @@ export function monthAndYearFromDate(date: Date): MonthAndYear {
     month: monthFromNumber(date.getMonth() + 1),
     year: date.getFullYear(),
   };
+}
+
+export function formatMonths(months: number): string {
+  const y = Math.floor(months / 12);
+  const m = months % 12;
+
+  return y > 0
+    ? `${y} ${plural('year', 'years', y)}${m > 0 ? ` and ${m} ${plural('month', 'months', m)}` : ''}`
+    : `${m} ${plural('month', 'months', m)}`;
 }

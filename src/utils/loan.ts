@@ -117,6 +117,7 @@ export type Amortization = {
   balance: number;
   interest: number;
   extra: number;
+  refinanceDisbursement?: number;
 }[];
 
 export type Amortizations = {
@@ -182,43 +183,43 @@ export function amortize({
     const extraPrincipalPayment = recurringExtraPayment + oneOffExtraPayment;
 
     const refinanceNextMonth = getRefinanceForMonth(refinances, month + 1);
-    let refinancePayoff = 0;
+    let refinanceDisbursement = 0;
     if (refinanceNextMonth != null) {
       // if we're refinancing to a new loan next month, we'll have to pay off
       // this loan completely first
-      refinancePayoff = balance - minPrincipalPayment;
+      refinanceDisbursement = balance - minPrincipalPayment;
     }
 
     const principalPayment =
-      minPrincipalPayment + extraPrincipalPayment + refinancePayoff;
+      minPrincipalPayment + extraPrincipalPayment + refinanceDisbursement;
 
     // make the payment
     balance = balance - principalPayment;
 
     if (balance <= 0) {
-      // after we've made the payment, we have to check if we overpaid
-      // we "add" the balance in case it went negative. This will "refund" some principal
-      const finalMonthTotalPrincipalPayment = principalPayment + balance;
+      // if balance is negative, we get a refund!
+      const refund = balance === 0 ? 0 : balance * -1;
 
-      // if we got a "refund" for overpaying, we'll need to see if our min
-      // principal payment is actually lower this month
-      const finalMonthMinPrincipalPayment = Math.min(
+      const actualPrincipalPayment = principalPayment - refund;
+
+      // check if the actual payment was less than the min payment
+      const actualMinPrincipalPayment = Math.min(
         minPrincipalPayment,
-        finalMonthTotalPrincipalPayment,
+        actualPrincipalPayment,
       );
 
-      // if we paid any extra principal this month, we need to make sure that it
-      // reflects the refund as well. This will ensure that the loan gets paid
-      // down to exactly 0 in the amortization even if larger payments were made
-      const finalMonthExtraPrincipalPayment =
-        finalMonthTotalPrincipalPayment - finalMonthMinPrincipalPayment;
+      const actualExtraPrincipalPayment =
+        actualPrincipalPayment -
+        actualMinPrincipalPayment -
+        refinanceDisbursement;
 
       amortization.push({
         month,
         interest: interestPayment,
-        principal: finalMonthMinPrincipalPayment,
-        extra: finalMonthExtraPrincipalPayment,
+        principal: actualMinPrincipalPayment,
+        extra: actualExtraPrincipalPayment,
         balance: Math.max(balance, 0),
+        refinanceDisbursement,
       });
 
       amortizations.push({
@@ -234,7 +235,7 @@ export function amortize({
       if (refinanceNextMonth != null) {
         // if we don't have an explicit principal for the refinance, we'll
         // assume that we're refinancing the exact previous balance
-        principal = refinanceNextMonth.principal ?? refinancePayoff;
+        principal = refinanceNextMonth.principal ?? refinanceDisbursement;
         years = refinanceNextMonth.years;
         annualizedInterestRate = refinanceNextMonth.annualizedInterestRate;
         balance = principal - extraPrincipalPayment;
@@ -264,6 +265,7 @@ export function amortize({
       principal: minPrincipalPayment,
       extra: extraPrincipalPayment,
       balance,
+      refinanceDisbursement,
     });
   }
 

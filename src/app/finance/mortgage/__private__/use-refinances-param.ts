@@ -9,8 +9,8 @@ export const REFINANCES_PARAM = 'refinances-v1';
 
 const refinanceSchema = z.object({
   id: z.string(),
-  principal: z.number().positive().nullable(),
-  annualizedInterestRate: z.number().positive().max(1),
+  principal: z.number().min(0).nullable(),
+  annualizedInterestRate: z.number().min(0).max(1),
   years: z.number().positive(),
   month: z.number().positive(),
 });

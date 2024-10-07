@@ -23,7 +23,14 @@ export default function AmortizationTable({
         </TableHeader>
         <TableBody>
           {amortization.map(
-            ({ month, interest, principal, balance, extra }) => {
+            ({
+              month,
+              interest,
+              principal,
+              balance,
+              extra,
+              refinanceDisbursement = 0,
+            }) => {
               const monthAndYear = addMonths(startingMonthAndYear, month);
 
               return (
@@ -33,7 +40,7 @@ export default function AmortizationTable({
                   </Column>
                   <Column>{formatUSD(interest)}</Column>
                   <Column>{formatUSD(principal)}</Column>
-                  <Column>{formatUSD(extra)}</Column>
+                  <Column>{formatUSD(extra + refinanceDisbursement)}</Column>
                   <Column>{formatUSD(balance)}</Column>
                 </Row>
               );
