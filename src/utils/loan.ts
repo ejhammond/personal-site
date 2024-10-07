@@ -6,6 +6,7 @@ export type Loan = {
   principal: number;
   annualizedInterestRate: number;
   years: number;
+  prePayment: number;
 };
 
 /*
@@ -15,7 +16,7 @@ function getMinMonthlyPayment({
   principal,
   annualizedInterestRate,
   years,
-}: Loan) {
+}: Pick<Loan, 'principal' | 'annualizedInterestRate' | 'years'>) {
   const months = years * 12;
 
   // if the interest rate is 0, then the formula will fail
@@ -94,6 +95,7 @@ export type Refinance = {
   principal: number | null;
   annualizedInterestRate: number;
   years: number;
+  prePayment: number;
   month: number;
 };
 
@@ -134,28 +136,24 @@ export function amortize({
   oneOffExtraPayments = [],
   refinances = [],
 }: AmortizeInput): Amortizations {
-  const prePayment = getOneOffExtraPaymentForMonth(oneOffExtraPayments, 0);
+  const amortizations: {
+    loan: Loan;
+    amortization: Amortization;
+  }[] = [];
 
-  const amortizations: { loan: Loan; amortization: Amortization }[] = [];
+  let amortization: Amortization = [];
 
-  let amortization: Amortization = [
-    {
-      month: 0,
-      interest: 0,
-      principal: 0,
-      extra: prePayment,
-      balance: originalLoan.principal - prePayment,
-    },
-  ];
+  let currentLoan = originalLoan;
+  let currentBalance = originalLoan.principal - originalLoan.prePayment;
+  let currentMonth = -1; // start at -1 so the first iteration bumps to 0
 
-  let principal = originalLoan.principal;
-  let years = originalLoan.years;
-  let annualizedInterestRate = originalLoan.annualizedInterestRate;
+  // iteratively calculate payments until the balance is 0 and there are no
+  // future refinances
+  while (currentBalance > 0 || refinances.some((r) => r.month > currentMonth)) {
+    currentMonth++;
 
-  let balance = originalLoan.principal - prePayment;
-  let month = 0;
-  while (balance > 0 || refinances.some((r) => r.month > month)) {
-    month++;
+    const { principal, annualizedInterestRate, years, prePayment } =
+      currentLoan;
 
     const minMonthlyPayment = getMinMonthlyPayment({
       principal,
@@ -164,7 +162,7 @@ export function amortize({
     });
 
     const interestPayment = getAccruedInterest({
-      principal: balance,
+      principal: currentBalance,
       annualizedInterestRate,
     });
 
@@ -172,101 +170,106 @@ export function amortize({
 
     const recurringExtraPayment = getRecurringExtraPaymentForMonth(
       recurringExtraPayments,
-      month,
+      currentMonth,
     );
 
     const oneOffExtraPayment = getOneOffExtraPaymentForMonth(
       oneOffExtraPayments,
-      month,
+      currentMonth,
     );
 
     const extraPrincipalPayment = recurringExtraPayment + oneOffExtraPayment;
 
-    const refinanceNextMonth = getRefinanceForMonth(refinances, month + 1);
-    let refinanceDisbursement = 0;
-    if (refinanceNextMonth != null) {
-      // if we're refinancing to a new loan next month, we'll have to pay off
-      // this loan completely first
-      refinanceDisbursement = balance - minPrincipalPayment;
-    }
-
-    const principalPayment =
-      minPrincipalPayment + extraPrincipalPayment + refinanceDisbursement;
+    const principalPayment = minPrincipalPayment + extraPrincipalPayment;
 
     // make the payment
-    balance = balance - principalPayment;
+    currentBalance = currentBalance - principalPayment;
 
-    if (balance <= 0) {
-      // if balance is negative, we get a refund!
-      const refund = balance === 0 ? 0 : balance * -1;
+    /**
+     * Refinancing
+     *
+     * If we are refinancing to a new loan NEXT month, then the current loan
+     * will be paid off THIS month. The new loan will pay the remaining balance
+     * on the current loan after the current month's payment. Then we'll start
+     * paying down the new loan.
+     */
+    const refinanceNextMonth = getRefinanceForMonth(
+      refinances,
+      currentMonth + 1,
+    );
+    let refinanceDisbursement = 0;
+    if (refinanceNextMonth != null) {
+      // we'll take the new loan principal and apply it directly to the current
+      // loan as a payment. If the new loan does not have an explicit principal,
+      // we'll assume that we just financed the exact remaining balance from the
+      // current loan
+      refinanceDisbursement = refinanceNextMonth.principal ?? currentBalance;
+      currentBalance -= refinanceDisbursement;
 
-      const actualPrincipalPayment = principalPayment - refund;
-
-      // check if the actual payment was less than the min payment
-      const actualMinPrincipalPayment = Math.min(
-        minPrincipalPayment,
-        actualPrincipalPayment,
-      );
-
-      const actualExtraPrincipalPayment =
-        actualPrincipalPayment -
-        actualMinPrincipalPayment -
-        refinanceDisbursement;
-
-      amortization.push({
-        month,
-        interest: interestPayment,
-        principal: actualMinPrincipalPayment,
-        extra: actualExtraPrincipalPayment,
-        balance: Math.max(balance, 0),
-        refinanceDisbursement,
-      });
-
-      amortizations.push({
-        loan: {
-          principal,
-          annualizedInterestRate,
-          years,
-        },
-        amortization,
-      });
-
-      // if we're refinancing next month, we'll keep iterating with new values
-      if (refinanceNextMonth != null) {
-        // if we don't have an explicit principal for the refinance, we'll
-        // assume that we're refinancing the exact previous balance
-        principal = refinanceNextMonth.principal ?? refinanceDisbursement;
-        years = refinanceNextMonth.years;
-        annualizedInterestRate = refinanceNextMonth.annualizedInterestRate;
-        balance = principal - extraPrincipalPayment;
-
-        amortization = [
-          {
-            month,
-            principal: 0,
-            interest: 0,
-            // since the new loan starts next month, there will be a lump-sum
-            // payoff for the current loan. Any extra payments that were
-            // scheduled for this month will be applied to the new loan instead
-            extra: extraPrincipalPayment,
-            balance,
-          },
-        ];
-        continue;
-      } else {
-        // otherwise we're done
-        break;
+      if (roundCurrency(currentBalance) > 0) {
+        throw new Error('Refinance amount did not cover remaining balance.');
       }
     }
 
+    // if we haven't paid off the loan yet, continue to the next month
+    if (roundCurrency(currentBalance) > 0) {
+      amortization.push({
+        month: currentMonth,
+        interest: interestPayment,
+        principal: minPrincipalPayment,
+        extra: extraPrincipalPayment,
+        balance: currentBalance,
+        refinanceDisbursement,
+      });
+      continue;
+    }
+
+    // if we got here, then the loan is paid off!
+
+    // if balance is negative, then we overpaid and we get a refund
+    const refund = currentBalance === 0 ? 0 : currentBalance * -1;
+    currentBalance = 0;
+
+    // final payment
     amortization.push({
-      month,
+      month: currentMonth,
       interest: interestPayment,
       principal: minPrincipalPayment,
-      extra: extraPrincipalPayment,
-      balance,
+      extra: extraPrincipalPayment - refund,
+      balance: currentBalance,
       refinanceDisbursement,
     });
+
+    // store the full amortization
+    amortizations.push({
+      loan: {
+        principal,
+        annualizedInterestRate,
+        years,
+        prePayment,
+      },
+      amortization,
+    });
+
+    // if we're refinancing next month, we'll keep iterating with new values
+    if (refinanceNextMonth != null) {
+      currentLoan = {
+        // earlier, we calculated the refinance disbursement based on the
+        // specified refinance.principal OR implicit principal from the current
+        // loan balance
+        principal: refinanceDisbursement,
+        years: refinanceNextMonth.years,
+        annualizedInterestRate: refinanceNextMonth.annualizedInterestRate,
+        prePayment: refinanceNextMonth.prePayment,
+      };
+      currentBalance = refinanceDisbursement - refinanceNextMonth.prePayment;
+
+      amortization = [];
+      continue;
+    } else {
+      // otherwise we're done
+      break;
+    }
   }
 
   return amortizations;

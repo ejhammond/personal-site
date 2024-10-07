@@ -1,0 +1,22 @@
+.month-and-year-field {
+  width: 100%;
+
+  .react-aria-Group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .react-aria-Select {
+    flex-shrink: 0;
+  }
+
+  .react-aria-NumberField {
+    flex-basis: 0;
+    flex-grow: 1;
+  }
+
+  [slot='description'] {
+    font-size: 12px;
+  }
+}

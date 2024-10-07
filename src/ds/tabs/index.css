@@ -27,7 +27,7 @@
   cursor: default;
   outline: none;
   position: relative;
-  color: var(--text-color-base);
+  color: var(--text-color-alt);
   transition: color 200ms;
   --border-color: transparent;
   forced-color-adjust: none;

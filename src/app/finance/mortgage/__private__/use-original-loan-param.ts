@@ -9,6 +9,7 @@ const originalLoanSchema = z.object({
   principal: z.number().positive().optional(),
   annualizedInterestRate: z.number().positive().max(1).optional(),
   years: z.number().positive().optional(),
+  prePayment: z.number().min(0).optional(),
 });
 
 export function serializeOriginalLoan(originalLoan: Loan): string {
@@ -43,6 +44,7 @@ export default function useOriginalLoanParam() {
     principal: originalLoanParam?.principal ?? 100000,
     years: originalLoanParam?.years ?? 30,
     annualizedInterestRate: originalLoanParam?.annualizedInterestRate ?? 0.055,
+    prePayment: originalLoanParam?.prePayment ?? 0,
   });
 
   return {

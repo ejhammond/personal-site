@@ -47,7 +47,7 @@
     border: none;
     padding: 0;
     margin-left: 8px;
-    color: var(--text-color-base);
+    color: var(--text-color-alt);
     transition: color 200ms;
     outline: none;
     font-size: 0.95em;

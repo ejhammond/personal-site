@@ -1,4 +1,4 @@
-import { WithID } from '@/utils/id';
+import { createUniqueID, WithID } from '@/utils/id';
 import { Refinance } from '@/utils/loan';
 import { arrayToMap, removeFromMap, setInMap } from '@/utils/map';
 import { useSearchParams } from 'next/navigation';
@@ -8,11 +8,14 @@ import { z } from 'zod';
 export const REFINANCES_PARAM = 'refinances-v1';
 
 const refinanceSchema = z.object({
-  id: z.string(),
-  principal: z.number().min(0).nullable(),
-  annualizedInterestRate: z.number().min(0).max(1),
-  years: z.number().positive(),
+  // required
   month: z.number().positive(),
+  years: z.number().positive(),
+  annualizedInterestRate: z.number().min(0).max(1),
+  // optional
+  id: z.string().optional(),
+  principal: z.number().min(0).optional().nullable(),
+  prePayment: z.number().min(0).optional(),
 });
 
 export function serializeRefinances(refinances: WithID<Refinance>[]): string {
@@ -30,7 +33,24 @@ function getFromParams(params: URLSearchParams): WithID<Refinance>[] | null {
     const parsed = z.array(refinanceSchema).safeParse(data);
 
     if (parsed.success) {
-      return parsed.data;
+      return parsed.data.map(
+        ({
+          id,
+          years,
+          month,
+          principal,
+          prePayment,
+          annualizedInterestRate,
+        }) => ({
+          month,
+          annualizedInterestRate,
+          years,
+          // optional in param
+          id: id ?? createUniqueID(),
+          principal: principal ?? null,
+          prePayment: prePayment ?? 0,
+        }),
+      );
     }
 
     return null;

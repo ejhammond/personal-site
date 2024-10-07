@@ -1,10 +1,10 @@
 import Collection from '@/ds/collection';
-import { NumberField } from '@/ds/number-field';
 import { formatUSD } from '@/utils/currency';
 import { createUniqueID, WithID } from '@/utils/id';
 import { OneOffExtraPayment } from '@/utils/loan';
-import MonthAndYearField from './month-and-year-field';
+import MonthAndYearField from '../../../../ds/month-and-year-field';
 import { addMonths, MonthAndYear, monthDifference } from '@/utils/date';
+import { CurrencyField } from '@/ds/currency-field';
 
 export default function OneOffExtraPaymentsField({
   startingMonthAndYear,
@@ -46,20 +46,12 @@ export default function OneOffExtraPaymentsField({
               });
             }}
           />
-          <NumberField
+          <CurrencyField
             label="Amount"
             isRequired
             hasSelectOnFocus
-            minValue={0}
             value={amount}
             onChange={(value) => setDraftItem({ id, amount: value, month })}
-            formatOptions={{
-              style: 'currency',
-              currencySign: 'standard',
-              currency: 'USD',
-              currencyDisplay: 'symbol',
-              maximumFractionDigits: 2,
-            }}
           />
         </>
       )}

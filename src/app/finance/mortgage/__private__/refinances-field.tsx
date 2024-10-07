@@ -5,8 +5,9 @@ import { createUniqueID, WithID } from '@/utils/id';
 import { Refinance } from '@/utils/loan';
 import { formatPercent } from '@/utils/number';
 import { plural } from '@/utils/string';
-import MonthAndYearField from './month-and-year-field';
+import MonthAndYearField from '../../../../ds/month-and-year-field';
 import { addMonths, MonthAndYear, monthDifference } from '@/utils/date';
+import { CurrencyField } from '@/ds/currency-field';
 
 export default function RefinancesField({
   startingMonthAndYear,
@@ -29,12 +30,13 @@ export default function RefinancesField({
         principal: null,
         annualizedInterestRate: 0.05,
         years: 30,
+        prePayment: 0,
       })}
       sortItems={(a, b) => a.month - b.month}
       onAdd={add}
       onRemove={remove}
       renderEditFormFields={(
-        { month, id, principal, years, annualizedInterestRate },
+        { month, id, principal, years, annualizedInterestRate, prePayment },
         setDraftItem,
       ) => (
         <>
@@ -51,6 +53,7 @@ export default function RefinancesField({
                 principal,
                 years,
                 annualizedInterestRate,
+                prePayment,
                 month: monthDifference(startingMonthAndYear, monthAndYear),
               })
             }
@@ -68,6 +71,7 @@ export default function RefinancesField({
                 annualizedInterestRate,
                 years: value,
                 month,
+                prePayment,
               })
             }
             formatOptions={{
@@ -90,12 +94,29 @@ export default function RefinancesField({
                 annualizedInterestRate: value,
                 years,
                 month,
+                prePayment,
               })
             }
             formatOptions={{
               style: 'percent',
               minimumFractionDigits: 3,
             }}
+          />
+          <CurrencyField
+            label="Pre payment"
+            description="Extra payment after down payment and before the first month's payment"
+            hasSelectOnFocus
+            value={prePayment}
+            onChange={(value) =>
+              setDraftItem({
+                id,
+                principal,
+                annualizedInterestRate,
+                years,
+                month,
+                prePayment: value,
+              })
+            }
           />
           <Checkbox
             isSelected={principal != null}
@@ -107,6 +128,7 @@ export default function RefinancesField({
                   principal: NaN,
                   annualizedInterestRate,
                   years,
+                  prePayment,
                 });
               } else {
                 setDraftItem({
@@ -115,17 +137,17 @@ export default function RefinancesField({
                   principal: null,
                   annualizedInterestRate,
                   years,
+                  prePayment,
                 });
               }
             }}
           >
-            Specify exact amount?
+            Specify exact amount financed?
           </Checkbox>
           {principal != null && (
-            <NumberField
-              label="Amount"
+            <CurrencyField
+              label="Amount financed"
               hasSelectOnFocus
-              minValue={0}
               value={principal ?? NaN}
               onChange={(value) =>
                 setDraftItem({
@@ -134,15 +156,9 @@ export default function RefinancesField({
                   annualizedInterestRate,
                   years,
                   month,
+                  prePayment,
                 })
               }
-              formatOptions={{
-                style: 'currency',
-                currencySign: 'standard',
-                currency: 'USD',
-                currencyDisplay: 'symbol',
-                maximumFractionDigits: 2,
-              }}
             />
           )}
         </>

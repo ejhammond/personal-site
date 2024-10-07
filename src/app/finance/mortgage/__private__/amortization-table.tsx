@@ -1,13 +1,15 @@
 import { Column, Row, Table, TableHeader } from '@/ds/table';
 import { formatUSD } from '@/utils/currency';
 import { addMonths, MonthAndYear } from '@/utils/date';
-import { Amortization } from '@/utils/loan';
+import { Amortization, Loan } from '@/utils/loan';
 import { TableBody } from 'react-aria-components';
 
 export default function AmortizationTable({
   startingMonthAndYear,
+  loan,
   amortization,
 }: {
+  loan: Loan;
   startingMonthAndYear: MonthAndYear;
   amortization: Amortization;
 }) {
@@ -23,19 +25,39 @@ export default function AmortizationTable({
           <Column>Balance</Column>
         </TableHeader>
         <TableBody>
+          <Row>
+            <Column></Column>
+            <Column>
+              {loan.prePayment !== 0 && formatUSD(loan.prePayment)}
+            </Column>
+            <Column></Column>
+            <Column></Column>
+            <Column>
+              {loan.prePayment !== 0 && formatUSD(loan.prePayment)}
+            </Column>
+            <Column>{formatUSD(loan.principal - loan.prePayment)}</Column>
+          </Row>
           {amortization.map(
-            ({
-              month,
-              interest,
-              principal,
-              balance,
-              extra,
-              refinanceDisbursement = 0,
-            }) => {
+            (
+              {
+                month,
+                interest,
+                principal,
+                balance,
+                extra,
+                refinanceDisbursement = 0,
+              },
+              index,
+            ) => {
               const monthAndYear = addMonths(startingMonthAndYear, month);
 
               return (
-                <Row key={month}>
+                <Row
+                  key={month}
+                  style={{
+                    background: index % 2 === 0 ? 'var(--gray-100)' : undefined,
+                  }}
+                >
                   <Column>
                     {monthAndYear.year} {monthAndYear.month}
                   </Column>
@@ -46,7 +68,10 @@ export default function AmortizationTable({
                   </Column>
                   <Column>{formatUSD(interest)}</Column>
                   <Column>{formatUSD(principal)}</Column>
-                  <Column>{formatUSD(extra + refinanceDisbursement)}</Column>
+                  <Column>
+                    {extra + refinanceDisbursement !== 0 &&
+                      formatUSD(extra + refinanceDisbursement)}
+                  </Column>
                   <Column>{formatUSD(balance)}</Column>
                 </Row>
               );

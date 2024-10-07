@@ -12,7 +12,7 @@ import MortgageForm from './mortgage-form';
 import { formatPercent } from '@/utils/number';
 import useStartingMonthAndYearParam from './use-starting-month-and-year-param';
 import { Form } from '@/ds/form';
-import MonthAndYearField from './month-and-year-field';
+import MonthAndYearField from '../../../../ds/month-and-year-field';
 import LoanStats from './loan-stats';
 
 export default function Content() {
@@ -24,14 +24,17 @@ export default function Content() {
   const [amortizations, setAmortizations] = useState<{
     base: Amortizations;
     withRefinances: Amortizations;
-    withPrepayments: Amortizations;
+    withRefinancesAndPrePayments: Amortizations;
   } | null>(null);
+
+  const [error, setError] = useState<string | null>(null);
 
   return (
     <VStack gap="sm">
       <Form>
         <MonthAndYearField
           label="Starting date"
+          description="Month when the first payment is due"
           isRequired
           hasSelectOnFocus
           value={startingMonthAndYear}
@@ -39,6 +42,7 @@ export default function Content() {
         />
       </Form>
       <MortgageForm
+        error={error}
         startingMonthAndYear={startingMonthAndYear}
         onSubmit={({
           originalLoan,
@@ -46,29 +50,42 @@ export default function Content() {
           oneOffExtraPayments,
           refinances,
         }) => {
-          setAmortizations({
-            base: amortize({
+          try {
+            const base = amortize({ originalLoan });
+            const withRefinances = amortize({
               originalLoan,
-            }),
-            withRefinances: amortize({
-              originalLoan,
-              refinances,
-            }),
-            withPrepayments: amortize({
+              refinances: refinances.map((refinance) => ({
+                ...refinance,
+                prePayment: 0,
+              })),
+            });
+            const withRefinancesAndPrePayments = amortize({
               originalLoan,
               recurringExtraPayments,
               oneOffExtraPayments,
               refinances,
-            }),
-          });
+            });
 
-          saveParams({
-            startingMonthAndYear,
-            originalLoan,
-            recurringExtraPayments,
-            oneOffExtraPayments,
-            refinances,
-          });
+            setAmortizations({
+              base,
+              withRefinances,
+              withRefinancesAndPrePayments,
+            });
+
+            saveParams({
+              startingMonthAndYear,
+              originalLoan,
+              recurringExtraPayments,
+              oneOffExtraPayments,
+              refinances,
+            });
+
+            setError(null);
+          } catch (e: unknown) {
+            if (e instanceof Error) {
+              setError(e.message);
+            }
+          }
         }}
       />
       <hr style={{ alignSelf: 'stretch', marginBlock: 16 }} />
@@ -80,30 +97,32 @@ export default function Content() {
               amortizationsForOriginalLoan={amortizations.base}
               amortizationsWithRefinances={amortizations.withRefinances}
               amortizationsWithRefinancesAndPrepayments={
-                amortizations.withPrepayments
+                amortizations.withRefinancesAndPrePayments
               }
             />
           </VStack>
         )}
-        {amortizations != null && amortizations.withPrepayments.length > 0 && (
-          <VStack gap="md" hAlign="stretch">
-            {amortizations.withPrepayments.map(
-              ({ loan, amortization }, index) => (
-                <Fragment key={index}>
-                  <h3>
-                    Loan {index + 1} - {formatUSD(loan.principal)} at{' '}
-                    {formatPercent(loan.annualizedInterestRate, 3)} for{' '}
-                    {loan.years} {plural('year', 'years', loan.years)}
-                  </h3>
-                  <AmortizationTable
-                    startingMonthAndYear={startingMonthAndYear}
-                    amortization={amortization}
-                  />
-                </Fragment>
-              ),
-            )}
-          </VStack>
-        )}
+        {amortizations != null &&
+          amortizations.withRefinancesAndPrePayments.length > 0 && (
+            <VStack gap="md" hAlign="stretch">
+              {amortizations.withRefinancesAndPrePayments.map(
+                ({ loan, amortization }, index) => (
+                  <Fragment key={index}>
+                    <h3>
+                      Loan {index + 1} - {formatUSD(loan.principal)} at{' '}
+                      {formatPercent(loan.annualizedInterestRate, 3)} for{' '}
+                      {loan.years} {plural('year', 'years', loan.years)}
+                    </h3>
+                    <AmortizationTable
+                      startingMonthAndYear={startingMonthAndYear}
+                      loan={loan}
+                      amortization={amortization}
+                    />
+                  </Fragment>
+                ),
+              )}
+            </VStack>
+          )}
       </VStack>
     </VStack>
   );

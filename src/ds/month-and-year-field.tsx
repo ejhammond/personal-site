@@ -8,7 +8,9 @@ import {
   MONTHS,
   monthToNumber,
 } from '@/utils/date';
-import { Group } from 'react-aria-components';
+import { Group, Text } from 'react-aria-components';
+
+import './month-and-year-field.css';
 
 export default function MonthAndYearField({
   label,
@@ -17,9 +19,11 @@ export default function MonthAndYearField({
   minValue,
   isRequired,
   autoFocus,
+  description,
   hasSelectOnFocus = false,
 }: {
   label: string;
+  description?: string;
   value: MonthAndYear;
   onChange: (monthAndYear: MonthAndYear) => void;
   minValue?: MonthAndYear;
@@ -28,13 +32,12 @@ export default function MonthAndYearField({
   hasSelectOnFocus?: boolean;
 }) {
   return (
-    <div>
+    <div className="month-and-year-field">
       <Label>{label}</Label>
-      <Group style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+      <Group>
         <Select
           autoFocus={autoFocus}
           isRequired={isRequired}
-          style={{ flexShrink: 0 }}
           aria-label={`${label} month`}
           selectedKey={value.month}
           // @ts-expect-error - I promise that each key is a Month
@@ -89,6 +92,7 @@ export default function MonthAndYearField({
           }}
         />
       </Group>
+      {description && <Text slot="description">{description}</Text>}
     </div>
   );
 }

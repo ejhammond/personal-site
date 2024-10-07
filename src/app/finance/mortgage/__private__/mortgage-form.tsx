@@ -16,11 +16,15 @@ import RecurringExtraPaymentsField from './recurring-extra-payments-field';
 import OneOffExtraPaymentsField from './one-off-extra-payments-field';
 import RefinancesField from './refinances-field';
 import { MonthAndYear } from '@/utils/date';
+import { CurrencyField } from '@/ds/currency-field';
+import { VStack } from '@/ds/v-stack';
 
 export default function MortgageForm({
   onSubmit,
   startingMonthAndYear,
+  error,
 }: {
+  error?: string | null;
   startingMonthAndYear: MonthAndYear;
   onSubmit: (data: {
     originalLoan: Loan;
@@ -55,27 +59,24 @@ export default function MortgageForm({
         });
       }}
       footer={
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <VStack hAlign="end">
           <Button type="submit" variant="primary">
             Calculate
           </Button>
-        </div>
+          {error != null && (
+            <span style={{ fontSize: '12px', color: 'var(--invalid-color)' }}>
+              {error}
+            </span>
+          )}
+        </VStack>
       }
     >
-      <NumberField
-        label="Amount"
+      <CurrencyField
+        label="Amount financed"
         isRequired
         hasSelectOnFocus
-        minValue={0}
         value={originalLoan.principal}
         onChange={(principal) => setOriginalLoan((p) => ({ ...p, principal }))}
-        formatOptions={{
-          style: 'currency',
-          currencySign: 'standard',
-          currency: 'USD',
-          currencyDisplay: 'symbol',
-          maximumFractionDigits: 2,
-        }}
       />
       <NumberField
         label="Term"
@@ -104,6 +105,15 @@ export default function MortgageForm({
           style: 'percent',
           minimumFractionDigits: 3,
         }}
+      />
+      <CurrencyField
+        label="Pre payment"
+        description="Extra payment after down payment and before the first month's payment"
+        hasSelectOnFocus
+        value={originalLoan.prePayment}
+        onChange={(prePayment) =>
+          setOriginalLoan((p) => ({ ...p, prePayment }))
+        }
       />
       <RefinancesField
         startingMonthAndYear={startingMonthAndYear}

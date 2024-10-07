@@ -11,13 +11,26 @@ export default function LoanStats({
   amortizationsWithRefinances: Amortizations;
   amortizationsWithRefinancesAndPrepayments: Amortizations;
 }) {
-  const totalPrincipalPaid =
+  const totalFromPrincipalPrePayments =
+    amortizationsWithRefinancesAndPrepayments.reduce(
+      (acc, { loan: { prePayment } }) => acc + prePayment,
+      0,
+    );
+
+  const totalFromMinPrincipalPayments =
     amortizationsWithRefinancesAndPrepayments
       .flatMap(({ amortization }) => amortization)
-      .reduce((acc, { principal }) => acc + principal, 0) +
+      .reduce((acc, { principal }) => acc + principal, 0);
+
+  const totalFromExtraPrincipalPayments =
     amortizationsWithRefinancesAndPrepayments
       .flatMap(({ amortization }) => amortization)
       .reduce((acc, { extra }) => acc + extra, 0);
+
+  const totalPrincipalPaid =
+    totalFromPrincipalPrePayments +
+    totalFromMinPrincipalPayments +
+    totalFromExtraPrincipalPayments;
 
   const totalInterestPaid = amortizationsWithRefinancesAndPrepayments
     .flatMap(({ amortization }) => amortization)
@@ -30,6 +43,9 @@ export default function LoanStats({
   const expectedTotalInterestPaidWithRefinances = amortizationsWithRefinances
     .flatMap(({ amortization }) => amortization)
     .reduce((acc, { interest }) => acc + interest, 0);
+
+  const interestSavings =
+    expectedTotalInterestPaidForOriginalLoan - totalInterestPaid;
 
   const interestSavingsDueToRefinances =
     expectedTotalInterestPaidForOriginalLoan -
@@ -52,12 +68,18 @@ export default function LoanStats({
 
   return (
     <dl>
-      <dt>Total principal paid</dt>
+      <dt>Principal paid</dt>
       <dd>{formatUSD(totalPrincipalPaid)}</dd>
       <dt>Expected interest paid</dt>
       <dd>{formatUSD(expectedTotalInterestPaidForOriginalLoan)}</dd>
       <dt>Actual interest paid</dt>
       <dd>{formatUSD(totalInterestPaid)}</dd>
+      {interestSavings != 0 && (
+        <>
+          <dt>Interest savings</dt>
+          <dd>{formatUSD(interestSavings)}</dd>
+        </>
+      )}
       {interestSavingsDueToRefinances != 0 && (
         <>
           <dt>Interest savings due to refinances</dt>
