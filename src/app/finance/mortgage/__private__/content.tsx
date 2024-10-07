@@ -10,9 +10,15 @@ import React from 'react';
 import AmortizationTable from './amortization-table';
 import MortgageForm from './mortgage-form';
 import { formatPercent } from '@/utils/number';
+import useStartingMonthAndYearParam from './use-starting-month-and-year-param';
+import { Form } from '@/ds/form';
+import MonthAndYearField from './month-and-year-field';
 
 export default function Content() {
   const saveParams = useSaveParams();
+
+  const { startingMonthAndYear, setStartingMonthAndYear } =
+    useStartingMonthAndYearParam();
 
   const [amortizations, setAmortizations] = useState<{
     base: Amortizations;
@@ -48,8 +54,17 @@ export default function Content() {
   })();
 
   return (
-    <>
+    <VStack gap="sm">
+      <Form>
+        <MonthAndYearField
+          label="Starting date"
+          isRequired
+          value={startingMonthAndYear}
+          onChange={setStartingMonthAndYear}
+        />
+      </Form>
       <MortgageForm
+        startingMonthAndYear={startingMonthAndYear}
         onSubmit={({
           originalLoan,
           recurringExtraPayments,
@@ -73,6 +88,7 @@ export default function Content() {
           });
 
           saveParams({
+            startingMonthAndYear,
             originalLoan,
             recurringExtraPayments,
             oneOffExtraPayments,
@@ -119,12 +135,15 @@ export default function Content() {
                   {formatPercent(loan.annualizedInterestRate, 3)} for{' '}
                   {loan.years} {plural('year', 'years', loan.years)}
                 </h3>
-                <AmortizationTable amortization={amortization} />
+                <AmortizationTable
+                  startingMonthAndYear={startingMonthAndYear}
+                  amortization={amortization}
+                />
               </Fragment>
             ),
           )}
         </VStack>
       )}
-    </>
+    </VStack>
   );
 }

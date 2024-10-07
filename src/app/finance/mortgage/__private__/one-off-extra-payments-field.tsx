@@ -3,12 +3,16 @@ import { NumberField } from '@/ds/number-field';
 import { formatUSD } from '@/utils/currency';
 import { createUniqueID, WithID } from '@/utils/id';
 import { OneOffExtraPayment } from '@/utils/loan';
+import MonthAndYearField from './month-and-year-field';
+import { addMonths, MonthAndYear, monthDifference } from '@/utils/date';
 
 export default function OneOffExtraPaymentsField({
+  startingMonthAndYear,
   items,
   add,
   remove,
 }: {
+  startingMonthAndYear: MonthAndYear;
   items: WithID<OneOffExtraPayment>[];
   add: (item: WithID<OneOffExtraPayment>) => void;
   remove: (id: string) => void;
@@ -22,17 +26,32 @@ export default function OneOffExtraPaymentsField({
         amount: 100,
         month: 1,
       })}
+      sortItems={(a, b) => a.month - b.month}
       onAdd={add}
       onRemove={remove}
       renderEditFormFields={({ month, id, amount }, setDraftItem) => (
         <>
-          <NumberField
-            autoFocus
+          <MonthAndYearField
             label="Month"
+            autoFocus
             isRequired
-            minValue={0}
-            value={month}
-            onChange={(value) => setDraftItem({ id, amount, month: value })}
+            minValue={startingMonthAndYear}
+            value={addMonths(startingMonthAndYear, month)}
+            onChange={(monthAndYear) => {
+              console.log(
+                monthAndYear,
+                monthDifference(startingMonthAndYear, monthAndYear),
+                addMonths(
+                  startingMonthAndYear,
+                  monthDifference(startingMonthAndYear, monthAndYear),
+                ),
+              );
+              setDraftItem({
+                id,
+                amount,
+                month: monthDifference(startingMonthAndYear, monthAndYear),
+              });
+            }}
           />
           <NumberField
             label="Amount"
@@ -50,11 +69,14 @@ export default function OneOffExtraPaymentsField({
           />
         </>
       )}
-      renderItem={(item) => (
-        <span>
-          {formatUSD(item.amount)} on month {item.month}
-        </span>
-      )}
+      renderItem={(item) => {
+        const monthAndYear = addMonths(startingMonthAndYear, item.month);
+        return (
+          <span>
+            {formatUSD(item.amount)} in {monthAndYear.month} {monthAndYear.year}
+          </span>
+        );
+      }}
     />
   );
 }

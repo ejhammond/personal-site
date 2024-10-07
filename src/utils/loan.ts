@@ -17,6 +17,12 @@ function getMinMonthlyPayment({
   years,
 }: Loan) {
   const months = years * 12;
+
+  // if the interest rate is 0, then the formula will fail
+  if (annualizedInterestRate === 0) {
+    return roundCurrency(principal / months);
+  }
+
   const i = annualizedInterestRate / 12;
 
   return roundCurrency(
@@ -147,7 +153,7 @@ export function amortize({
 
   let balance = originalLoan.principal - prePayment;
   let month = 0;
-  while (balance > 0) {
+  while (balance > 0 || refinances.some((r) => r.month > month)) {
     month++;
 
     const minMonthlyPayment = getMinMonthlyPayment({
@@ -161,7 +167,7 @@ export function amortize({
       annualizedInterestRate,
     });
 
-    const basePrincipalPayment = minMonthlyPayment - interestPayment;
+    const minPrincipalPayment = minMonthlyPayment - interestPayment;
 
     const recurringExtraPayment = getRecurringExtraPaymentForMonth(
       recurringExtraPayments,
@@ -178,30 +184,39 @@ export function amortize({
     const refinanceNextMonth = getRefinanceForMonth(refinances, month + 1);
     let refinancePayoff = 0;
     if (refinanceNextMonth != null) {
-      refinancePayoff = balance;
+      // if we're refinancing to a new loan next month, we'll have to pay off
+      // this loan completely first
+      refinancePayoff = balance - minPrincipalPayment;
     }
 
     const principalPayment =
-      basePrincipalPayment + extraPrincipalPayment + refinancePayoff;
+      minPrincipalPayment + extraPrincipalPayment + refinancePayoff;
 
+    // make the payment
     balance = balance - principalPayment;
 
-    // add tolerance for floating point math
-    if (balance <= 0.01) {
+    if (balance <= 0) {
+      // after we've made the payment, we have to check if we overpaid
       // we "add" the balance in case it went negative. This will "refund" some principal
       const finalMonthTotalPrincipalPayment = principalPayment + balance;
-      // the base principal in the final month may be lower than the typical base principal
-      const finalMonthBasePrincipalPayment = Math.min(
-        basePrincipalPayment,
+
+      // if we got a "refund" for overpaying, we'll need to see if our min
+      // principal payment is actually lower this month
+      const finalMonthMinPrincipalPayment = Math.min(
+        minPrincipalPayment,
         finalMonthTotalPrincipalPayment,
       );
+
+      // if we paid any extra principal this month, we need to make sure that it
+      // reflects the refund as well. This will ensure that the loan gets paid
+      // down to exactly 0 in the amortization even if larger payments were made
       const finalMonthExtraPrincipalPayment =
-        finalMonthTotalPrincipalPayment - finalMonthBasePrincipalPayment;
+        finalMonthTotalPrincipalPayment - finalMonthMinPrincipalPayment;
 
       amortization.push({
         month,
         interest: interestPayment,
-        principal: finalMonthBasePrincipalPayment,
+        principal: finalMonthMinPrincipalPayment,
         extra: finalMonthExtraPrincipalPayment,
         balance: Math.max(balance, 0),
       });
@@ -246,7 +261,7 @@ export function amortize({
     amortization.push({
       month,
       interest: interestPayment,
-      principal: basePrincipalPayment,
+      principal: minPrincipalPayment,
       extra: extraPrincipalPayment,
       balance,
     });

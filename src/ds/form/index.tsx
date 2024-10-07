@@ -11,7 +11,7 @@ export function Form({
   return (
     <form className="react-aria-Form" {...delegatedProps}>
       <div className="fields">{children}</div>
-      <div className="footer">{footer}</div>
+      {footer != null && <div className="footer">{footer}</div>}
     </form>
   );
 }

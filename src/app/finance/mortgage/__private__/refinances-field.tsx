@@ -5,12 +5,16 @@ import { createUniqueID, WithID } from '@/utils/id';
 import { Refinance } from '@/utils/loan';
 import { formatPercent } from '@/utils/number';
 import { plural } from '@/utils/string';
+import MonthAndYearField from './month-and-year-field';
+import { addMonths, MonthAndYear, monthDifference } from '@/utils/date';
 
 export default function RefinancesField({
+  startingMonthAndYear,
   items,
   add,
   remove,
 }: {
+  startingMonthAndYear: MonthAndYear;
   items: WithID<Refinance>[];
   add: (item: WithID<Refinance>) => void;
   remove: (id: string) => void;
@@ -21,11 +25,12 @@ export default function RefinancesField({
       items={items}
       initializeDraftItem={() => ({
         id: createUniqueID(),
-        month: 12,
+        month: 6,
         principal: null,
         annualizedInterestRate: 0.05,
         years: 30,
       })}
+      sortItems={(a, b) => a.month - b.month}
       onAdd={add}
       onRemove={remove}
       renderEditFormFields={(
@@ -33,19 +38,19 @@ export default function RefinancesField({
         setDraftItem,
       ) => (
         <>
-          <NumberField
-            autoFocus
+          <MonthAndYearField
             label="Month"
             isRequired
-            minValue={0}
-            value={month}
-            onChange={(value) =>
+            autoFocus
+            minValue={startingMonthAndYear}
+            value={addMonths(startingMonthAndYear, month)}
+            onChange={(monthAndYear) =>
               setDraftItem({
                 id,
                 principal,
-                annualizedInterestRate,
                 years,
-                month: value,
+                annualizedInterestRate,
+                month: monthDifference(startingMonthAndYear, monthAndYear),
               })
             }
           />
@@ -116,7 +121,7 @@ export default function RefinancesField({
           {principal != null && (
             <NumberField
               label="Amount"
-              minValue={1}
+              minValue={0}
               value={principal ?? NaN}
               onChange={(value) =>
                 setDraftItem({
@@ -138,12 +143,16 @@ export default function RefinancesField({
           )}
         </>
       )}
-      renderItem={(item) => (
-        <span>
-          {formatPercent(item.annualizedInterestRate, 3)} for {item.years}{' '}
-          {plural('year', 'years', item.years)} on month {item.month}
-        </span>
-      )}
+      renderItem={(item) => {
+        const monthAndYear = addMonths(startingMonthAndYear, item.month);
+        return (
+          <span>
+            {formatPercent(item.annualizedInterestRate, 3)} for {item.years}{' '}
+            {plural('year', 'years', item.years)} in {monthAndYear.month}{' '}
+            {monthAndYear.year}
+          </span>
+        );
+      }}
     />
   );
 }

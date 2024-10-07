@@ -90,6 +90,10 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
           tags: [],
         },
         {
+          path: '/finance/mortgage/__private__/month-and-year-field.tsx',
+          tags: [],
+        },
+        {
           path: '/finance/mortgage/__private__/mortgage-form.tsx',
           tags: [],
         },
@@ -123,6 +127,10 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
         },
         {
           path: '/finance/mortgage/__private__/use-save-params.ts',
+          tags: [],
+        },
+        {
+          path: '/finance/mortgage/__private__/use-starting-month-and-year-param.ts',
           tags: [],
         },
       ],

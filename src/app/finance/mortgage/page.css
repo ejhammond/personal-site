@@ -12,7 +12,7 @@
 }
 
 @container (width < 600px) {
-  #mortgage-table table {
+  .mortgage-table table {
     font-size: 0.8rem;
   }
 }

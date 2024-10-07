@@ -1,14 +1,18 @@
 import Collection from '@/ds/collection';
 import { NumberField } from '@/ds/number-field';
 import { formatUSD } from '@/utils/currency';
+import { addMonths, MonthAndYear, monthDifference } from '@/utils/date';
 import { createUniqueID, WithID } from '@/utils/id';
 import { RecurringExtraPayment } from '@/utils/loan';
+import MonthAndYearField from './month-and-year-field';
 
 export default function RecurringExtraPaymentsField({
+  startingMonthAndYear,
   items,
   add,
   remove,
 }: {
+  startingMonthAndYear: MonthAndYear;
   items: WithID<RecurringExtraPayment>[];
   add: (item: WithID<RecurringExtraPayment>) => void;
   remove: (id: string) => void;
@@ -22,18 +26,26 @@ export default function RecurringExtraPaymentsField({
         amount: 100,
         startingMonth: 1,
       })}
+      sortItems={(a, b) => a.startingMonth - b.startingMonth}
       onAdd={add}
       onRemove={remove}
       renderEditFormFields={({ startingMonth, id, amount }, setDraftItem) => (
         <>
-          <NumberField
-            autoFocus
+          <MonthAndYearField
             label="Starting month"
             isRequired
-            minValue={1}
-            value={startingMonth}
-            onChange={(value) =>
-              setDraftItem({ id, amount, startingMonth: value })
+            autoFocus
+            minValue={startingMonthAndYear}
+            value={addMonths(startingMonthAndYear, startingMonth)}
+            onChange={(monthAndYear) =>
+              setDraftItem({
+                id,
+                amount,
+                startingMonth: monthDifference(
+                  startingMonthAndYear,
+                  monthAndYear,
+                ),
+              })
             }
           />
           <NumberField
@@ -54,11 +66,18 @@ export default function RecurringExtraPaymentsField({
           />
         </>
       )}
-      renderItem={(item) => (
-        <span>
-          {formatUSD(item.amount)}/month starting on month {item.startingMonth}
-        </span>
-      )}
+      renderItem={(item) => {
+        const monthAndYear = addMonths(
+          startingMonthAndYear,
+          item.startingMonth,
+        );
+        return (
+          <span>
+            {formatUSD(item.amount)}/month starting in {monthAndYear.month}{' '}
+            {monthAndYear.year}
+          </span>
+        );
+      }}
     />
   );
 }

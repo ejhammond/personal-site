@@ -18,6 +18,7 @@ export default function Collection<TItem extends { id: string }>({
   renderEditFormFields,
   renderItem,
   initializeDraftItem,
+  sortItems,
 }: {
   itemName: string;
   itemNamePlural?: string;
@@ -30,6 +31,7 @@ export default function Collection<TItem extends { id: string }>({
   ) => React.ReactNode;
   renderItem: (item: TItem) => React.ReactNode;
   initializeDraftItem: () => TItem;
+  sortItems?: (a: TItem, b: TItem) => number;
 }) {
   const formID = idify(itemName + '-form');
   const [draftItem, setDraftItem] = useState<TItem | null>(null);
@@ -38,8 +40,8 @@ export default function Collection<TItem extends { id: string }>({
     <>
       <VStack gap="xs" hAlign="start">
         <Label>{itemNamePlural ?? `${itemName}s`}</Label>
-        <ul>
-          {items.map((item) => (
+        <ul style={{ listStyle: 'none', paddingInlineStart: '16px' }}>
+          {items.toSorted(sortItems).map((item) => (
             <li key={item.id}>
               <HStack gap="sm" vAlign="center">
                 {renderItem(item)}

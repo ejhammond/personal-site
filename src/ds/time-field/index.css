@@ -16,6 +16,7 @@
   min-width: 150px;
   white-space: nowrap;
   forced-color-adjust: none;
+  min-height: var(--input-height);
 
   &[data-focus-within] {
     outline: 2px solid var(--focus-ring-color);

@@ -13,7 +13,7 @@ import {
 import './index.css';
 
 export interface DateFieldProps<T extends DateValue>
-  extends AriaDateFieldProps<T> {
+  extends Omit<AriaDateFieldProps<T>, 'granularity'> {
   label?: string;
   description?: string;
   errorMessage?: string | ((validation: ValidationResult) => string);

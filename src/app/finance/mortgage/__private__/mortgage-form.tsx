@@ -1,5 +1,4 @@
 import { Form } from '@/ds/form';
-import useAutoFocusRef from '@/ds/use-auto-focus';
 import { WithID } from '@/utils/id';
 import {
   Loan,
@@ -16,10 +15,13 @@ import { NumberField } from '@/ds/number-field';
 import RecurringExtraPaymentsField from './recurring-extra-payments-field';
 import OneOffExtraPaymentsField from './one-off-extra-payments-field';
 import RefinancesField from './refinances-field';
+import { MonthAndYear } from '@/utils/date';
 
 export default function MortgageForm({
   onSubmit,
+  startingMonthAndYear,
 }: {
+  startingMonthAndYear: MonthAndYear;
   onSubmit: (data: {
     originalLoan: Loan;
     recurringExtraPayments: WithID<RecurringExtraPayment>[];
@@ -27,8 +29,6 @@ export default function MortgageForm({
     refinances: WithID<Refinance>[];
   }) => void;
 }) {
-  const autoFocusRef = useAutoFocusRef();
-
   const { originalLoan, setOriginalLoan } = useOriginalLoanParam();
   const {
     recurringExtraPayments,
@@ -63,11 +63,9 @@ export default function MortgageForm({
       }
     >
       <NumberField
-        // using auto-focus hack bc autoFocus puts the cursor in front
-        ref={autoFocusRef}
         label="Amount"
         isRequired
-        minValue={1}
+        minValue={0}
         value={originalLoan.principal}
         onChange={(principal) => setOriginalLoan((p) => ({ ...p, principal }))}
         formatOptions={{
@@ -105,16 +103,19 @@ export default function MortgageForm({
         }}
       />
       <RecurringExtraPaymentsField
+        startingMonthAndYear={startingMonthAndYear}
         items={recurringExtraPayments}
         add={addRecurringExtraPayment}
         remove={removeRecurringExtraPayment}
       />
       <OneOffExtraPaymentsField
+        startingMonthAndYear={startingMonthAndYear}
         items={oneOffExtraPayments}
         add={addOneOffExtraPayment}
         remove={removeOneOffExtraPayment}
       />
       <RefinancesField
+        startingMonthAndYear={startingMonthAndYear}
         items={refinances}
         add={addRefinance}
         remove={removeRefinance}
