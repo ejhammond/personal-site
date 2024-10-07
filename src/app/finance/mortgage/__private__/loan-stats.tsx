@@ -2,14 +2,8 @@ import { Card } from '@/ds/card';
 import { formatUSD } from '@/utils/currency';
 import { addMonths, formatMonths, MonthAndYear } from '@/utils/date';
 import { Amortizations } from '@/utils/loan';
+import { formatCompact } from '@/utils/number';
 import { Text } from 'react-aria-components';
-
-function formatCompact(number: number): string {
-  return Intl.NumberFormat('en-US', {
-    notation: 'compact',
-    maximumFractionDigits: 1,
-  }).format(number);
-}
 
 export default function LoanStats({
   startingMonthAndYear,
