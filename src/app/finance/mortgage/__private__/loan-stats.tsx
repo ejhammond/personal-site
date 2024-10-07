@@ -81,24 +81,17 @@ export default function LoanStats({
         gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
       }}
     >
-      <Card>
-        <h3>Principal paid</h3>
-        <div className="content">
-          <div className="metric">
-            <Text slot="metric-compact">
-              ${formatCompact(totalPrincipalPaid)}
-            </Text>
-            <Text slot="supporting">{formatUSD(totalPrincipalPaid)}</Text>
-          </div>
+      <Card header={<h3>Principal paid</h3>}>
+        <div className="metric">
+          <Text slot="metric-compact">
+            ${formatCompact(totalPrincipalPaid)}
+          </Text>
+          <Text slot="supporting">{formatUSD(totalPrincipalPaid)}</Text>
         </div>
       </Card>
-      <Card>
-        <h3>Interest saved</h3>
-        <div className="content">
-          <div className="metric" style={{ marginBlockEnd: 16 }}>
-            <Text slot="metric-compact">${formatCompact(interestSavings)}</Text>
-            <Text slot="supporting">{formatUSD(interestSavings)}</Text>
-          </div>
+      <Card
+        header={<h3>Interest saved</h3>}
+        footer={
           <div>
             {interestSavingsDueToRefinances !== 0 && (
               <Text slot="supporting">
@@ -113,21 +106,27 @@ export default function LoanStats({
               </Text>
             )}
           </div>
+        }
+      >
+        <div className="metric" style={{ marginBlockEnd: 16 }}>
+          <Text slot="metric-compact">${formatCompact(interestSavings)}</Text>
+          <Text slot="supporting">{formatUSD(interestSavings)}</Text>
         </div>
       </Card>
-      <Card>
-        <h3>Time saved</h3>
-        <div className="content">
-          <div className="metric">
-            <Text slot="metric-compact">
-              {formatMonths(durationDifference, { compact: true })}
-            </Text>
-          </div>
+      <Card
+        header={<h3>Time saved</h3>}
+        footer={
           <Text slot="supporting">
             Mortgage free:{' '}
             <strong>
               {endDate.month} {endDate.year}
             </strong>
+          </Text>
+        }
+      >
+        <div className="metric">
+          <Text slot="metric-compact">
+            {formatMonths(durationDifference, { compact: true })}
           </Text>
         </div>
       </Card>
