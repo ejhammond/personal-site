@@ -1,9 +1,36 @@
 import { Card } from '@/ds/card';
+import { HStack } from '@/ds/h-stack';
 import { formatUSD } from '@/utils/currency';
 import { addMonths, formatMonths, MonthAndYear } from '@/utils/date';
 import { Amortizations } from '@/utils/loan';
 import { formatCompact } from '@/utils/number';
+import React, { ReactNode } from 'react';
 import { Text } from 'react-aria-components';
+import { FaArrowDown, FaArrowUp } from 'react-icons/fa';
+
+function MetricDelta({
+  direction,
+  sentiment,
+  children,
+}: {
+  direction: 'up' | 'down';
+  sentiment: '+' | '-';
+  children: ReactNode;
+}) {
+  const color =
+    sentiment === '+' ? 'var(--positive-color)' : 'var(--negative-color)';
+
+  return (
+    <HStack gap="sm" vAlign="center">
+      {direction === 'up' ? (
+        <FaArrowUp style={{ color }} />
+      ) : (
+        <FaArrowDown style={{ color }} />
+      )}
+      <div>{children}</div>
+    </HStack>
+  );
+}
 
 export default function LoanStats({
   startingMonthAndYear,
@@ -90,9 +117,19 @@ export default function LoanStats({
         </div>
       </Card>
       <Card
-        header={<h3>Interest saved</h3>}
+        header={<h3>Interest paid</h3>}
         footer={
           <div>
+            {interestSavings !== 0 && (
+              <Text slot="supporting">
+                <MetricDelta
+                  direction={interestSavings > 0 ? 'down' : 'up'}
+                  sentiment={interestSavings > 0 ? '+' : '-'}
+                >
+                  <strong>{formatUSD(interestSavings)}</strong>
+                </MetricDelta>
+              </Text>
+            )}
             {interestSavingsDueToRefinances !== 0 && (
               <Text slot="supporting">
                 From refinance:{' '}
@@ -109,24 +146,36 @@ export default function LoanStats({
         }
       >
         <div className="metric" style={{ marginBlockEnd: 16 }}>
-          <Text slot="metric-compact">${formatCompact(interestSavings)}</Text>
-          <Text slot="supporting">{formatUSD(interestSavings)}</Text>
+          <Text slot="metric-compact">${formatCompact(totalInterestPaid)}</Text>
+          <Text slot="supporting">{formatUSD(totalInterestPaid)}</Text>
         </div>
       </Card>
       <Card
-        header={<h3>Time saved</h3>}
+        header={<h3>Duration</h3>}
         footer={
-          <Text slot="supporting">
-            Mortgage free:{' '}
-            <strong>
-              {endDate.month} {endDate.year}
-            </strong>
-          </Text>
+          <>
+            {durationDifference !== 0 && (
+              <Text slot="supporting">
+                <MetricDelta
+                  direction={durationDifference > 0 ? 'down' : 'up'}
+                  sentiment={durationDifference > 0 ? '+' : '-'}
+                >
+                  <strong>{formatMonths(durationDifference)}</strong>
+                </MetricDelta>
+              </Text>
+            )}
+            <Text slot="supporting">
+              Mortgage free:{' '}
+              <strong>
+                {endDate.month} {endDate.year}
+              </strong>
+            </Text>
+          </>
         }
       >
         <div className="metric">
           <Text slot="metric-compact">
-            {formatMonths(durationDifference, { compact: true })}
+            {formatMonths(durationInMonths, { compact: true })}
           </Text>
         </div>
       </Card>

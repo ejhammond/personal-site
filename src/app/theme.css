@@ -83,6 +83,8 @@
   --highlight-foreground: white; /* 5.56:1 against highlight-background */
   --highlight-foreground-pressed: #ddd;
   --highlight-overlay: rgb(from #6f46ed r g b / 15%);
+  --positive-color: var(--accent-400); /* get a better green */
+  --negative-color: var(--red-400);
   --invalid-color: var(--red-400);
   --invalid-color-pressed: var(--red-500);
 }
