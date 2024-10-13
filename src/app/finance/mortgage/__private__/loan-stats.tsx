@@ -119,7 +119,7 @@ export default function LoanStats({
       <Card
         header={<h3>Interest paid</h3>}
         footer={
-          <div>
+          <>
             {interestSavings !== 0 && (
               <Text slot="supporting">
                 <MetricDelta
@@ -142,7 +142,7 @@ export default function LoanStats({
                 <strong>{formatUSD(interestSavingsDueToPrepayments)}</strong>
               </Text>
             )}
-          </div>
+          </>
         }
       >
         <div className="metric" style={{ marginBlockEnd: 16 }}>
@@ -174,9 +174,7 @@ export default function LoanStats({
         }
       >
         <div className="metric">
-          <Text slot="metric-compact">
-            {formatMonths(durationInMonths, { compact: true })}
-          </Text>
+          <Text slot="metric-compact">{formatMonths(durationInMonths)}</Text>
         </div>
       </Card>
     </div>

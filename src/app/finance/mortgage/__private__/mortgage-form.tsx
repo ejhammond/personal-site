@@ -18,6 +18,7 @@ import RefinancesField from './refinances-field';
 import { MonthAndYear } from '@/utils/date';
 import { CurrencyField } from '@/ds/currency-field';
 import { VStack } from '@/ds/v-stack';
+import { useMemo } from 'react';
 
 export default function MortgageForm({
   onSubmit,
@@ -45,6 +46,28 @@ export default function MortgageForm({
     removeOneOffExtraPayment,
   } = useOneOffExtraPaymentsParam();
   const { refinances, addRefinance, removeRefinance } = useRefinancesParam();
+
+  const mostRecentMonthUsed = useMemo(() => {
+    const mostRecentRecurringExtraPaymentMonth = recurringExtraPayments.reduce(
+      (max, { startingMonth }) => Math.max(max, startingMonth),
+      0,
+    );
+    const mostRecentOneOffExtraPaymentMonth = oneOffExtraPayments.reduce(
+      (max, { month }) => Math.max(max, month),
+      0,
+    );
+    const mostRecentRefinanceMonth = refinances.reduce(
+      (max, { month }) => Math.max(max, month),
+      0,
+    );
+
+    return Math.max(
+      mostRecentRecurringExtraPaymentMonth,
+      mostRecentOneOffExtraPaymentMonth,
+      mostRecentRefinanceMonth,
+      0,
+    );
+  }, [oneOffExtraPayments, recurringExtraPayments, refinances]);
 
   return (
     <Form
@@ -116,18 +139,21 @@ export default function MortgageForm({
         }
       />
       <RefinancesField
+        defaultMonth={mostRecentMonthUsed + 1}
         startingMonthAndYear={startingMonthAndYear}
         items={refinances}
         add={addRefinance}
         remove={removeRefinance}
       />
       <RecurringExtraPaymentsField
+        defaultMonth={mostRecentMonthUsed + 1}
         startingMonthAndYear={startingMonthAndYear}
         items={recurringExtraPayments}
         add={addRecurringExtraPayment}
         remove={removeRecurringExtraPayment}
       />
       <OneOffExtraPaymentsField
+        defaultMonth={mostRecentMonthUsed + 1}
         startingMonthAndYear={startingMonthAndYear}
         items={oneOffExtraPayments}
         add={addOneOffExtraPayment}

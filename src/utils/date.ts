@@ -115,6 +115,6 @@ export function formatMonths(
   const yearsLabel = compact ? 'Y' : ` ${plural('year', 'years', y)}`;
   const monthsLabel = compact ? 'm' : ` ${plural('month', 'months', m)}`;
   return y > 0
-    ? `${y}${yearsLabel}${m > 0 ? `${compact ? ' ' : ' and '}${m}${monthsLabel}` : ''}`
+    ? `${y}${yearsLabel}${m > 0 ? ` ${m}${monthsLabel}` : ''}`
     : `${m}${monthsLabel}`;
 }

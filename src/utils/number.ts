@@ -8,6 +8,6 @@ export function formatPercent(value: number, fractionDigits: number): string {
 export function formatCompact(number: number): string {
   return Intl.NumberFormat('en-US', {
     notation: 'compact',
-    maximumFractionDigits: 1,
+    maximumFractionDigits: 2,
   }).format(number);
 }

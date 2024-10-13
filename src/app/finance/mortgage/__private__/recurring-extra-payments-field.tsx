@@ -7,11 +7,13 @@ import MonthAndYearField from '../../../../ds/month-and-year-field';
 import { CurrencyField } from '@/ds/currency-field';
 
 export default function RecurringExtraPaymentsField({
+  defaultMonth = 1,
   startingMonthAndYear,
   items,
   add,
   remove,
 }: {
+  defaultMonth?: number;
   startingMonthAndYear: MonthAndYear;
   items: WithID<RecurringExtraPayment>[];
   add: (item: WithID<RecurringExtraPayment>) => void;
@@ -24,7 +26,7 @@ export default function RecurringExtraPaymentsField({
       initializeDraftItem={() => ({
         id: createUniqueID(),
         amount: 100,
-        startingMonth: 1,
+        startingMonth: defaultMonth,
       })}
       sortItems={(a, b) => a.startingMonth - b.startingMonth}
       onAdd={add}

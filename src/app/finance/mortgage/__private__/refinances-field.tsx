@@ -11,11 +11,13 @@ import { CurrencyField } from '@/ds/currency-field';
 import { formatUSD } from '@/utils/currency';
 
 export default function RefinancesField({
+  defaultMonth = 1,
   startingMonthAndYear,
   items,
   add,
   remove,
 }: {
+  defaultMonth?: number;
   startingMonthAndYear: MonthAndYear;
   items: WithID<Refinance>[];
   add: (item: WithID<Refinance>) => void;
@@ -27,7 +29,7 @@ export default function RefinancesField({
       items={items}
       initializeDraftItem={() => ({
         id: createUniqueID(),
-        month: 6,
+        month: defaultMonth,
         principal: null,
         annualizedInterestRate: 0.05,
         years: 30,

@@ -7,11 +7,13 @@ import { addMonths, MonthAndYear, monthDifference } from '@/utils/date';
 import { CurrencyField } from '@/ds/currency-field';
 
 export default function OneOffExtraPaymentsField({
+  defaultMonth = 1,
   startingMonthAndYear,
   items,
   add,
   remove,
 }: {
+  defaultMonth?: number;
   startingMonthAndYear: MonthAndYear;
   items: WithID<OneOffExtraPayment>[];
   add: (item: WithID<OneOffExtraPayment>) => void;
@@ -24,7 +26,7 @@ export default function OneOffExtraPaymentsField({
       initializeDraftItem={() => ({
         id: createUniqueID(),
         amount: 100,
-        month: 1,
+        month: defaultMonth,
       })}
       sortItems={(a, b) => a.month - b.month}
       onAdd={add}
