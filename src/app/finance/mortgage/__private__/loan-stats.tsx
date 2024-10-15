@@ -86,15 +86,17 @@ export default function LoanStats({
   const interestSavingsDueToPrepayments =
     expectedTotalInterestPaidWithRefinances - totalInterestPaid;
 
-  const durationInMonths = amortizationsWithRefinancesAndPrepayments
-    .flatMap(({ amortization }) => amortization)
-    // assume there's at least one element
-    .at(-1)!.month;
+  const durationInMonths =
+    amortizationsWithRefinancesAndPrepayments
+      .flatMap(({ amortization }) => amortization)
+      // assume there's at least one element
+      .at(-1)!.month + 1; // add 1 to adjust 0-index
 
-  const expectedDurationInMonths = amortizationsForOriginalLoan
-    .flatMap(({ amortization }) => amortization)
-    // assume there's at least one element
-    .at(-1)!.month;
+  const expectedDurationInMonths =
+    amortizationsForOriginalLoan
+      .flatMap(({ amortization }) => amortization)
+      // assume there's at least one element
+      .at(-1)!.month + 1; // add 1 to adjust 0-index
 
   const durationDifference = expectedDurationInMonths - durationInMonths;
 

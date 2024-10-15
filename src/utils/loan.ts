@@ -21,13 +21,13 @@ function getMinMonthlyPayment({
 
   // if the interest rate is 0, then the formula will fail
   if (annualizedInterestRate === 0) {
-    return roundCurrency(principal / months);
+    return principal / months;
   }
 
   const i = annualizedInterestRate / 12;
 
-  return roundCurrency(
-    principal * ((i * Math.pow(1 + i, months)) / (Math.pow(1 + i, months) - 1)),
+  return (
+    principal * ((i * Math.pow(1 + i, months)) / (Math.pow(1 + i, months) - 1))
   );
 }
 
@@ -48,7 +48,7 @@ function getAccruedInterest({
    */
   annualizedInterestRate: number;
 }) {
-  return roundCurrency(principal * (annualizedInterestRate / 12));
+  return principal * (annualizedInterestRate / 12);
 }
 
 export type RecurringExtraPayment = {
