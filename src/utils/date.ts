@@ -77,7 +77,7 @@ export function addMonths(
   { month: startingMonth, year: startingYear }: MonthAndYear,
   months: number,
 ): MonthAndYear {
-  const startingMonthNumber = monthToNumber(startingMonth);
+  const startingMonthNumber = monthToNumber(startingMonth) - 1;
 
   const monthsAfterStartingYear = startingMonthNumber + months;
 
@@ -85,9 +85,7 @@ export function addMonths(
   const monthsAfterEndingYear = monthsAfterStartingYear % 12;
 
   return {
-    month: monthFromNumber(
-      monthsAfterEndingYear === 0 ? 12 : monthsAfterEndingYear,
-    ),
+    month: monthFromNumber(monthsAfterEndingYear + 1),
     year: startingYear + years,
   };
 }
