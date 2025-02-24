@@ -105,14 +105,17 @@ export function formatMonths(
   months: number,
   options?: { compact?: boolean },
 ): string {
+  const absMonths = Math.abs(months);
+
   const { compact = false } = options ?? {};
 
-  const y = Math.floor(months / 12);
-  const m = months % 12;
+  const y = Math.floor(absMonths / 12);
+  const m = absMonths % 12;
 
   const yearsLabel = compact ? 'Y' : ` ${plural('year', 'years', y)}`;
   const monthsLabel = compact ? 'm' : ` ${plural('month', 'months', m)}`;
-  return y > 0
-    ? `${y}${yearsLabel}${m > 0 ? ` ${m}${monthsLabel}` : ''}`
-    : `${m}${monthsLabel}`;
+
+  return [y > 0 && `${y}${yearsLabel}`, m > 0 && `${m}${monthsLabel}`]
+    .filter(Boolean)
+    .join(' ');
 }

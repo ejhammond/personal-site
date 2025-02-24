@@ -98,6 +98,8 @@ export default function LoanStats({
       // assume there's at least one element
       .at(-1)!.month + 1; // add 1 to adjust 0-index
 
+  console.log(expectedDurationInMonths, durationInMonths);
+
   const durationDifference = expectedDurationInMonths - durationInMonths;
 
   const endDate = addMonths(startingMonthAndYear, durationInMonths);
