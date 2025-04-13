@@ -2,13 +2,13 @@
   color: var(--link-color);
   font-size: 18px;
   transition: all 200ms;
-  text-decoration: underline;
+  text-decoration: none;
   cursor: pointer;
   outline: none;
   position: relative;
 
   &[data-hovered] {
-    text-decoration-style: wavy;
+    text-decoration: underline;
   }
 
   &[data-pressed] {

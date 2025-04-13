@@ -18,6 +18,7 @@
     "@mdx-js/loader": "^3.0.0",
     "@mdx-js/react": "^3.0.0",
     "@next/mdx": "^14.1.0",
+    "@supabase/ssr": "^0.6.1",
     "next": "latest",
     "react": "latest",
     "react-aria-components": "^1.0.1",

@@ -38,10 +38,12 @@ export const directoryIndex = hydrateDirectoryIndex(serializableDirectoryIndex);
       return;
     }
 
+    const apiRouteFile = dir.files.find((file) => file.tags.has('api-route'));
     const pageFile = dir.files.find((file) => file.tags.has('page'));
 
-    // if this directory has a page defined, then we don't need to create a routing page here
-    if (pageFile != null) {
+    // if the directory already has a page or api-route file, we won't generate
+    // a directory page
+    if (pageFile != null || apiRouteFile != null) {
       return;
     }
 

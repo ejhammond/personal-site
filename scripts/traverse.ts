@@ -11,6 +11,7 @@ export const APP_ROOT = path.join(SRC_ROOT, '/app');
 export const ARTICLES_ROOT = path.join(APP_ROOT, '/articles');
 
 const PAGE_FILENAMES = new Set(['page.tsx', 'page.gen.tsx']);
+const API_ROUTE_FILENAME = 'route.ts';
 const LAYOUT_FILENAME = 'layout.tsx';
 export const ARTICLE_CONTENT_FILENAME = 'content.mdx';
 export const ARTICLE_METADATA_FILENAME = 'metadata.json';
@@ -43,6 +44,10 @@ async function readDirectory(sitePath: SitePath): Promise<Directory> {
 
     if (PAGE_FILENAMES.has(entry.name)) {
       tags.add('page');
+    }
+
+    if (entry.name === API_ROUTE_FILENAME) {
+      tags.add('api-route');
     }
 
     if (entry.name === LAYOUT_FILENAME) {

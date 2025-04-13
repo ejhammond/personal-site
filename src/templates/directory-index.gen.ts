@@ -48,7 +48,7 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
           tags: [],
         },
       ],
-      subDirectories: ['/articles', '/dnd', '/finance'],
+      subDirectories: ['/articles', '/auth', '/dnd', '/finance'],
     },
   ],
   [
@@ -174,6 +174,158 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
         {
           path: '/dnd/d20/page.tsx',
           tags: ['page'],
+        },
+      ],
+      subDirectories: [],
+    },
+  ],
+  [
+    '/auth',
+    {
+      path: '/auth',
+      files: [
+        {
+          path: '/auth/route.ts',
+          tags: ['api-route'],
+        },
+      ],
+      subDirectories: [
+        '/auth/confirm',
+        '/auth/login',
+        '/auth/logout',
+        '/auth/profile',
+        '/auth/recover',
+        '/auth/reset',
+        '/auth/sign-up',
+      ],
+    },
+  ],
+  [
+    '/auth/sign-up',
+    {
+      path: '/auth/sign-up',
+      files: [
+        {
+          path: '/auth/sign-up/actions.ts',
+          tags: [],
+        },
+        {
+          path: '/auth/sign-up/page.tsx',
+          tags: ['page'],
+        },
+        {
+          path: '/auth/sign-up/sign-up-form.tsx',
+          tags: [],
+        },
+      ],
+      subDirectories: [],
+    },
+  ],
+  [
+    '/auth/reset',
+    {
+      path: '/auth/reset',
+      files: [
+        {
+          path: '/auth/reset/actions.ts',
+          tags: [],
+        },
+        {
+          path: '/auth/reset/page.tsx',
+          tags: ['page'],
+        },
+        {
+          path: '/auth/reset/reset-password-form.tsx',
+          tags: [],
+        },
+      ],
+      subDirectories: [],
+    },
+  ],
+  [
+    '/auth/recover',
+    {
+      path: '/auth/recover',
+      files: [
+        {
+          path: '/auth/recover/actions.ts',
+          tags: [],
+        },
+        {
+          path: '/auth/recover/page.tsx',
+          tags: ['page'],
+        },
+        {
+          path: '/auth/recover/request-password-reset-form.tsx',
+          tags: [],
+        },
+      ],
+      subDirectories: [],
+    },
+  ],
+  [
+    '/auth/profile',
+    {
+      path: '/auth/profile',
+      files: [
+        {
+          path: '/auth/profile/actions.ts',
+          tags: [],
+        },
+        {
+          path: '/auth/profile/edit-profile-form.tsx',
+          tags: [],
+        },
+        {
+          path: '/auth/profile/page.tsx',
+          tags: ['page'],
+        },
+      ],
+      subDirectories: [],
+    },
+  ],
+  [
+    '/auth/logout',
+    {
+      path: '/auth/logout',
+      files: [
+        {
+          path: '/auth/logout/route.ts',
+          tags: ['api-route'],
+        },
+      ],
+      subDirectories: [],
+    },
+  ],
+  [
+    '/auth/login',
+    {
+      path: '/auth/login',
+      files: [
+        {
+          path: '/auth/login/actions.ts',
+          tags: [],
+        },
+        {
+          path: '/auth/login/log-in-form.tsx',
+          tags: [],
+        },
+        {
+          path: '/auth/login/page.tsx',
+          tags: ['page'],
+        },
+      ],
+      subDirectories: [],
+    },
+  ],
+  [
+    '/auth/confirm',
+    {
+      path: '/auth/confirm',
+      files: [
+        {
+          path: '/auth/confirm/route.ts',
+          tags: ['api-route'],
         },
       ],
       subDirectories: [],

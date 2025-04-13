@@ -3,6 +3,7 @@ export type FileTag =
   | 'article-content'
   | 'article-meta'
   | 'page'
+  | 'api-route'
   | 'layout'
   | 'generated';
 

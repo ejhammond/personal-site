@@ -8,6 +8,8 @@ import Image from 'next/image';
 import { SiteBreadcrumbs } from '@/components/site-breadcrumbs';
 import { Link } from '@/ds/link';
 import { RootProviders } from './root-providers';
+import { MdAccountCircle, MdOutlineAccountCircle } from 'react-icons/md';
+import { createClient } from '@/supabase/server';
 
 const normalFont = Montserrat({
   subsets: ['latin'],
@@ -61,11 +63,17 @@ function CappedWidth({
   );
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
   return (
     <html
       id="root"
@@ -88,7 +96,14 @@ export default function RootLayout({
             }}
           >
             <CappedWidth style={{ flexGrow: 1, display: 'flex' }}>
-              <h1>
+              <h1
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  width: '100%',
+                }}
+              >
                 <Link
                   style={{
                     color: 'white',
@@ -105,6 +120,13 @@ export default function RootLayout({
                       width: '48px',
                     }}
                   />
+                </Link>
+                <Link href={user == null ? '/auth/login' : '/auth/profile'}>
+                  {user == null ? (
+                    <MdOutlineAccountCircle color="white" size={28} />
+                  ) : (
+                    <MdAccountCircle color="white" size={28} />
+                  )}
                 </Link>
               </h1>
             </CappedWidth>
