@@ -1,14 +1,14 @@
 import { Checkbox } from '@/ds/checkbox';
-import Collection from '@/ds/collection';
 import { NumberField } from '@/ds/number-field';
 import { createUniqueID, WithID } from '@/utils/id';
 import { Refinance } from '@/utils/loan';
 import { formatPercent } from '@/utils/number';
 import { plural } from '@/utils/string';
-import MonthAndYearField from '../../../../ds/month-and-year-field';
+import MonthAndYearField from '@/ds/month-and-year-field';
 import { addMonths, MonthAndYear, monthDifference } from '@/utils/date';
 import { CurrencyField } from '@/ds/currency-field';
 import { formatUSD } from '@/utils/currency';
+import CollectionField from '@/ds/collection-field';
 
 export default function RefinancesField({
   defaultMonth = 1,
@@ -24,7 +24,7 @@ export default function RefinancesField({
   remove: (id: string) => void;
 }) {
   return (
-    <Collection<WithID<Refinance>>
+    <CollectionField<WithID<Refinance>>
       itemName="Refinance"
       items={items}
       initializeDraftItem={() => ({
@@ -174,6 +174,9 @@ export default function RefinancesField({
             {item.principal != null ? `${formatUSD(item.principal)} @ ` : ''}
             {formatPercent(item.annualizedInterestRate, 3)} for {item.years}{' '}
             {plural('year', 'years', item.years)}
+            {item.prePayment != null && item.prePayment !== 0
+              ? ` with ${formatUSD(item.prePayment)} down`
+              : ''}
           </span>
         );
       }}

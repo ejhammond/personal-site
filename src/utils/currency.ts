@@ -1,9 +1,13 @@
-export function formatUSD(value: number): string {
+export function formatUSD(
+  value: number,
+  options: { showCents: boolean } = { showCents: false },
+): string {
   return Intl.NumberFormat([], {
     style: 'currency',
     currencySign: 'standard',
     currency: 'USD',
     currencyDisplay: 'symbol',
+    maximumFractionDigits: options.showCents ? 2 : 0,
   }).format(value);
 }
 

@@ -1,10 +1,10 @@
-import Collection from '@/ds/collection';
 import { formatUSD } from '@/utils/currency';
 import { createUniqueID, WithID } from '@/utils/id';
 import { OneOffExtraPayment } from '@/utils/loan';
-import MonthAndYearField from '../../../../ds/month-and-year-field';
+import MonthAndYearField from '@/ds/month-and-year-field';
 import { addMonths, MonthAndYear, monthDifference } from '@/utils/date';
 import { CurrencyField } from '@/ds/currency-field';
+import CollectionField from '@/ds/collection-field';
 
 export default function OneOffExtraPaymentsField({
   defaultMonth = 1,
@@ -20,7 +20,7 @@ export default function OneOffExtraPaymentsField({
   remove: (id: string) => void;
 }) {
   return (
-    <Collection<WithID<OneOffExtraPayment>>
+    <CollectionField<WithID<OneOffExtraPayment>>
       itemName="One-off extra payment"
       items={items}
       initializeDraftItem={() => ({

@@ -1,10 +1,10 @@
-import Collection from '@/ds/collection';
 import { formatUSD } from '@/utils/currency';
 import { addMonths, MonthAndYear, monthDifference } from '@/utils/date';
 import { createUniqueID, WithID } from '@/utils/id';
 import { RecurringExtraPayment } from '@/utils/loan';
-import MonthAndYearField from '../../../../ds/month-and-year-field';
+import MonthAndYearField from '@/ds/month-and-year-field';
 import { CurrencyField } from '@/ds/currency-field';
+import CollectionField from '@/ds/collection-field';
 
 export default function RecurringExtraPaymentsField({
   defaultMonth = 1,
@@ -20,7 +20,7 @@ export default function RecurringExtraPaymentsField({
   remove: (id: string) => void;
 }) {
   return (
-    <Collection<WithID<RecurringExtraPayment>>
+    <CollectionField<WithID<RecurringExtraPayment>>
       itemName="Recurring extra payment"
       items={items}
       initializeDraftItem={() => ({

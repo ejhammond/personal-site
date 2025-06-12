@@ -7,7 +7,7 @@ import { genIndexes } from './gen-indexes';
 import { readTimer, startTimer } from './timer';
 import { readFiles } from './traverse';
 
-async function genFiles(): Promise<void> {
+async function genPages(): Promise<void> {
   // gen page files for our mdx articles
   await genArticles(await readFiles());
   // gen "index" pages for any non-page path
@@ -25,10 +25,13 @@ async function main() {
 
   startTimer();
   process.stdout.write(util.format('\x1b[36m%s\x1b[0m', `Generating pages...`));
-  await genFiles();
-  const genTime = readTimer();
+  await genPages();
+  const genPagesTime = readTimer();
   process.stdout.write(
-    util.format('\x1b[32m%s\x1b[0m', `\rGenerating pages (${genTime}ms)\n`),
+    util.format(
+      '\x1b[32m%s\x1b[0m',
+      `\rGenerating pages (${genPagesTime}ms)\n`,
+    ),
   );
 }
 

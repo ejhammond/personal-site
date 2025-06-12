@@ -7,63 +7,43 @@ import { idify } from '@/utils/id';
 import { Modal } from './modal';
 import { Dialog } from './dialog';
 import { Heading } from 'react-aria-components';
-import { Label } from './label';
 
-export default function Collection<TItem extends { id: string }>({
+export default function EditableItem<TItem>({
   itemName,
-  itemNamePlural,
-  items,
-  onAdd,
-  onRemove,
+  item,
   renderEditFormFields,
   renderItem,
-  initializeDraftItem,
-  sortItems,
+  onRemove,
+  onUpdate,
 }: {
   itemName: string;
-  itemNamePlural?: string;
-  items: TItem[];
-  onAdd: (item: TItem) => void;
-  onRemove: (id: string) => void;
+  onRemove?: () => void;
+  item: TItem;
+  onUpdate: (item: TItem) => void;
   renderEditFormFields: (
     draftItem: TItem,
     setDraftItem: (item: TItem) => void,
   ) => React.ReactNode;
   renderItem: (item: TItem) => React.ReactNode;
-  initializeDraftItem: () => TItem;
-  sortItems?: (a: TItem, b: TItem) => number;
 }) {
   const formID = idify(itemName + '-form');
   const [draftItem, setDraftItem] = useState<TItem | null>(null);
 
   return (
     <>
-      <VStack gap="xs" hAlign="start">
-        <Label>{itemNamePlural ?? `${itemName}s`}</Label>
-        <ul style={{ listStyle: 'none', paddingInlineStart: '16px' }}>
-          {items.toSorted(sortItems).map((item) => (
-            <li key={item.id}>
-              <HStack gap="sm" vAlign="center">
-                {renderItem(item)}
-                <HStack>
-                  <Button variant="flat" onPress={() => setDraftItem(item)}>
-                    Edit
-                  </Button>
-                  <Button variant="flat" onPress={() => onRemove(item.id)}>
-                    Remove
-                  </Button>
-                </HStack>
-              </HStack>
-            </li>
-          ))}
-        </ul>
-        <Button
-          type="button"
-          onPress={() => setDraftItem(initializeDraftItem())}
-        >
-          Add {itemName.toLowerCase()}
-        </Button>
-      </VStack>
+      <HStack gap="sm" vAlign="center">
+        {renderItem(item)}
+        <HStack>
+          <Button variant="flat" onPress={() => setDraftItem(item)}>
+            Edit
+          </Button>
+          {onRemove != null && (
+            <Button variant="flat" onPress={() => onRemove()}>
+              Remove
+            </Button>
+          )}
+        </HStack>
+      </HStack>
       {draftItem != null && (
         <Modal
           isDismissable
@@ -84,7 +64,7 @@ export default function Collection<TItem extends { id: string }>({
                     event.preventDefault();
                     event.stopPropagation();
 
-                    onAdd(draftItem);
+                    onUpdate(draftItem);
                     close();
                   }}
                   footer={

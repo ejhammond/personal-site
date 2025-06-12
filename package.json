@@ -12,7 +12,8 @@
     "prepare": "husky && npm run gen",
     "postinstall": "npx patch-package",
     "clean": "npx rimraf --glob src/**/*.gen.tsx",
-    "check": "npx tsc"
+    "check": "npx tsc",
+    "db-types": "npx supabase gen types typescript --project-id \"tcvwcqptuysegmdhpngw\" --schema public > ./src/types/database.types.ts"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.0.0",

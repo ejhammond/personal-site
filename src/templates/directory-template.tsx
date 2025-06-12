@@ -4,13 +4,12 @@ import { directoryIndex } from '@/templates/directory-index.gen';
 import { HStack } from '@/ds/h-stack';
 import { VStack } from '@/ds/v-stack';
 import { makeHeading } from '@/utils/string';
-import { Link } from '@/ds/link';
 import { usePathname } from 'next/navigation';
 import { Directory } from '@/types/directory';
 import { useMemo } from 'react';
-import { FaFolder, FaFile } from 'react-icons/fa';
 
 import './directory-template.css';
+import DirectoryListing from '@/ds/directory-listing';
 
 function DirListing({
   selectedDirectories,
@@ -34,53 +33,17 @@ function DirListing({
         const isPage = directory?.files?.some((f) => f.tags.has('page'));
         const parts = dir.split('/');
         const name = parts.at(-1);
-        const label = name != null ? makeHeading(name) : null;
+        const label = name != null ? makeHeading(name) : '<missing-name>';
         const isSelected = selectedDirectories.has(dir);
-        const labelContent = (
-          <HStack vAlign="center" gap="md">
-            {isPage ? (
-              <FaFile style={{ flexShrink: 0 }} />
-            ) : (
-              <FaFolder style={{ flexShrink: 0 }} />
-            )}{' '}
-            <span
-              style={{
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              {label}
-            </span>
-          </HStack>
-        );
 
         return (
-          <div
+          <DirectoryListing
             key={dir}
-            style={{
-              boxSizing: 'border-box',
-              paddingInline: '8px',
-              fontWeight: isSelected ? 'bold' : 'inherit',
-              outline: isSelected ? '1px solid var(--border-color)' : 'none',
-              // '&:hover': {
-              //   outline: '1px solid {colors.accent}',
-              // },
-            }}
-          >
-            {selectedDirectories.has(dir) ? (
-              labelContent
-            ) : (
-              <Link
-                href={dir}
-                style={{
-                  textDecoration: 'none',
-                }}
-              >
-                {labelContent}
-              </Link>
-            )}
-          </div>
+            label={label}
+            isSelected={isSelected}
+            href={selectedDirectories.has(dir) ? null : dir}
+            type={isPage ? 'file' : 'folder'}
+          />
         );
       })}
     </VStack>

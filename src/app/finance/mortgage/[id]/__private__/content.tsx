@@ -1,8 +1,14 @@
 'use client';
 
 import { Fragment, useState } from 'react';
-import useSaveParams from './use-save-params';
-import { Amortizations, amortize } from '@/utils/loan';
+import {
+  Amortizations,
+  amortize,
+  Loan,
+  OneOffExtraPayment,
+  RecurringExtraPayment,
+  Refinance,
+} from '@/utils/loan';
 import { formatUSD } from '@/utils/currency';
 import { plural } from '@/utils/string';
 import { VStack } from '@/ds/v-stack';
@@ -10,16 +16,28 @@ import React from 'react';
 import AmortizationTable from './amortization-table';
 import MortgageForm from './mortgage-form';
 import { formatPercent } from '@/utils/number';
-import useStartingMonthAndYearParam from './use-starting-month-and-year-param';
-import { Form } from '@/ds/form';
-import MonthAndYearField from '../../../../ds/month-and-year-field';
+import MonthAndYearField from '@/ds/month-and-year-field';
 import LoanStats from './loan-stats';
+import { MonthAndYear } from '@/utils/date';
+import { WithID } from '@/utils/id';
+import useStartingMonthAndYear from './use-starting-month-and-year';
+import EditableItemField from '@/ds/editable-item-field';
 
-export default function Content() {
-  const saveParams = useSaveParams();
-
+export default function Content({
+  initialLoan,
+  initialStartingMonthAndYear,
+  initialRefinances,
+  initialOneOffExtraPayments,
+  initialRecurringExtraPayments,
+}: {
+  initialStartingMonthAndYear: MonthAndYear;
+  initialLoan: Loan;
+  initialRefinances: WithID<Refinance>[];
+  initialOneOffExtraPayments: WithID<OneOffExtraPayment>[];
+  initialRecurringExtraPayments: WithID<RecurringExtraPayment>[];
+}) {
   const { startingMonthAndYear, setStartingMonthAndYear } =
-    useStartingMonthAndYearParam();
+    useStartingMonthAndYear(initialStartingMonthAndYear);
 
   const [amortizations, setAmortizations] = useState<{
     base: Amortizations;
@@ -31,17 +49,33 @@ export default function Content() {
 
   return (
     <VStack gap="sm">
-      <Form>
-        <MonthAndYearField
-          label="Starting date"
-          description="Month when the first payment is due"
-          isRequired
-          hasSelectOnFocus
-          value={startingMonthAndYear}
-          onChange={setStartingMonthAndYear}
-        />
-      </Form>
+      <EditableItemField<MonthAndYear>
+        item={startingMonthAndYear}
+        itemName="Starting date"
+        renderItem={(item) => (
+          <span>
+            {item.month} {item.year}
+          </span>
+        )}
+        onUpdate={(item) => setStartingMonthAndYear(item)}
+        renderEditFormFields={(draftItem, setDraftItem) => (
+          <>
+            <MonthAndYearField
+              label="Starting date"
+              description="Month when the first payment is due"
+              isRequired
+              hasSelectOnFocus
+              value={draftItem}
+              onChange={setDraftItem}
+            />
+          </>
+        )}
+      />
       <MortgageForm
+        initialLoan={initialLoan}
+        initialRefinances={initialRefinances}
+        initialOneOffExtraPayments={initialOneOffExtraPayments}
+        initialRecurringExtraPayments={initialRecurringExtraPayments}
         error={error}
         startingMonthAndYear={startingMonthAndYear}
         onSubmit={({
@@ -70,14 +104,6 @@ export default function Content() {
               base,
               withRefinances,
               withRefinancesAndPrePayments,
-            });
-
-            saveParams({
-              startingMonthAndYear,
-              originalLoan,
-              recurringExtraPayments,
-              oneOffExtraPayments,
-              refinances,
             });
 
             setError(null);

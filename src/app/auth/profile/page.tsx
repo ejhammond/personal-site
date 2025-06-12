@@ -21,6 +21,7 @@ export default async function ProfilePage() {
 
   return (
     <VStack gap="md">
+      {user.id}
       <EditProfileForm
         key={profileFormKey}
         initialDisplayName={user.user_metadata.display_name}
