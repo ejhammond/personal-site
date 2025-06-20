@@ -33,7 +33,7 @@ export type Database = {
           principal: number;
           term: number;
           updated_at?: string;
-          user_id: string;
+          user_id?: string;
           year: number;
         };
         Update: {
@@ -64,7 +64,7 @@ export type Database = {
           id?: number;
           month: number;
           mortgage_id: number;
-          user_id: string;
+          user_id?: string;
         };
         Update: {
           amount?: number;
@@ -96,7 +96,7 @@ export type Database = {
           id?: number;
           mortgage_id: number;
           starting_month: number;
-          user_id: string;
+          user_id?: string;
         };
         Update: {
           amount?: number;
@@ -122,7 +122,7 @@ export type Database = {
           month: number;
           mortgage_id: number;
           pre_payment: number | null;
-          principal: number;
+          principal: number | null;
           term: number;
           user_id: string;
         };
@@ -132,9 +132,9 @@ export type Database = {
           month: number;
           mortgage_id: number;
           pre_payment?: number | null;
-          principal: number;
+          principal?: number | null;
           term: number;
-          user_id: string;
+          user_id?: string;
         };
         Update: {
           annualized_interest_rate?: number;
@@ -142,7 +142,7 @@ export type Database = {
           month?: number;
           mortgage_id?: number;
           pre_payment?: number | null;
-          principal?: number;
+          principal?: number | null;
           term?: number;
           user_id?: string;
         };

@@ -1,7 +1,7 @@
 import { Card } from '@/ds/card';
 import { HStack } from '@/ds/h-stack';
 import { formatUSD } from '@/utils/currency';
-import { addMonths, formatMonths, MonthAndYear } from '@/utils/date';
+import { addMonths, formatMonths } from '@/utils/date';
 import { Amortizations } from '@/utils/loan';
 import { formatCompact } from '@/utils/number';
 import React, { ReactNode } from 'react';
@@ -33,16 +33,16 @@ function MetricDelta({
 }
 
 export default function LoanStats({
-  startingMonthAndYear,
   amortizationsForOriginalLoan,
   amortizationsWithRefinances,
   amortizationsWithRefinancesAndPrepayments,
 }: {
-  startingMonthAndYear: MonthAndYear;
   amortizationsForOriginalLoan: Amortizations;
   amortizationsWithRefinances: Amortizations;
   amortizationsWithRefinancesAndPrepayments: Amortizations;
 }) {
+  const startingMonthAndYear = amortizationsForOriginalLoan[0].loan.start;
+
   const totalFromPrincipalPrePayments =
     amortizationsWithRefinancesAndPrepayments.reduce(
       (acc, { loan: { prePayment } }) => acc + prePayment,

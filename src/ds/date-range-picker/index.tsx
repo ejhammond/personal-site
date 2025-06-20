@@ -15,7 +15,6 @@ import {
   Popover,
   RangeCalendar,
   Text,
-  ValidationResult,
 } from 'react-aria-components';
 
 import './index.css';
@@ -24,13 +23,11 @@ export interface DateRangePickerProps<T extends DateValue>
   extends AriaDateRangePickerProps<T> {
   label?: string;
   description?: string;
-  errorMessage?: string | ((validation: ValidationResult) => string);
 }
 
 export function DateRangePicker<T extends DateValue>({
   label,
   description,
-  errorMessage,
   ...props
 }: DateRangePickerProps<T>) {
   return (
@@ -47,7 +44,7 @@ export function DateRangePicker<T extends DateValue>({
         <Button>▼</Button>
       </Group>
       {description && <Text slot="description">{description}</Text>}
-      <FieldError>{errorMessage}</FieldError>
+      <FieldError />
       <Popover>
         <Dialog>
           <RangeCalendar>

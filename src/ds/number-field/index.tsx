@@ -7,16 +7,15 @@ import {
   NumberField as AriaNumberField,
   NumberFieldProps as AriaNumberFieldProps,
   Text,
-  ValidationResult,
 } from 'react-aria-components';
 
 import './index.css';
 import { forwardRef } from 'react';
+import { VStack } from '../v-stack';
 
 export interface NumberFieldProps extends AriaNumberFieldProps {
   label?: string;
   description?: string;
-  errorMessage?: string | ((validation: ValidationResult) => string);
   hasButtons?: boolean;
   hasSelectOnFocus?: boolean;
 }
@@ -26,7 +25,6 @@ export const NumberField = forwardRef(
     {
       label,
       description,
-      errorMessage,
       hasButtons = false,
       hasSelectOnFocus = false,
       onFocus,
@@ -56,8 +54,10 @@ export const NumberField = forwardRef(
           />
           {hasButtons && <Button slot="increment">+</Button>}
         </Group>
-        {description && <Text slot="description">{description}</Text>}
-        <FieldError>{errorMessage}</FieldError>
+        <VStack>
+          {description && <Text slot="description">{description}</Text>}
+          <FieldError />
+        </VStack>
       </AriaNumberField>
     );
   },

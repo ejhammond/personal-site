@@ -15,7 +15,6 @@ import {
   Label,
   Popover,
   Text,
-  ValidationResult,
 } from 'react-aria-components';
 
 import './index.css';
@@ -24,13 +23,11 @@ export interface DatePickerProps<T extends DateValue>
   extends AriaDatePickerProps<T> {
   label?: string;
   description?: string;
-  errorMessage?: string | ((validation: ValidationResult) => string);
 }
 
 export function DatePicker<T extends DateValue>({
   label,
   description,
-  errorMessage,
   ...props
 }: DatePickerProps<T>) {
   return (
@@ -41,7 +38,7 @@ export function DatePicker<T extends DateValue>({
         <Button>▼</Button>
       </Group>
       {description && <Text slot="description">{description}</Text>}
-      <FieldError>{errorMessage}</FieldError>
+      <FieldError />
       <Popover>
         <Dialog>
           <Calendar>

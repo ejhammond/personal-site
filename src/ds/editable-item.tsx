@@ -2,43 +2,60 @@ import React, { useState } from 'react';
 import { Button } from './button';
 import { HStack } from './h-stack';
 import { VStack } from './v-stack';
-import { Form } from './form';
-import { idify } from '@/utils/id';
 import { Modal } from './modal';
 import { Dialog } from './dialog';
 import { Heading } from 'react-aria-components';
+import { FormEventContextProvider } from './form/event-context';
 
 export default function EditableItem<TItem>({
   itemName,
   item,
-  renderEditFormFields,
+  renderEditForm,
   renderItem,
   onRemove,
-  onUpdate,
+  isPending = false,
+  hasError = false,
 }: {
   itemName: string;
+  isPending?: boolean;
+  hasError?: boolean;
   onRemove?: () => void;
   item: TItem;
-  onUpdate: (item: TItem) => void;
-  renderEditFormFields: (
-    draftItem: TItem,
-    setDraftItem: (item: TItem) => void,
+  renderEditForm: (
+    args: Readonly<{
+      draftItem: TItem;
+      setDraftItem: (item: TItem) => void;
+      close: () => void;
+    }>,
   ) => React.ReactNode;
-  renderItem: (item: TItem) => React.ReactNode;
+  renderItem: (
+    item: TItem,
+    meta: Readonly<{ isPending: boolean }>,
+  ) => React.ReactNode;
 }) {
-  const formID = idify(itemName + '-form');
   const [draftItem, setDraftItem] = useState<TItem | null>(null);
 
   return (
     <>
       <HStack gap="sm" vAlign="center">
-        {renderItem(item)}
+        {renderItem(item, { isPending })}
         <HStack>
-          <Button variant="flat" onPress={() => setDraftItem(item)}>
+          <Button
+            variant="flat"
+            onPress={() => setDraftItem(item)}
+            isPending={isPending}
+            cornerIndicator={
+              hasError ? { type: 'error', label: 'Error' } : undefined
+            }
+          >
             Edit
           </Button>
           {onRemove != null && (
-            <Button variant="flat" onPress={() => onRemove()}>
+            <Button
+              variant="flat"
+              onPress={() => onRemove()}
+              isPending={isPending}
+            >
               Remove
             </Button>
           )}
@@ -58,39 +75,9 @@ export default function EditableItem<TItem>({
             {({ close }) => (
               <VStack gap="md">
                 <Heading slot="title">{itemName}</Heading>
-                <Form
-                  id={formID}
-                  onSubmit={(event) => {
-                    event.preventDefault();
-                    event.stopPropagation();
-
-                    onUpdate(draftItem);
-                    close();
-                  }}
-                  footer={
-                    <HStack
-                      gap="sm"
-                      style={{
-                        alignSelf: 'stretch',
-                        justifyContent: 'flex-end',
-                      }}
-                    >
-                      <Button
-                        type="button"
-                        variant="flat"
-                        onPress={close}
-                        form={formID}
-                      >
-                        Cancel
-                      </Button>
-                      <Button type="submit" variant="primary" form={formID}>
-                        Save
-                      </Button>
-                    </HStack>
-                  }
-                >
-                  {renderEditFormFields(draftItem, setDraftItem)}
-                </Form>
+                <FormEventContextProvider onCancel={close}>
+                  {renderEditForm({ draftItem, setDraftItem, close })}
+                </FormEventContextProvider>
               </VStack>
             )}
           </Dialog>

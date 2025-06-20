@@ -1,42 +1,34 @@
 'use client';
 
-import { Button } from '@/ds/button';
 import { Form } from '@/ds/form';
-import StatusMessage from '@/ds/status-message';
 import { TextField } from '@/ds/text-field';
 import { useActionState } from 'react';
 import { logIn, LogInFormState } from './actions';
+import FormFooter from '@/ds/form/footer';
+import FormSubmitButton from '@/ds/form/submit-button';
 
 export default function LogInForm({ next }: { next: string }) {
-  const [state, action, pending] = useActionState<LogInFormState, FormData>(
-    logIn,
-    {},
-  );
+  const [actionState, action, isPending] = useActionState<
+    LogInFormState,
+    FormData
+  >(logIn, {});
 
   return (
-    <Form action={action}>
+    <Form
+      id="log-in"
+      action={action}
+      isPending={isPending}
+      footer={
+        <FormFooter
+          errorMessage={actionState.errors?.form}
+          submitButton={<FormSubmitButton>Log in</FormSubmitButton>}
+        />
+      }
+      validationErrors={actionState.errors}
+    >
       <input type="hidden" name="next" value={next} />
-      <TextField
-        label="Email"
-        name="email"
-        type="email"
-        isRequired
-        errorMessage={state.errors?.email}
-      />
-      <TextField
-        label="Password"
-        name="password"
-        type="password"
-        isRequired
-        errorMessage={state.errors?.password}
-      />
-
-      <Button type="submit" isPending={pending} isDisabled={pending}>
-        Log in
-      </Button>
-      {state.errors?.form != null && (
-        <StatusMessage variant="error" message={state.errors.form} />
-      )}
+      <TextField label="Email" name="email" type="email" isRequired />
+      <TextField label="Password" name="password" type="password" isRequired />
     </Form>
   );
 }

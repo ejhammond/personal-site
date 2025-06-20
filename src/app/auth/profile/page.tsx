@@ -27,7 +27,7 @@ export default async function ProfilePage() {
         initialDisplayName={user.user_metadata.display_name}
         initialEmail={user.email}
       />
-      <Form action="/auth/logout" method="post">
+      <Form id="logout" action="/auth/logout" method="post">
         <Button type="submit">Sign out</Button>
       </Form>
     </VStack>

@@ -5,8 +5,8 @@ import {
   Amortizations,
   amortize,
   Loan,
-  OneOffExtraPayment,
-  RecurringExtraPayment,
+  Payment,
+  RecurringPayment,
   Refinance,
 } from '@/utils/loan';
 import { formatUSD } from '@/utils/currency';
@@ -16,28 +16,33 @@ import React from 'react';
 import AmortizationTable from './amortization-table';
 import MortgageForm from './mortgage-form';
 import { formatPercent } from '@/utils/number';
-import MonthAndYearField from '@/ds/month-and-year-field';
 import LoanStats from './loan-stats';
-import { MonthAndYear } from '@/utils/date';
 import { WithID } from '@/utils/id';
-import useStartingMonthAndYear from './use-starting-month-and-year';
-import EditableItemField from '@/ds/editable-item-field';
+import { useLoan } from './loan/use-loan';
+import useRefinances from './refinance/use-refinances';
+import usePayments from './payment/use-payments';
+import useRecurringPayments from './recurring-payment/use-recurring-payments';
 
 export default function Content({
+  loanID,
   initialLoan,
-  initialStartingMonthAndYear,
   initialRefinances,
-  initialOneOffExtraPayments,
-  initialRecurringExtraPayments,
+  initialPayments,
+  initialRecurringPayments,
 }: {
-  initialStartingMonthAndYear: MonthAndYear;
+  loanID: string;
   initialLoan: Loan;
   initialRefinances: WithID<Refinance>[];
-  initialOneOffExtraPayments: WithID<OneOffExtraPayment>[];
-  initialRecurringExtraPayments: WithID<RecurringExtraPayment>[];
+  initialPayments: WithID<Payment>[];
+  initialRecurringPayments: WithID<RecurringPayment>[];
 }) {
-  const { startingMonthAndYear, setStartingMonthAndYear } =
-    useStartingMonthAndYear(initialStartingMonthAndYear);
+  const loan = useLoan(loanID, initialLoan);
+  const refinances = useRefinances(loanID, initialRefinances);
+  const payments = usePayments(loanID, initialPayments);
+  const recurringPayments = useRecurringPayments(
+    loanID,
+    initialRecurringPayments,
+  );
 
   const [amortizations, setAmortizations] = useState<{
     base: Amortizations;
@@ -45,43 +50,21 @@ export default function Content({
     withRefinancesAndPrePayments: Amortizations;
   } | null>(null);
 
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | undefined>();
 
   return (
     <VStack gap="sm">
-      <EditableItemField<MonthAndYear>
-        item={startingMonthAndYear}
-        itemName="Starting date"
-        renderItem={(item) => (
-          <span>
-            {item.month} {item.year}
-          </span>
-        )}
-        onUpdate={(item) => setStartingMonthAndYear(item)}
-        renderEditFormFields={(draftItem, setDraftItem) => (
-          <>
-            <MonthAndYearField
-              label="Starting date"
-              description="Month when the first payment is due"
-              isRequired
-              hasSelectOnFocus
-              value={draftItem}
-              onChange={setDraftItem}
-            />
-          </>
-        )}
-      />
       <MortgageForm
-        initialLoan={initialLoan}
-        initialRefinances={initialRefinances}
-        initialOneOffExtraPayments={initialOneOffExtraPayments}
-        initialRecurringExtraPayments={initialRecurringExtraPayments}
+        loanID={loanID}
+        loan={loan}
+        refinances={refinances}
+        payments={payments}
+        recurringPayments={recurringPayments}
         error={error}
-        startingMonthAndYear={startingMonthAndYear}
         onSubmit={({
           originalLoan,
-          recurringExtraPayments,
-          oneOffExtraPayments,
+          recurringPayments,
+          payments,
           refinances,
         }) => {
           try {
@@ -95,8 +78,8 @@ export default function Content({
             });
             const withRefinancesAndPrePayments = amortize({
               originalLoan,
-              recurringExtraPayments,
-              oneOffExtraPayments,
+              recurringPayments,
+              payments,
               refinances,
             });
 
@@ -106,7 +89,7 @@ export default function Content({
               withRefinancesAndPrePayments,
             });
 
-            setError(null);
+            setError(undefined);
           } catch (e: unknown) {
             if (e instanceof Error) {
               setError(e.message);
@@ -120,7 +103,6 @@ export default function Content({
           <VStack gap="md">
             <h3>Statistics</h3>
             <LoanStats
-              startingMonthAndYear={startingMonthAndYear}
               amortizationsForOriginalLoan={amortizations.base}
               amortizationsWithRefinances={amortizations.withRefinances}
               amortizationsWithRefinancesAndPrepayments={
@@ -138,10 +120,9 @@ export default function Content({
                     <h3>
                       Loan {index + 1} - {formatUSD(loan.principal)} at{' '}
                       {formatPercent(loan.annualizedInterestRate, 3)} for{' '}
-                      {loan.years} {plural('year', 'years', loan.years)}
+                      {loan.term} {plural('year', 'years', loan.term)}
                     </h3>
                     <AmortizationTable
-                      startingMonthAndYear={startingMonthAndYear}
                       loan={loan}
                       amortization={amortization}
                     />

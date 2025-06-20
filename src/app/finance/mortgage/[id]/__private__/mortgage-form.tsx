@@ -1,82 +1,48 @@
-import { Form } from '@/ds/form';
 import { WithID } from '@/utils/id';
-import {
-  Loan,
-  OneOffExtraPayment,
-  RecurringExtraPayment,
-  Refinance,
-} from '@/utils/loan';
+import { Loan, Payment, RecurringPayment, Refinance } from '@/utils/loan';
 
 import { Button } from '@/ds/button';
-import { NumberField } from '@/ds/number-field';
-import RecurringExtraPaymentsField from './recurring-extra-payments-field';
-import OneOffExtraPaymentsField from './one-off-extra-payments-field';
-import RefinancesField from './refinances-field';
-import { MonthAndYear } from '@/utils/date';
-import { CurrencyField } from '@/ds/currency-field';
+import RefinancesField from './refinance/refinances-field';
 import { VStack } from '@/ds/v-stack';
 import { useMemo } from 'react';
-import { arrayToMap } from '@/utils/map';
-import useOriginalLoan from './use-original-loan';
-import useRecurringExtraPayments from './use-recurring-extra-payments';
-import useOneOffExtraPayments from './use-one-off-extra-payments';
-import useRefinances from './use-refinances-param';
-import { formatUSD } from '@/utils/currency';
-import { formatPercent } from '@/utils/number';
-import { plural } from '@/utils/string';
-import EditableItemField from '@/ds/editable-item-field';
+import { mapToArray } from '@/utils/map';
+
+import StatusMessage from '@/ds/status-message';
+import LoanField from './loan/loan-field';
+import RecurringPaymentsField from './recurring-payment/recurring-payments-field';
+import PaymentsField from './payment/payments-field';
 
 export default function MortgageForm({
   onSubmit,
-  startingMonthAndYear,
-  initialLoan,
-  initialRefinances,
-  initialOneOffExtraPayments,
-  initialRecurringExtraPayments,
+  loanID,
+  loan,
+  refinances,
+  payments,
+  recurringPayments,
   error,
 }: {
-  error?: string | null;
-  initialLoan: Loan;
-  initialRefinances: WithID<Refinance>[];
-  initialOneOffExtraPayments: WithID<OneOffExtraPayment>[];
-  initialRecurringExtraPayments: WithID<RecurringExtraPayment>[];
-  startingMonthAndYear: MonthAndYear;
+  error?: string;
+  loanID: string;
+  loan: Loan;
+  refinances: ReadonlyMap<string, WithID<Refinance>>;
+  payments: ReadonlyMap<string, WithID<Payment>>;
+  recurringPayments: ReadonlyMap<string, WithID<RecurringPayment>>;
   onSubmit: (data: {
     originalLoan: Loan;
-    recurringExtraPayments: WithID<RecurringExtraPayment>[];
-    oneOffExtraPayments: WithID<OneOffExtraPayment>[];
+    recurringPayments: WithID<RecurringPayment>[];
+    payments: WithID<Payment>[];
     refinances: WithID<Refinance>[];
   }) => void;
 }) {
-  const { originalLoan, setOriginalLoan } = useOriginalLoan(initialLoan);
-  const {
-    recurringExtraPayments,
-    addRecurringExtraPayment,
-    removeRecurringExtraPayment,
-  } = useRecurringExtraPayments(
-    arrayToMap(initialRecurringExtraPayments, ({ id }) => id),
-  );
-  const {
-    oneOffExtraPayments,
-    addOneOffExtraPayment,
-    removeOneOffExtraPayment,
-  } = useOneOffExtraPayments(
-    arrayToMap(initialOneOffExtraPayments, ({ id }) => id),
-  );
-  const { refinances, addRefinance, removeRefinance } = useRefinances(
-    arrayToMap(initialRefinances, ({ id }) => id),
-  );
-
   const mostRecentMonthUsed = useMemo(() => {
-    const mostRecentRecurringExtraPaymentMonth = recurringExtraPayments.reduce(
-      (max, { startingMonth }) => Math.max(max, startingMonth),
-      0,
-    );
-    const mostRecentOneOffExtraPaymentMonth = oneOffExtraPayments.reduce(
+    const mostRecentRecurringExtraPaymentMonth = mapToArray(
+      recurringPayments,
+    ).reduce((max, { startingMonth }) => Math.max(max, startingMonth), 0);
+    const mostRecentOneOffExtraPaymentMonth = mapToArray(payments).reduce(
       (max, { month }) => Math.max(max, month),
       0,
     );
-    const mostRecentRefinanceMonth = refinances.reduce(
+    const mostRecentRefinanceMonth = mapToArray(refinances).reduce(
       (max, { month }) => Math.max(max, month),
       0,
     );
@@ -87,121 +53,46 @@ export default function MortgageForm({
       mostRecentRefinanceMonth,
       0,
     );
-  }, [oneOffExtraPayments, recurringExtraPayments, refinances]);
+  }, [payments, recurringPayments, refinances]);
 
   return (
-    <Form
-      onSubmit={(event) => {
-        event.preventDefault();
-
-        onSubmit({
-          originalLoan,
-          recurringExtraPayments,
-          oneOffExtraPayments,
-          refinances,
-        });
-      }}
-      footer={
-        <VStack hAlign="end">
-          <Button type="submit" variant="primary">
-            Calculate
-          </Button>
-          {error != null && (
-            <span style={{ fontSize: '12px', color: 'var(--invalid-color)' }}>
-              {error}
-            </span>
-          )}
-        </VStack>
-      }
-    >
-      <EditableItemField<Loan>
-        itemName="Loan"
-        item={originalLoan}
-        onUpdate={(item) => {
-          setOriginalLoan(item);
-        }}
-        renderItem={(item) => (
-          <span>
-            {`${formatUSD(item.principal)} @ `}
-            {formatPercent(item.annualizedInterestRate, 3)} for {item.years}{' '}
-            {plural('year', 'years', item.years)}
-            {item.prePayment != null && item.prePayment !== 0
-              ? ` with ${formatUSD(item.prePayment)} down`
-              : ''}
-          </span>
-        )}
-        renderEditFormFields={(draftItem, setDraftItem) => (
-          <>
-            <CurrencyField
-              label="Amount financed"
-              isRequired
-              hasSelectOnFocus
-              value={draftItem.principal}
-              onChange={(principal) =>
-                setDraftItem({ ...draftItem, principal })
-              }
-            />
-            <NumberField
-              label="Term"
-              minValue={1}
-              isRequired
-              hasSelectOnFocus
-              value={draftItem.years}
-              onChange={(years) => setDraftItem({ ...draftItem, years })}
-              formatOptions={{
-                style: 'unit',
-                unit: 'year',
-                unitDisplay: 'long',
-              }}
-            />
-            <NumberField
-              label="Rate"
-              isRequired
-              hasSelectOnFocus
-              minValue={0}
-              maxValue={1}
-              value={draftItem.annualizedInterestRate}
-              onChange={(annualizedInterestRate) =>
-                setDraftItem({ ...draftItem, annualizedInterestRate })
-              }
-              formatOptions={{
-                style: 'percent',
-                minimumFractionDigits: 3,
-              }}
-            />
-            <CurrencyField
-              label="Pre payment"
-              description="Extra payment after down payment and before the first month's payment"
-              hasSelectOnFocus
-              value={draftItem.prePayment}
-              onChange={(prePayment) =>
-                setDraftItem({ ...draftItem, prePayment })
-              }
-            />
-          </>
-        )}
-      />
+    <VStack gap="md">
+      <LoanField loanID={loanID} loan={loan} />
       <RefinancesField
+        loanID={loanID}
         defaultMonth={mostRecentMonthUsed + 1}
-        startingMonthAndYear={startingMonthAndYear}
+        startingMonthAndYear={loan.start}
         items={refinances}
-        add={addRefinance}
-        remove={removeRefinance}
       />
-      <RecurringExtraPaymentsField
+      <RecurringPaymentsField
+        loanID={loanID}
         defaultMonth={mostRecentMonthUsed + 1}
-        startingMonthAndYear={startingMonthAndYear}
-        items={recurringExtraPayments}
-        add={addRecurringExtraPayment}
-        remove={removeRecurringExtraPayment}
+        startingMonthAndYear={loan.start}
+        items={recurringPayments}
       />
-      <OneOffExtraPaymentsField
+      <PaymentsField
+        loanID={loanID}
         defaultMonth={mostRecentMonthUsed + 1}
-        startingMonthAndYear={startingMonthAndYear}
-        items={oneOffExtraPayments}
-        add={addOneOffExtraPayment}
-        remove={removeOneOffExtraPayment}
+        startingMonthAndYear={loan.start}
+        items={payments}
       />
-    </Form>
+
+      <VStack gap="sm" hAlign="end">
+        <Button
+          variant="primary"
+          onClick={() => {
+            onSubmit({
+              originalLoan: loan,
+              recurringPayments: mapToArray(recurringPayments),
+              payments: mapToArray(payments),
+              refinances: mapToArray(refinances),
+            });
+          }}
+        >
+          Calculate
+        </Button>
+        {error != null && <StatusMessage variant="error" message={error} />}
+      </VStack>
+    </VStack>
   );
 }

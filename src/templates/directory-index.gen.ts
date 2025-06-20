@@ -110,36 +110,93 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
           path: '/finance/mortgage/[id]/__private__/mortgage-form.tsx',
           tags: [],
         },
+      ],
+      subDirectories: [
+        '/finance/mortgage/[id]/__private__/loan',
+        '/finance/mortgage/[id]/__private__/payment',
+        '/finance/mortgage/[id]/__private__/recurring-payment',
+        '/finance/mortgage/[id]/__private__/refinance',
+      ],
+    },
+  ],
+  [
+    '/finance/mortgage/[id]/__private__/refinance',
+    {
+      path: '/finance/mortgage/[id]/__private__/refinance',
+      files: [
         {
-          path: '/finance/mortgage/[id]/__private__/one-off-extra-payments-field.tsx',
+          path: '/finance/mortgage/[id]/__private__/refinance/refinance-actions.ts',
           tags: [],
         },
         {
-          path: '/finance/mortgage/[id]/__private__/recurring-extra-payments-field.tsx',
+          path: '/finance/mortgage/[id]/__private__/refinance/refinances-field.tsx',
           tags: [],
         },
         {
-          path: '/finance/mortgage/[id]/__private__/refinances-field.tsx',
+          path: '/finance/mortgage/[id]/__private__/refinance/use-refinances.ts',
+          tags: [],
+        },
+      ],
+      subDirectories: [],
+    },
+  ],
+  [
+    '/finance/mortgage/[id]/__private__/recurring-payment',
+    {
+      path: '/finance/mortgage/[id]/__private__/recurring-payment',
+      files: [
+        {
+          path: '/finance/mortgage/[id]/__private__/recurring-payment/recurring-payment-actions.ts',
           tags: [],
         },
         {
-          path: '/finance/mortgage/[id]/__private__/use-one-off-extra-payments.ts',
+          path: '/finance/mortgage/[id]/__private__/recurring-payment/recurring-payments-field.tsx',
           tags: [],
         },
         {
-          path: '/finance/mortgage/[id]/__private__/use-original-loan.ts',
+          path: '/finance/mortgage/[id]/__private__/recurring-payment/use-recurring-payments.ts',
+          tags: [],
+        },
+      ],
+      subDirectories: [],
+    },
+  ],
+  [
+    '/finance/mortgage/[id]/__private__/payment',
+    {
+      path: '/finance/mortgage/[id]/__private__/payment',
+      files: [
+        {
+          path: '/finance/mortgage/[id]/__private__/payment/payment-actions.ts',
           tags: [],
         },
         {
-          path: '/finance/mortgage/[id]/__private__/use-recurring-extra-payments.ts',
+          path: '/finance/mortgage/[id]/__private__/payment/payments-field.tsx',
           tags: [],
         },
         {
-          path: '/finance/mortgage/[id]/__private__/use-refinances-param.ts',
+          path: '/finance/mortgage/[id]/__private__/payment/use-payments.ts',
+          tags: [],
+        },
+      ],
+      subDirectories: [],
+    },
+  ],
+  [
+    '/finance/mortgage/[id]/__private__/loan',
+    {
+      path: '/finance/mortgage/[id]/__private__/loan',
+      files: [
+        {
+          path: '/finance/mortgage/[id]/__private__/loan/loan-actions.ts',
           tags: [],
         },
         {
-          path: '/finance/mortgage/[id]/__private__/use-starting-month-and-year.ts',
+          path: '/finance/mortgage/[id]/__private__/loan/loan-field.tsx',
+          tags: [],
+        },
+        {
+          path: '/finance/mortgage/[id]/__private__/loan/use-loan.ts',
           tags: [],
         },
       ],

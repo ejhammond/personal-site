@@ -7,7 +7,6 @@ import {
   Text,
   TextField as AriaTextField,
   TextFieldProps as AriaTextFieldProps,
-  ValidationResult,
 } from 'react-aria-components';
 
 import './index.css';
@@ -16,12 +15,11 @@ import { forwardRef } from 'react';
 export interface TextFieldProps extends AriaTextFieldProps {
   label?: string;
   description?: string;
-  errorMessage?: string | ((validation: ValidationResult) => string);
 }
 
 export const TextField = forwardRef(
   (
-    { label, description, errorMessage, ...props }: TextFieldProps,
+    { label, description, ...props }: TextFieldProps,
     ref: React.ForwardedRef<HTMLInputElement>,
   ) => {
     return (
@@ -29,7 +27,7 @@ export const TextField = forwardRef(
         <Label>{label}</Label>
         <Input ref={ref} />
         {description && <Text slot="description">{description}</Text>}
-        <FieldError>{errorMessage}</FieldError>
+        <FieldError />
       </AriaTextField>
     );
   },

@@ -89,7 +89,7 @@ const Damage: React.FC = () => {
       <p style={{ marginBlockEnd: '16px' }}>
         Calculate the expected damage of an attack.
       </p>
-      <Form>
+      <Form id="damage">
         <Counter
           label="D4"
           min={0}

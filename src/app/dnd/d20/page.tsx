@@ -80,7 +80,7 @@ const D20: React.FC = () => {
       <p style={{ marginBlockEnd: '16px' }}>
         Calculate your chance to meet a certain threshold with a D20 roll.
       </p>
-      <Form>
+      <Form id="roll-chance">
         <Counter
           label="Threshold"
           min={0}

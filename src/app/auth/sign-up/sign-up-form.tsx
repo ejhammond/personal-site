@@ -14,29 +14,16 @@ export default function SignUpForm({ next }: { next: string }) {
   );
 
   return (
-    <Form action={action}>
+    <Form id="sign-up" action={action} validationErrors={state.errors}>
       <input type="hidden" name="next" value={next} />
       <TextField
         label="Display name"
-        name="display-name"
+        name="displayName"
         type="text"
         isRequired
-        errorMessage={state.errors?.displayName}
       />
-      <TextField
-        label="Email"
-        name="email"
-        type="email"
-        isRequired
-        errorMessage={state.errors?.email}
-      />
-      <TextField
-        label="Password"
-        name="password"
-        type="password"
-        isRequired
-        errorMessage={state.errors?.password}
-      />
+      <TextField label="Email" name="email" type="email" isRequired />
+      <TextField label="Password" name="password" type="password" isRequired />
       <Button type="submit" isPending={pending} isDisabled={pending}>
         Sign up
       </Button>

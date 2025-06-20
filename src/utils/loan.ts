@@ -1,11 +1,13 @@
 'use strict';
 
 import { roundCurrency } from './currency';
+import { addMonths, MonthAndYear } from './date';
 
 export type Loan = {
+  start: MonthAndYear;
   principal: number;
   annualizedInterestRate: number;
-  years: number;
+  term: number;
   prePayment: number;
 };
 
@@ -15,9 +17,9 @@ export type Loan = {
 function getMinMonthlyPayment({
   principal,
   annualizedInterestRate,
-  years,
-}: Pick<Loan, 'principal' | 'annualizedInterestRate' | 'years'>) {
-  const months = years * 12;
+  term,
+}: Pick<Loan, 'principal' | 'annualizedInterestRate' | 'term'>) {
+  const months = term * 12;
 
   // if the interest rate is 0, then the formula will fail
   if (annualizedInterestRate === 0) {
@@ -51,13 +53,13 @@ function getAccruedInterest({
   return principal * (annualizedInterestRate / 12);
 }
 
-export type RecurringExtraPayment = {
+export type RecurringPayment = {
   startingMonth: number;
   amount: number;
 };
 
-function getRecurringExtraPaymentForMonth(
-  recurringExtraPayments: RecurringExtraPayment[],
+function getRecurringPaymentForMonth(
+  recurringExtraPayments: RecurringPayment[],
   month: number,
 ) {
   if (recurringExtraPayments.length === 0) {
@@ -79,22 +81,19 @@ function getRecurringExtraPaymentForMonth(
   return 0;
 }
 
-export type OneOffExtraPayment = {
+export type Payment = {
   month: number;
   amount: number;
 };
 
-function getOneOffExtraPaymentForMonth(
-  oneOffExtraPayments: OneOffExtraPayment[],
-  month: number,
-) {
-  return oneOffExtraPayments.find(({ month: m }) => month === m)?.amount ?? 0;
+function getPaymentForMonth(payments: Payment[], month: number) {
+  return payments.find(({ month: m }) => month === m)?.amount ?? 0;
 }
 
 export type Refinance = {
   principal: number | null;
   annualizedInterestRate: number;
-  years: number;
+  term: number;
   prePayment: number;
   month: number;
 };
@@ -108,8 +107,8 @@ function getRefinanceForMonth(
 
 type AmortizeInput = {
   originalLoan: Loan;
-  recurringExtraPayments?: RecurringExtraPayment[];
-  oneOffExtraPayments?: OneOffExtraPayment[];
+  recurringPayments?: RecurringPayment[];
+  payments?: Payment[];
   refinances?: Refinance[];
 };
 
@@ -132,8 +131,8 @@ export type Amortizations = {
  */
 export function amortize({
   originalLoan,
-  recurringExtraPayments = [],
-  oneOffExtraPayments = [],
+  recurringPayments = [],
+  payments = [],
   refinances = [],
 }: AmortizeInput): Amortizations {
   const amortizations: {
@@ -152,13 +151,12 @@ export function amortize({
   while (currentBalance > 0 || refinances.some((r) => r.month > currentMonth)) {
     currentMonth++;
 
-    const { principal, annualizedInterestRate, years, prePayment } =
-      currentLoan;
+    const { principal, annualizedInterestRate, term, prePayment } = currentLoan;
 
     const minMonthlyPayment = getMinMonthlyPayment({
       principal,
       annualizedInterestRate,
-      years,
+      term,
     });
 
     const interestPayment = getAccruedInterest({
@@ -168,17 +166,14 @@ export function amortize({
 
     const minPrincipalPayment = minMonthlyPayment - interestPayment;
 
-    const recurringExtraPayment = getRecurringExtraPaymentForMonth(
-      recurringExtraPayments,
+    const recurringPayment = getRecurringPaymentForMonth(
+      recurringPayments,
       currentMonth,
     );
 
-    const oneOffExtraPayment = getOneOffExtraPaymentForMonth(
-      oneOffExtraPayments,
-      currentMonth,
-    );
+    const payment = getPaymentForMonth(payments, currentMonth);
 
-    const extraPrincipalPayment = recurringExtraPayment + oneOffExtraPayment;
+    const extraPrincipalPayment = recurringPayment + payment;
 
     const principalPayment = minPrincipalPayment + extraPrincipalPayment;
 
@@ -243,9 +238,10 @@ export function amortize({
     // store the full amortization
     amortizations.push({
       loan: {
+        start: currentLoan.start,
         principal,
         annualizedInterestRate,
-        years,
+        term,
         prePayment,
       },
       amortization,
@@ -254,11 +250,12 @@ export function amortize({
     // if we're refinancing next month, we'll keep iterating with new values
     if (refinanceNextMonth != null) {
       currentLoan = {
+        start: addMonths(originalLoan.start, currentMonth),
         // earlier, we calculated the refinance disbursement based on the
         // specified refinance.principal OR implicit principal from the current
         // loan balance
         principal: refinanceDisbursement,
-        years: refinanceNextMonth.years,
+        term: refinanceNextMonth.term,
         annualizedInterestRate: refinanceNextMonth.annualizedInterestRate,
         prePayment: refinanceNextMonth.prePayment,
       };

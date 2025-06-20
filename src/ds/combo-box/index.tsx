@@ -10,7 +10,6 @@ import {
   ListBoxItemProps,
   Popover,
   Text,
-  ValidationResult,
 } from 'react-aria-components';
 
 import './index.css';
@@ -19,14 +18,12 @@ export interface ComboBoxProps<T extends object>
   extends Omit<AriaComboBoxProps<T>, 'children'> {
   label?: string;
   description?: string | null;
-  errorMessage?: string | ((validation: ValidationResult) => string);
   children: React.ReactNode | ((item: T) => React.ReactNode);
 }
 
 export function ComboBox<T extends object>({
   label,
   description,
-  errorMessage,
   children,
   ...props
 }: ComboBoxProps<T>) {
@@ -38,7 +35,7 @@ export function ComboBox<T extends object>({
         <Button>▼</Button>
       </div>
       {description && <Text slot="description">{description}</Text>}
-      <FieldError>{errorMessage}</FieldError>
+      <FieldError />
       <Popover>
         <ListBox>{children}</ListBox>
       </Popover>

@@ -61,7 +61,7 @@
   --text-color: var(--gray-600);
   --text-color-alt: var(--gray-500);
   --text-color-hover: var(--gray-600);
-  --text-color-disabled: var(--gray-200);
+  --text-color-disabled: var(--gray-400);
   --text-color-placeholder: var(--gray-400);
   --link-color: var(--accent-500);
   --link-color-secondary: var(--gray-500);

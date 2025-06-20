@@ -4,7 +4,6 @@ import {
   FieldError,
   Label,
   Text,
-  ValidationResult,
 } from 'react-aria-components';
 
 import './index.css';
@@ -14,13 +13,11 @@ export interface CheckboxGroupProps
   children?: React.ReactNode;
   label?: string;
   description?: string;
-  errorMessage?: string | ((validation: ValidationResult) => string);
 }
 
 export function CheckboxGroup({
   label,
   description,
-  errorMessage,
   children,
   ...props
 }: CheckboxGroupProps) {
@@ -29,7 +26,7 @@ export function CheckboxGroup({
       {label && <Label>{label}</Label>}
       {children}
       {description && <Text slot="description">{description}</Text>}
-      <FieldError>{errorMessage}</FieldError>
+      <FieldError />
     </AriaCheckboxGroup>
   );
 }

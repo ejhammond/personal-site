@@ -3,31 +3,32 @@ import { Button } from './button';
 import { VStack } from './v-stack';
 import { Label } from './label';
 import EditableItem from './editable-item';
+import { WithID } from '@/utils/id';
+import { WithOptimistic } from '@/utils/with-optimistic';
 
-export default function CollectionField<TItem extends { id: string }>({
+export default function CollectionField<
+  TItem extends WithOptimistic<WithID<unknown>>,
+>({
   itemName,
   itemNamePlural,
   items,
   onAdd,
   onRemove,
-  renderEditFormFields,
+  renderEditForm,
   renderItem,
   initializeDraftItem,
   sortItems,
 }: {
-  itemName: string;
   itemNamePlural?: string;
   items: TItem[];
   onAdd: (item: TItem) => void;
   onRemove: (id: string) => void;
-  renderEditFormFields: (
-    draftItem: TItem,
-    setDraftItem: (item: TItem) => void,
-  ) => React.ReactNode;
-  renderItem: (item: TItem) => React.ReactNode;
   initializeDraftItem: () => TItem;
   sortItems?: (a: TItem, b: TItem) => number;
-}) {
+} & Omit<
+  React.ComponentProps<typeof EditableItem<TItem>>,
+  'onRemove' | 'item'
+>) {
   return (
     <VStack hAlign="start">
       <Label>{itemNamePlural ?? `${itemName}s`}</Label>
@@ -38,9 +39,10 @@ export default function CollectionField<TItem extends { id: string }>({
               <EditableItem
                 itemName={itemName}
                 item={item}
-                renderEditFormFields={renderEditFormFields}
+                isPending={item.isPending}
+                hasError={item.hasError}
+                renderEditForm={renderEditForm}
                 renderItem={renderItem}
-                onUpdate={onAdd}
                 onRemove={() => onRemove(item.id)}
               />
             </li>

@@ -3,12 +3,7 @@ import './page.css';
 import { VStack } from '@/ds/v-stack';
 import Content from './__private__/content';
 import { createClient } from '@/supabase/server';
-import {
-  Loan,
-  OneOffExtraPayment,
-  RecurringExtraPayment,
-  Refinance,
-} from '@/utils/loan';
+import { Loan, Payment, RecurringPayment, Refinance } from '@/utils/loan';
 import { monthFromNumber } from '@/utils/date';
 import { notFound } from 'next/navigation';
 import { WithID } from '@/utils/id';
@@ -60,14 +55,13 @@ export default async function MortgageID({
     notFound();
   }
 
-  const startingMonthAndYear = {
-    month: monthFromNumber(data.month),
-    year: data.year,
-  };
-
   const loan: Loan = {
+    start: {
+      month: monthFromNumber(data.month),
+      year: data.year,
+    },
     principal: data.principal,
-    years: data.term,
+    term: data.term,
     annualizedInterestRate: data.annualized_interest_rate,
     prePayment: data.pre_payment ?? 0,
   };
@@ -83,23 +77,23 @@ export default async function MortgageID({
     }) => ({
       id: id.toString(),
       principal,
-      years: term,
+      term,
       annualizedInterestRate: annualized_interest_rate,
       prePayment: pre_payment ?? 0,
       month,
     }),
   );
 
-  const oneOffExtraPayments = data.mortgage_payment.map<
-    WithID<OneOffExtraPayment>
-  >(({ id, month, amount }) => ({
-    id: id.toString(),
-    month,
-    amount,
-  }));
+  const payments = data.mortgage_payment.map<WithID<Payment>>(
+    ({ id, month, amount }) => ({
+      id: id.toString(),
+      month,
+      amount,
+    }),
+  );
 
-  const recurringExtraPayments = data.mortgage_recurring_payment.map<
-    WithID<RecurringExtraPayment>
+  const recurringPayments = data.mortgage_recurring_payment.map<
+    WithID<RecurringPayment>
   >(({ id, starting_month, amount }) => ({
     id: id.toString(),
     startingMonth: starting_month,
@@ -112,11 +106,11 @@ export default async function MortgageID({
       <Suspense>
         <Content
           key={data.updated_at}
-          initialStartingMonthAndYear={startingMonthAndYear}
+          loanID={params.id}
           initialLoan={loan}
           initialRefinances={refinances}
-          initialOneOffExtraPayments={oneOffExtraPayments}
-          initialRecurringExtraPayments={recurringExtraPayments}
+          initialPayments={payments}
+          initialRecurringPayments={recurringPayments}
         />
       </Suspense>
     </VStack>

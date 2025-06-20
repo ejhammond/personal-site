@@ -10,16 +10,15 @@ import {
   SelectProps as AriaSelectProps,
   SelectValue,
   Text,
-  ValidationResult,
 } from 'react-aria-components';
 
 import './index.css';
+import { VStack } from '../v-stack';
 
 export interface SelectProps<T extends object>
   extends Omit<AriaSelectProps<T>, 'children'> {
   label?: string;
   description?: string;
-  errorMessage?: string | ((validation: ValidationResult) => string);
   items?: Iterable<T>;
   children: React.ReactNode | ((item: T) => React.ReactNode);
 }
@@ -27,7 +26,6 @@ export interface SelectProps<T extends object>
 export function Select<T extends object>({
   label,
   description,
-  errorMessage,
   children,
   items,
   ...props
@@ -39,8 +37,10 @@ export function Select<T extends object>({
         <SelectValue />
         <span aria-hidden="true">▼</span>
       </Button>
-      {description && <Text slot="description">{description}</Text>}
-      <FieldError>{errorMessage}</FieldError>
+      <VStack>
+        {description && <Text slot="description">{description}</Text>}
+        <FieldError />
+      </VStack>
       <Popover>
         <ListBox items={items}>{children}</ListBox>
       </Popover>

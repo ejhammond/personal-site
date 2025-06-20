@@ -8,7 +8,7 @@ import {
   MONTHS,
   monthToNumber,
 } from '@/utils/date';
-import { Group, Text } from 'react-aria-components';
+import { FieldError, Group, Text } from 'react-aria-components';
 
 import './month-and-year-field.css';
 
@@ -21,6 +21,8 @@ export default function MonthAndYearField({
   autoFocus,
   description,
   hasSelectOnFocus = false,
+  monthInputName = 'month',
+  yearInputName = 'year',
 }: {
   label: string;
   description?: string;
@@ -30,12 +32,15 @@ export default function MonthAndYearField({
   isRequired?: boolean;
   autoFocus?: boolean;
   hasSelectOnFocus?: boolean;
+  monthInputName?: string;
+  yearInputName?: string;
 }) {
   return (
     <div className="month-and-year-field">
       <Label>{label}</Label>
       <Group>
         <Select
+          name={monthInputName}
           autoFocus={autoFocus}
           isRequired={isRequired}
           aria-label={`${label} month`}
@@ -68,7 +73,8 @@ export default function MonthAndYearField({
           )}
         </Select>
         <NumberField
-          aria-label={`${label} month`}
+          name={yearInputName}
+          aria-label={`${label} year`}
           isRequired={isRequired}
           hasSelectOnFocus={hasSelectOnFocus}
           value={value.year}
@@ -93,6 +99,7 @@ export default function MonthAndYearField({
         />
       </Group>
       {description && <Text slot="description">{description}</Text>}
+      <FieldError />
     </div>
   );
 }

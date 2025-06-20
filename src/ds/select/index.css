@@ -23,6 +23,12 @@
     }
   }
 
+  &[data-invalid] {
+    .react-aria-Button {
+      border-color: var(--invalid-color);
+    }
+  }
+
   .react-aria-SelectValue {
     &[data-placeholder] {
       font-style: italic;

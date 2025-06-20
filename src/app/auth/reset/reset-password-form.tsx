@@ -14,7 +14,7 @@ export default function ResetPasswordForm({ next }: { next: string }) {
   >(resetPassword, {});
 
   return (
-    <Form action={action}>
+    <Form id="reset-password" action={action}>
       <input type="hidden" name="next" value={next} />
       <TextField
         label="New password"

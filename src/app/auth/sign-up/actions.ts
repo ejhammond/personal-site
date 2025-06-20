@@ -23,7 +23,7 @@ export async function signUp(
   const next = formData.get('next');
   const email = formData.get('email');
   const password = formData.get('password');
-  const displayName = formData.get('display-name');
+  const displayName = formData.get('displayName');
 
   if (typeof next !== 'string') {
     return { errors: { form: 'Internal error - missing next route' } };

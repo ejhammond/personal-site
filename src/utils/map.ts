@@ -36,3 +36,17 @@ export function arrayToMap<T>(
 ): ReadonlyMap<string, T> {
   return new Map(array.map((item) => [getID(item), item]));
 }
+
+export function mapToArray<TKey, TValue>(
+  map: ReadonlyMap<TKey, TValue>,
+  sortFn: (a: TKey, b: TKey) => number = (aID, bID) => {
+    if (typeof aID === 'number' && typeof bID === 'number') {
+      return aID - bID;
+    }
+    return String(aID).localeCompare(String(bID));
+  },
+): TValue[] {
+  return Array.from(map.entries())
+    .toSorted(([aKey], [bKey]) => sortFn(aKey, bKey))
+    .map(([, value]) => value);
+}
