@@ -1,5 +1,4 @@
 import { Button } from '@/ds/button';
-import { Form } from '@/ds/form';
 import { createClient } from '@/supabase/server';
 import EditProfileForm from './edit-profile-form';
 import { VStack } from '@/ds/v-stack';
@@ -27,9 +26,9 @@ export default async function ProfilePage() {
         initialDisplayName={user.user_metadata.display_name}
         initialEmail={user.email}
       />
-      <Form id="logout" action="/auth/logout" method="post">
+      <form id="logout" action="/auth/logout" method="post">
         <Button type="submit">Sign out</Button>
-      </Form>
+      </form>
     </VStack>
   );
 }
