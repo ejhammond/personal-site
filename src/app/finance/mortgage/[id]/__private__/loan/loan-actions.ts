@@ -15,7 +15,6 @@ type LoanRow = Database['public']['Tables']['mortgage']['Row'];
 
 const loanSchema = z.object({
   id: z.coerce.number(),
-  mortgage_id: z.coerce.number(),
   user_id: z.coerce.string(),
   name: z.string(),
   created_at: z.coerce.string(),
@@ -28,11 +27,14 @@ const loanSchema = z.object({
   pre_payment: z.coerce.number().min(0).nullable(),
 });
 
-export type InsertLoanPayload = Omit<LoanRow, 'id' | 'user_id'>;
+export type InsertLoanPayload = Omit<
+  LoanRow,
+  'id' | 'user_id' | 'created_at' | 'updated_at'
+>;
 export type InsertLoanActionState = ServerActionState<InsertLoanPayload>;
 
 export type UpdateLoanPayload = Partial<
-  Omit<LoanRow, 'mortgage_id' | 'user_id'>
+  Omit<LoanRow, 'mortgage_id' | 'user_id' | 'created_at' | 'updated_at'>
 >;
 type UpdateLoanMeta = { id: number };
 export type UpdateLoanActionState = ServerActionStateWithMeta<
@@ -44,7 +46,12 @@ export type DeleteLoanPayload = Pick<LoanRow, 'id'>;
 export type DeleteLoanActionState = ServerActionState<DeleteLoanPayload>;
 
 export const insertLoan = createServerAction<InsertLoanPayload>({
-  schema: loanSchema.omit({ id: true, user_id: true }),
+  schema: loanSchema.omit({
+    id: true,
+    user_id: true,
+    created_at: true,
+    updated_at: true,
+  }),
   action: async ({ payload }) => {
     const supabase = await createClient();
 
@@ -60,7 +67,14 @@ export const updateLoan = createServerActionWithMeta<
   UpdateLoanPayload,
   UpdateLoanMeta
 >({
-  schema: loanSchema.omit({ mortgage_id: true, user_id: true }).partial(),
+  schema: loanSchema
+    .omit({
+      id: true,
+      user_id: true,
+      created_at: true,
+      updated_at: true,
+    })
+    .partial(),
   action: async ({ payload, meta }) => {
     const supabase = await createClient();
 

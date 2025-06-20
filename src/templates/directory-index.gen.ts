@@ -69,7 +69,23 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
           tags: ['page'],
         },
       ],
-      subDirectories: ['/finance/mortgage/[id]'],
+      subDirectories: [
+        '/finance/mortgage/[id]',
+        '/finance/mortgage/__private__',
+      ],
+    },
+  ],
+  [
+    '/finance/mortgage/__private__',
+    {
+      path: '/finance/mortgage/__private__',
+      files: [
+        {
+          path: '/finance/mortgage/__private__/create-mortgage-button.tsx',
+          tags: [],
+        },
+      ],
+      subDirectories: [],
     },
   ],
   [
