@@ -10,11 +10,13 @@ export function Form({
   id,
   isPending = false,
   onSubmit,
+  hiddenValues,
   ...delegatedProps
 }: FormProps & {
   footer?: React.ReactNode;
   id: string;
   isPending?: boolean;
+  hiddenValues?: ReadonlyMap<string, string>;
 }) {
   const eventContext = useContext(FormEventContext);
 
@@ -36,8 +38,12 @@ export function Form({
       {...delegatedProps}
     >
       <FormContext.Provider value={contextValue}>
+        {hiddenValues != null &&
+          Object.entries(hiddenValues).map(([name, value]) => (
+            <input key={name} name={name} value={value} />
+          ))}
         <div className="fields">{children}</div>
-        {footer != null && <div className="footer">{footer}</div>}
+        {footer != null && <footer>{footer}</footer>}
       </FormContext.Provider>
     </AriaForm>
   );

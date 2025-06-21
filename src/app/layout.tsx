@@ -5,7 +5,6 @@ import type { Metadata, Viewport } from 'next';
 import { Montserrat, Fira_Code } from 'next/font/google';
 import ayhotaLogo from '@/images/ayhota-logo.png';
 import Image from 'next/image';
-import { SiteBreadcrumbs } from '@/components/site-breadcrumbs';
 import { Link } from '@/ds/link';
 import { RootProviders } from './root-providers';
 import { MdAccountCircle, MdOutlineAccountCircle } from 'react-icons/md';
@@ -38,31 +37,6 @@ export const viewport: Viewport = {
   themeColor: '#385170',
 };
 
-function CappedWidth({
-  children,
-  className,
-  style,
-}: Readonly<{
-  children: React.ReactNode;
-  className?: string | undefined;
-  style?: React.CSSProperties;
-}>) {
-  return (
-    <div
-      className={className}
-      style={{
-        marginInline: 'auto',
-        maxWidth: 900,
-        paddingInline: '16px',
-        width: '100%',
-        ...style,
-      }}
-    >
-      {children}
-    </div>
-  );
-}
-
 export default async function RootLayout({
   children,
 }: {
@@ -81,21 +55,24 @@ export default async function RootLayout({
       // exposes css variables for each font.
       className={`${normalFont.variable} ${monospaceFont.variable}`}
     >
-      <body
-        style={{
-          minHeight: '100dvh',
-          height: 0,
-        }}
-      >
-        <RootProviders>
+      <RootProviders>
+        <body
+          style={{
+            minHeight: '100dvh',
+            height: 0,
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
           <header
             style={{
               backgroundColor: 'var(--color-brand)',
-              paddingBlock: '16px',
-              marginBlockEnd: '16px',
+              padding: '16px',
+              flexGrow: 0,
+              flexShrink: 0,
             }}
           >
-            <CappedWidth style={{ flexGrow: 1, display: 'flex' }}>
+            <div style={{ display: 'flex' }}>
               <h1
                 style={{
                   display: 'flex',
@@ -129,22 +106,13 @@ export default async function RootLayout({
                   )}
                 </Link>
               </h1>
-            </CappedWidth>
+            </div>
           </header>
-          <CappedWidth
-            style={{
-              display: 'flex',
-              gap: '16px',
-              flexDirection: 'column',
-              paddingBlockEnd: '32px',
-              overflow: 'hidden',
-            }}
-          >
-            <SiteBreadcrumbs />
-            <main>{children}</main>
-          </CappedWidth>
-        </RootProviders>
-      </body>
+          <div style={{ flexGrow: 1, minHeight: 0, overflow: 'hidden' }}>
+            {children}
+          </div>
+        </body>
+      </RootProviders>
     </html>
   );
 }

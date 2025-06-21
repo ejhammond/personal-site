@@ -7,6 +7,7 @@ import * as React from 'react';
 
 import './page.css';
 import { Form } from '@/ds/form';
+import { PageLayout, PageLayoutHeader } from '@/ds/page-layout';
 
 type Advantage = 'none' | 'advantage' | 'disadvantage';
 
@@ -75,11 +76,12 @@ const D20: React.FC = () => {
   );
 
   return (
-    <>
-      <h2>Roll Chance</h2>
-      <p style={{ marginBlockEnd: '16px' }}>
-        Calculate your chance to meet a certain threshold with a D20 roll.
-      </p>
+    <PageLayout
+      type="form"
+      header={
+        <PageLayoutHeader title="Roll chance" subtitle="Chance to meet a DC" />
+      }
+    >
       <Form id="roll-chance">
         <Counter
           label="Threshold"
@@ -116,7 +118,7 @@ const D20: React.FC = () => {
       <Text className="d20-output">
         {(calculateHitChance(d20FormData) * 100).toFixed(2)}%
       </Text>
-    </>
+    </PageLayout>
   );
 };
 

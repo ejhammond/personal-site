@@ -22,6 +22,15 @@ import { useLoan } from './loan/use-loan';
 import useRefinances from './refinance/use-refinances';
 import usePayments from './payment/use-payments';
 import useRecurringPayments from './recurring-payment/use-recurring-payments';
+import {
+  PageLayout,
+  PageLayoutHeader,
+  PageLayoutPanel,
+  PageLayoutPanelFooter,
+} from '@/ds/page-layout';
+import { Button } from '@/ds/button';
+import { mapToArray } from '@/utils/map';
+import StatusMessage from '@/ds/status-message';
 
 export default function Content({
   loanID,
@@ -37,9 +46,9 @@ export default function Content({
   initialRecurringPayments: WithID<RecurringPayment>[];
 }) {
   const loan = useLoan(loanID, initialLoan);
-  const refinances = useRefinances(loanID, initialRefinances);
-  const payments = usePayments(loanID, initialPayments);
-  const recurringPayments = useRecurringPayments(
+  const refinancesMap = useRefinances(loanID, initialRefinances);
+  const paymentsMap = usePayments(loanID, initialPayments);
+  const recurringPaymentsMap = useRecurringPayments(
     loanID,
     initialRecurringPayments,
   );
@@ -53,51 +62,72 @@ export default function Content({
   const [error, setError] = useState<string | undefined>();
 
   return (
-    <VStack gap="sm">
-      <MortgageForm
-        loanID={loanID}
-        loan={loan}
-        refinances={refinances}
-        payments={payments}
-        recurringPayments={recurringPayments}
-        error={error}
-        onSubmit={({
-          originalLoan,
-          recurringPayments,
-          payments,
-          refinances,
-        }) => {
-          try {
-            const base = amortize({ originalLoan });
-            const withRefinances = amortize({
-              originalLoan,
-              refinances: refinances.map((refinance) => ({
-                ...refinance,
-                prePayment: 0,
-              })),
-            });
-            const withRefinancesAndPrePayments = amortize({
-              originalLoan,
-              recurringPayments,
-              payments,
-              refinances,
-            });
+    <PageLayout
+      type="table"
+      header={<PageLayoutHeader title="Mortgage" />}
+      leftPanel={
+        <PageLayoutPanel
+          side="left"
+          footer={
+            <PageLayoutPanelFooter>
+              <VStack gap="sm" hAlign="end">
+                <Button
+                  variant="primary"
+                  onClick={() => {
+                    const originalLoan = loan;
+                    const recurringPayments = mapToArray(recurringPaymentsMap);
+                    const payments = mapToArray(paymentsMap);
+                    const refinances = mapToArray(refinancesMap);
 
-            setAmortizations({
-              base,
-              withRefinances,
-              withRefinancesAndPrePayments,
-            });
+                    try {
+                      const base = amortize({ originalLoan });
+                      const withRefinances = amortize({
+                        originalLoan,
+                        refinances: refinances.map((refinance) => ({
+                          ...refinance,
+                          prePayment: 0,
+                        })),
+                      });
+                      const withRefinancesAndPrePayments = amortize({
+                        originalLoan,
+                        recurringPayments,
+                        payments,
+                        refinances,
+                      });
 
-            setError(undefined);
-          } catch (e: unknown) {
-            if (e instanceof Error) {
-              setError(e.message);
-            }
+                      setAmortizations({
+                        base,
+                        withRefinances,
+                        withRefinancesAndPrePayments,
+                      });
+
+                      setError(undefined);
+                    } catch (e: unknown) {
+                      if (e instanceof Error) {
+                        setError(e.message);
+                      }
+                    }
+                  }}
+                >
+                  Calculate
+                </Button>
+                {error != null && (
+                  <StatusMessage variant="error" message={error} />
+                )}
+              </VStack>
+            </PageLayoutPanelFooter>
           }
-        }}
-      />
-      <hr style={{ alignSelf: 'stretch', marginBlock: 16 }} />
+        >
+          <MortgageForm
+            loanID={loanID}
+            loan={loan}
+            refinances={refinancesMap}
+            payments={paymentsMap}
+            recurringPayments={recurringPaymentsMap}
+          />
+        </PageLayoutPanel>
+      }
+    >
       <VStack gap="lg">
         {amortizations != null && (
           <VStack gap="md">
@@ -132,6 +162,6 @@ export default function Content({
             </VStack>
           )}
       </VStack>
-    </VStack>
+    </PageLayout>
   );
 }

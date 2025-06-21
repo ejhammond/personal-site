@@ -1,21 +1,28 @@
 'use client';
 
-import { Button } from '@/ds/button';
 import { Form } from '@/ds/form';
-import StatusMessage from '@/ds/status-message';
 import { TextField } from '@/ds/text-field';
 import { signUp, SignUpFormState } from './actions';
-import { useActionState } from 'react';
+import { useActionState, useMemo } from 'react';
+import FormFooter from '@/ds/form/footer';
 
 export default function SignUpForm({ next }: { next: string }) {
-  const [state, action, pending] = useActionState<SignUpFormState, FormData>(
+  const [state, action, isPending] = useActionState<SignUpFormState, FormData>(
     signUp,
     {},
   );
 
+  const hiddenValues = useMemo(() => new Map([['next', next]]), [next]);
+
   return (
-    <Form id="sign-up" action={action} validationErrors={state.errors}>
-      <input type="hidden" name="next" value={next} />
+    <Form
+      id="sign-up"
+      action={action}
+      isPending={isPending}
+      validationErrors={state.errors}
+      footer={<FormFooter errorMessage={state.errors?.form} />}
+      hiddenValues={hiddenValues}
+    >
       <TextField
         label="Display name"
         name="displayName"
@@ -24,12 +31,6 @@ export default function SignUpForm({ next }: { next: string }) {
       />
       <TextField label="Email" name="email" type="email" isRequired />
       <TextField label="Password" name="password" type="password" isRequired />
-      <Button type="submit" isPending={pending} isDisabled={pending}>
-        Sign up
-      </Button>
-      {state.errors?.form != null && (
-        <StatusMessage variant="error" message={state.errors.form} />
-      )}
     </Form>
   );
 }

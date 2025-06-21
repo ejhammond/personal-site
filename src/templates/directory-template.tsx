@@ -10,6 +10,7 @@ import { useMemo } from 'react';
 
 import './directory-template.css';
 import DirectoryListing from '@/ds/directory-listing';
+import { PageLayout, PageLayoutHeader } from '@/ds/page-layout';
 
 function DirListing({
   selectedDirectories,
@@ -94,36 +95,38 @@ export function DirectoryTemplate() {
   }
 
   return (
-    <HStack gap="lg" style={{ containerType: 'inline-size' }}>
-      {directories[3] != null && (
-        <DirListing
-          className="dir-listing dir-listing-layer-4"
-          directories={directories[3].subDirectories}
-          selectedDirectories={selectedDirectories}
-        />
-      )}
-      {directories[2] != null && (
-        <DirListing
-          className="dir-listing dir-listing-layer-3"
-          directories={directories[2].subDirectories}
-          selectedDirectories={selectedDirectories}
-        />
-      )}
-      {directories[1] != null && (
-        <DirListing
-          className="dir-listing dir-listing-layer-2"
-          directories={directories[1].subDirectories}
-          selectedDirectories={selectedDirectories}
-        />
-      )}
-      {directories[0] != null && (
-        <DirListing
-          className="dir-listing dir-listing-layer-1"
-          key={directories[0].path}
-          directories={directories[0].subDirectories}
-          selectedDirectories={selectedDirectories}
-        />
-      )}
-    </HStack>
+    <PageLayout type="table" header={<PageLayoutHeader title="Pages" />}>
+      <HStack gap="lg" style={{ containerType: 'inline-size' }}>
+        {directories[3] != null && (
+          <DirListing
+            className="dir-listing dir-listing-layer-4"
+            directories={directories[3].subDirectories}
+            selectedDirectories={selectedDirectories}
+          />
+        )}
+        {directories[2] != null && (
+          <DirListing
+            className="dir-listing dir-listing-layer-3"
+            directories={directories[2].subDirectories}
+            selectedDirectories={selectedDirectories}
+          />
+        )}
+        {directories[1] != null && (
+          <DirListing
+            className="dir-listing dir-listing-layer-2"
+            directories={directories[1].subDirectories}
+            selectedDirectories={selectedDirectories}
+          />
+        )}
+        {directories[0] != null && (
+          <DirListing
+            className="dir-listing dir-listing-layer-1"
+            key={directories[0].path}
+            directories={directories[0].subDirectories}
+            selectedDirectories={selectedDirectories}
+          />
+        )}
+      </HStack>
+    </PageLayout>
   );
 }

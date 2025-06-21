@@ -10,6 +10,7 @@ import { useCallback, useState } from 'react';
 
 import './page.css';
 import { Form } from '@/ds/form';
+import { PageLayout, PageLayoutHeader } from '@/ds/page-layout';
 
 type DamageFormData = Roll & {
   critical: boolean;
@@ -84,11 +85,15 @@ const Damage: React.FC = () => {
   );
 
   return (
-    <>
-      <h2>Damage</h2>
-      <p style={{ marginBlockEnd: '16px' }}>
-        Calculate the expected damage of an attack.
-      </p>
+    <PageLayout
+      type="form"
+      header={
+        <PageLayoutHeader
+          title="Damage"
+          subtitle="Average damage for an attack roll"
+        />
+      }
+    >
       <Form id="damage">
         <Counter
           label="D4"
@@ -181,7 +186,7 @@ const Damage: React.FC = () => {
           </VStack>
         </HStack>
       </div>
-    </>
+    </PageLayout>
   );
 };
 

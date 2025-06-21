@@ -1,6 +1,6 @@
 .react-aria-Link {
   color: var(--link-color);
-  font-size: 18px;
+  font-size: 1em;
   transition: all 200ms;
   text-decoration: none;
   cursor: pointer;

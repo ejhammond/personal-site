@@ -48,7 +48,7 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
           tags: [],
         },
       ],
-      subDirectories: ['/articles', '/auth', '/dnd', '/finance'],
+      subDirectories: ['/articles', '/dnd', '/finance'],
     },
   ],
   [
@@ -56,164 +56,34 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
     {
       path: '/finance',
       files: [],
-      subDirectories: ['/finance/mortgage'],
+      subDirectories: ['/finance/mortgages'],
     },
   ],
   [
-    '/finance/mortgage',
+    '/finance/mortgages',
     {
-      path: '/finance/mortgage',
+      path: '/finance/mortgages',
       files: [
         {
-          path: '/finance/mortgage/page.tsx',
+          path: '/finance/mortgages/page.tsx',
           tags: ['page'],
         },
       ],
-      subDirectories: [
-        '/finance/mortgage/[id]',
-        '/finance/mortgage/__private__',
-      ],
+      subDirectories: ['/finance/mortgages/[id]'],
     },
   ],
   [
-    '/finance/mortgage/__private__',
+    '/finance/mortgages/[id]',
     {
-      path: '/finance/mortgage/__private__',
+      path: '/finance/mortgages/[id]',
       files: [
         {
-          path: '/finance/mortgage/__private__/create-mortgage-button.tsx',
-          tags: [],
-        },
-      ],
-      subDirectories: [],
-    },
-  ],
-  [
-    '/finance/mortgage/[id]',
-    {
-      path: '/finance/mortgage/[id]',
-      files: [
-        {
-          path: '/finance/mortgage/[id]/page.css',
+          path: '/finance/mortgages/[id]/page.css',
           tags: [],
         },
         {
-          path: '/finance/mortgage/[id]/page.tsx',
+          path: '/finance/mortgages/[id]/page.tsx',
           tags: ['page'],
-        },
-      ],
-      subDirectories: ['/finance/mortgage/[id]/__private__'],
-    },
-  ],
-  [
-    '/finance/mortgage/[id]/__private__',
-    {
-      path: '/finance/mortgage/[id]/__private__',
-      files: [
-        {
-          path: '/finance/mortgage/[id]/__private__/amortization-table.tsx',
-          tags: [],
-        },
-        {
-          path: '/finance/mortgage/[id]/__private__/content.tsx',
-          tags: [],
-        },
-        {
-          path: '/finance/mortgage/[id]/__private__/loan-stats.tsx',
-          tags: [],
-        },
-        {
-          path: '/finance/mortgage/[id]/__private__/mortgage-form.tsx',
-          tags: [],
-        },
-      ],
-      subDirectories: [
-        '/finance/mortgage/[id]/__private__/loan',
-        '/finance/mortgage/[id]/__private__/payment',
-        '/finance/mortgage/[id]/__private__/recurring-payment',
-        '/finance/mortgage/[id]/__private__/refinance',
-      ],
-    },
-  ],
-  [
-    '/finance/mortgage/[id]/__private__/refinance',
-    {
-      path: '/finance/mortgage/[id]/__private__/refinance',
-      files: [
-        {
-          path: '/finance/mortgage/[id]/__private__/refinance/refinance-actions.ts',
-          tags: [],
-        },
-        {
-          path: '/finance/mortgage/[id]/__private__/refinance/refinances-field.tsx',
-          tags: [],
-        },
-        {
-          path: '/finance/mortgage/[id]/__private__/refinance/use-refinances.ts',
-          tags: [],
-        },
-      ],
-      subDirectories: [],
-    },
-  ],
-  [
-    '/finance/mortgage/[id]/__private__/recurring-payment',
-    {
-      path: '/finance/mortgage/[id]/__private__/recurring-payment',
-      files: [
-        {
-          path: '/finance/mortgage/[id]/__private__/recurring-payment/recurring-payment-actions.ts',
-          tags: [],
-        },
-        {
-          path: '/finance/mortgage/[id]/__private__/recurring-payment/recurring-payments-field.tsx',
-          tags: [],
-        },
-        {
-          path: '/finance/mortgage/[id]/__private__/recurring-payment/use-recurring-payments.ts',
-          tags: [],
-        },
-      ],
-      subDirectories: [],
-    },
-  ],
-  [
-    '/finance/mortgage/[id]/__private__/payment',
-    {
-      path: '/finance/mortgage/[id]/__private__/payment',
-      files: [
-        {
-          path: '/finance/mortgage/[id]/__private__/payment/payment-actions.ts',
-          tags: [],
-        },
-        {
-          path: '/finance/mortgage/[id]/__private__/payment/payments-field.tsx',
-          tags: [],
-        },
-        {
-          path: '/finance/mortgage/[id]/__private__/payment/use-payments.ts',
-          tags: [],
-        },
-      ],
-      subDirectories: [],
-    },
-  ],
-  [
-    '/finance/mortgage/[id]/__private__/loan',
-    {
-      path: '/finance/mortgage/[id]/__private__/loan',
-      files: [
-        {
-          path: '/finance/mortgage/[id]/__private__/loan/loan-actions.ts',
-          tags: [],
-        },
-        {
-          path: '/finance/mortgage/[id]/__private__/loan/loan-field.tsx',
-          tags: [],
-        },
-        {
-          path: '/finance/mortgage/[id]/__private__/loan/use-loan.ts',
-          tags: [],
         },
       ],
       subDirectories: [],
@@ -256,158 +126,6 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
         {
           path: '/dnd/d20/page.tsx',
           tags: ['page'],
-        },
-      ],
-      subDirectories: [],
-    },
-  ],
-  [
-    '/auth',
-    {
-      path: '/auth',
-      files: [
-        {
-          path: '/auth/route.ts',
-          tags: ['api-route'],
-        },
-      ],
-      subDirectories: [
-        '/auth/confirm',
-        '/auth/login',
-        '/auth/logout',
-        '/auth/profile',
-        '/auth/recover',
-        '/auth/reset',
-        '/auth/sign-up',
-      ],
-    },
-  ],
-  [
-    '/auth/sign-up',
-    {
-      path: '/auth/sign-up',
-      files: [
-        {
-          path: '/auth/sign-up/actions.ts',
-          tags: [],
-        },
-        {
-          path: '/auth/sign-up/page.tsx',
-          tags: ['page'],
-        },
-        {
-          path: '/auth/sign-up/sign-up-form.tsx',
-          tags: [],
-        },
-      ],
-      subDirectories: [],
-    },
-  ],
-  [
-    '/auth/reset',
-    {
-      path: '/auth/reset',
-      files: [
-        {
-          path: '/auth/reset/actions.ts',
-          tags: [],
-        },
-        {
-          path: '/auth/reset/page.tsx',
-          tags: ['page'],
-        },
-        {
-          path: '/auth/reset/reset-password-form.tsx',
-          tags: [],
-        },
-      ],
-      subDirectories: [],
-    },
-  ],
-  [
-    '/auth/recover',
-    {
-      path: '/auth/recover',
-      files: [
-        {
-          path: '/auth/recover/actions.ts',
-          tags: [],
-        },
-        {
-          path: '/auth/recover/page.tsx',
-          tags: ['page'],
-        },
-        {
-          path: '/auth/recover/request-password-reset-form.tsx',
-          tags: [],
-        },
-      ],
-      subDirectories: [],
-    },
-  ],
-  [
-    '/auth/profile',
-    {
-      path: '/auth/profile',
-      files: [
-        {
-          path: '/auth/profile/actions.ts',
-          tags: [],
-        },
-        {
-          path: '/auth/profile/edit-profile-form.tsx',
-          tags: [],
-        },
-        {
-          path: '/auth/profile/page.tsx',
-          tags: ['page'],
-        },
-      ],
-      subDirectories: [],
-    },
-  ],
-  [
-    '/auth/logout',
-    {
-      path: '/auth/logout',
-      files: [
-        {
-          path: '/auth/logout/route.ts',
-          tags: ['api-route'],
-        },
-      ],
-      subDirectories: [],
-    },
-  ],
-  [
-    '/auth/login',
-    {
-      path: '/auth/login',
-      files: [
-        {
-          path: '/auth/login/actions.ts',
-          tags: [],
-        },
-        {
-          path: '/auth/login/log-in-form.tsx',
-          tags: [],
-        },
-        {
-          path: '/auth/login/page.tsx',
-          tags: ['page'],
-        },
-      ],
-      subDirectories: [],
-    },
-  ],
-  [
-    '/auth/confirm',
-    {
-      path: '/auth/confirm',
-      files: [
-        {
-          path: '/auth/confirm/route.ts',
-          tags: ['api-route'],
         },
       ],
       subDirectories: [],

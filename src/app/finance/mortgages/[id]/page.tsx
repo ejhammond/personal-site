@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react';
 import './page.css';
-import { VStack } from '@/ds/v-stack';
 import Content from './__private__/content';
 import { createClient } from '@/supabase/server';
 import { Loan, Payment, RecurringPayment, Refinance } from '@/utils/loan';
@@ -101,18 +100,15 @@ export default async function MortgageID({
   }));
 
   return (
-    <VStack gap="md">
-      <h2>Mortgage Calculator</h2>
-      <Suspense>
-        <Content
-          key={data.updated_at}
-          loanID={params.id}
-          initialLoan={loan}
-          initialRefinances={refinances}
-          initialPayments={payments}
-          initialRecurringPayments={recurringPayments}
-        />
-      </Suspense>
-    </VStack>
+    <Suspense>
+      <Content
+        key={data.updated_at}
+        loanID={params.id}
+        initialLoan={loan}
+        initialRefinances={refinances}
+        initialPayments={payments}
+        initialRecurringPayments={recurringPayments}
+      />
+    </Suspense>
   );
 }

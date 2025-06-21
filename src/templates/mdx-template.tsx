@@ -9,6 +9,7 @@ import profileImage from '@/images/profile-pic.jpeg';
 import { VStack } from '@/ds/v-stack';
 import { HStack } from '@/ds/h-stack';
 import { Link } from '@/ds/link';
+import { PageLayout, PageLayoutHeader } from '@/ds/page-layout';
 
 const GITHUB_USERNAME = 'ejhammond';
 const GITHUB_REPO_NAME = 'personal-site';
@@ -33,47 +34,51 @@ export function MDXTemplate({
   const parsedDate = new Date(date);
 
   return (
-    <article className="mdx">
-      <header style={{ marginBlockEnd: '32px' }}>
-        <h1>{title}</h1>
-        <div>
-          {parsedDate.toLocaleDateString('en-US', {
+    <PageLayout
+      type="editorial"
+      header={
+        <PageLayoutHeader
+          title={title}
+          subtitle={parsedDate.toLocaleDateString('en-US', {
             month: 'long',
             year: 'numeric',
           })}
-        </div>
-      </header>
-      {children}
-      <Link href={editOnGitHubURL}>Edit on GitHub</Link>
-      <hr style={{ marginBlock: '40px' }} />
-      <footer>
-        <HStack gap="md" vAlign="center">
-          <Image
-            src={profileImage}
-            alt="EJ Hammond profile"
-            width={50}
-            height={50}
-            style={{
-              borderRadius: '50%',
-              flexShrink: 0,
-            }}
-          />
-          <VStack>
-            <strong>EJ Hammond</strong>
-            <Link
-              href={`https://twitter.com/ejhammond`}
+        />
+      }
+    >
+      <article className="mdx">
+        {children}
+        <Link href={editOnGitHubURL}>Edit on GitHub</Link>
+        <hr style={{ marginBlock: '40px' }} />
+        <footer>
+          <HStack gap="md" vAlign="center">
+            <Image
+              src={profileImage}
+              alt="EJ Hammond profile"
+              width={50}
+              height={50}
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '4px',
+                borderRadius: '50%',
+                flexShrink: 0,
               }}
-            >
-              <FaTwitter size="0.8em" />
-              {'@ejhammond'}
-            </Link>
-          </VStack>
-        </HStack>
-      </footer>
-    </article>
+            />
+            <VStack>
+              <strong>EJ Hammond</strong>
+              <Link
+                href={`https://twitter.com/ejhammond`}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                }}
+              >
+                <FaTwitter size="0.8em" />
+                {'@ejhammond'}
+              </Link>
+            </VStack>
+          </HStack>
+        </footer>
+      </article>
+    </PageLayout>
   );
 }

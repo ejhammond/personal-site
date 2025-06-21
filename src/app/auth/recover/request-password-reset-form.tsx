@@ -2,7 +2,7 @@
 
 import { TextField } from '@/ds/text-field';
 import { requestPasswordReset, RequestPasswordResetFormState } from './actions';
-import { useActionState } from 'react';
+import { useActionState, useMemo } from 'react';
 import { Form } from '@/ds/form';
 import FormFooter from '@/ds/form/footer';
 import FormSubmitButton from '@/ds/form/submit-button';
@@ -10,18 +10,29 @@ import FormSubmitButton from '@/ds/form/submit-button';
 export default function RequestPasswordResetForm({
   next,
 }: {
-  next: string | null;
+  next?: string | null;
 }) {
   const [actionState, action, isPending] = useActionState<
     RequestPasswordResetFormState,
     FormData
   >(requestPasswordReset, { type: null });
 
+  const hiddenValues = useMemo(() => {
+    const values = new Map();
+
+    if (next != null) {
+      values.set('next', next);
+    }
+
+    return values;
+  }, [next]);
+
   return (
     <Form
       id="reset-password"
       isPending={isPending}
       action={action}
+      hiddenValues={hiddenValues}
       validationErrors={actionState.type === 'error' ? actionState.errors : {}}
       footer={
         <FormFooter
@@ -37,7 +48,6 @@ export default function RequestPasswordResetForm({
         />
       }
     >
-      {next != null && <input type="hidden" name="next" value={next} />}
       <TextField label="Email" name="email" type="email" isRequired />
     </Form>
   );

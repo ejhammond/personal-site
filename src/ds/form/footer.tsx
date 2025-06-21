@@ -30,16 +30,18 @@ export default function FormFooter({
           justifyContent: 'flex-end',
         }}
       >
-        <Button
-          type="button"
-          variant="flat"
-          onPress={() => {
-            onCancel?.();
-            eventContext?.onCancel();
-          }}
-        >
-          Cancel
-        </Button>
+        {onCancel != null && (
+          <Button
+            type="button"
+            variant="flat"
+            onPress={() => {
+              onCancel();
+              eventContext?.onCancel();
+            }}
+          >
+            Cancel
+          </Button>
+        )}
         {submitButton ?? <FormSubmitButton />}
       </HStack>
       {errorMessage != null && (

@@ -1,13 +1,18 @@
-.react-aria-Breadcrumbs {
+.breadcrumbs {
   display: flex;
   align-items: center;
   list-style: none;
   margin: 0;
   padding: 0;
-  font-size: 18px;
   color: var(--text-color);
 
-  .react-aria-Breadcrumb:not(:last-child)::after {
+  ol {
+    list-style-type: none;
+    padding: 0;
+    display: flex;
+  }
+
+  .breadcrumb:not(:last-child)::after {
     content: '›';
     content: '›' / '';
     alt: ' ';
@@ -25,11 +30,6 @@
       text-decoration: underline;
     }
 
-    &[data-current] {
-      color: var(--text-color);
-      font-weight: bold;
-    }
-
     &[data-focus-visible]:after {
       content: '';
       position: absolute;
@@ -42,10 +42,6 @@
   .react-aria-Link {
     &[data-disabled] {
       cursor: default;
-
-      &:not([data-current]) {
-        color: var(--text-color-disabled);
-      }
     }
   }
 }

@@ -8,7 +8,7 @@ import {
   serializeDirectoryIndex,
 } from '../src/types/directory';
 
-const ignoredDirectories = ['/images', '__private__'];
+const ignoredDirectories = ['/images', '/__private__', '/auth'];
 
 export async function genIndexes(
   directoryIndex: DirectoryIndex,

@@ -1,33 +1,33 @@
 'use client';
 
-import { Button } from '@/ds/button';
 import { Form } from '@/ds/form';
 import { TextField } from '@/ds/text-field';
 import { resetPassword, ResetPasswordFormState } from './actions';
-import { useActionState } from 'react';
-import StatusMessage from '@/ds/status-message';
+import { useActionState, useMemo } from 'react';
+import FormFooter from '@/ds/form/footer';
 
 export default function ResetPasswordForm({ next }: { next: string }) {
-  const [state, action, pending] = useActionState<
+  const [state, action, isPending] = useActionState<
     ResetPasswordFormState,
     FormData
   >(resetPassword, {});
 
+  const hiddenValues = useMemo(() => new Map([['next', next]]), [next]);
+
   return (
-    <Form id="reset-password" action={action}>
-      <input type="hidden" name="next" value={next} />
+    <Form
+      id="reset-password"
+      action={action}
+      isPending={isPending}
+      footer={<FormFooter errorMessage={state.errors?.form} />}
+      hiddenValues={hiddenValues}
+    >
       <TextField
         label="New password"
         name="password"
         type="password"
         isRequired
       />
-      <Button type="submit" isPending={pending} isDisabled={pending}>
-        Submit
-      </Button>
-      {state.errors?.form != null && (
-        <StatusMessage variant="error" message={state.errors.form} />
-      )}
     </Form>
   );
 }

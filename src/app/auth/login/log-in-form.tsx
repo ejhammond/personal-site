@@ -2,7 +2,7 @@
 
 import { Form } from '@/ds/form';
 import { TextField } from '@/ds/text-field';
-import { useActionState } from 'react';
+import { useActionState, useMemo } from 'react';
 import { logIn, LogInFormState } from './actions';
 import FormFooter from '@/ds/form/footer';
 import FormSubmitButton from '@/ds/form/submit-button';
@@ -13,11 +13,14 @@ export default function LogInForm({ next }: { next: string }) {
     FormData
   >(logIn, {});
 
+  const hiddenValues = useMemo(() => new Map([['next', next]]), [next]);
+
   return (
     <Form
       id="log-in"
       action={action}
       isPending={isPending}
+      hiddenValues={hiddenValues}
       footer={
         <FormFooter
           errorMessage={actionState.errors?.form}
@@ -26,7 +29,6 @@ export default function LogInForm({ next }: { next: string }) {
       }
       validationErrors={actionState.errors}
     >
-      <input type="hidden" name="next" value={next} />
       <TextField label="Email" name="email" type="email" isRequired />
       <TextField label="Password" name="password" type="password" isRequired />
     </Form>

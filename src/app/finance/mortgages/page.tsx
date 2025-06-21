@@ -4,6 +4,7 @@ import { createClient } from '@/supabase/server';
 import DirectoryListing from '@/ds/directory-listing';
 import { redirect } from 'next/navigation';
 import { CreateMortgageButton } from './__private__/create-mortgage-button';
+import { PageLayout, PageLayoutHeader } from '@/ds/page-layout';
 
 export default async function Mortgage() {
   const supabase = await createClient();
@@ -19,28 +20,24 @@ export default async function Mortgage() {
   const { data } = await supabase.from('mortgage').select('id, name');
 
   return (
-    <>
-      <VStack gap="md">
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-          }}
-        >
-          <h2>Mortgages</h2>
-          <CreateMortgageButton />
-        </div>
-        <VStack gap="sm">
-          {data?.map(({ id, name }) => (
-            <DirectoryListing
-              key={id}
-              label={name}
-              href={`/finance/mortgage/${id}`}
-            />
-          ))}
-        </VStack>
+    <PageLayout
+      type="table"
+      header={
+        <PageLayoutHeader
+          title="Mortgages"
+          endContent={<CreateMortgageButton />}
+        />
+      }
+    >
+      <VStack gap="sm">
+        {data?.map(({ id, name }) => (
+          <DirectoryListing
+            key={id}
+            label={name}
+            href={`/finance/mortgage/${id}`}
+          />
+        ))}
       </VStack>
-    </>
+    </PageLayout>
   );
 }

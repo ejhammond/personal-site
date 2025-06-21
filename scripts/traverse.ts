@@ -28,6 +28,8 @@ export function toFilePath(sitePath: SitePath): FilePath {
   return path.join(APP_ROOT, sitePath);
 }
 
+const ignoredPatterns = ['/__private__', '/auth'];
+
 async function readDirectory(sitePath: SitePath): Promise<Directory> {
   const filePath = toFilePath(sitePath);
   const entries = await fs.readdir(filePath, { withFileTypes: true });
@@ -37,6 +39,11 @@ async function readDirectory(sitePath: SitePath): Promise<Directory> {
   for (const entry of entries) {
     const fullPath = path.resolve(filePath, entry.name);
     const tags = new Set<FileTag>();
+
+    if (ignoredPatterns.some((p) => fullPath.includes(p))) {
+      continue;
+    }
+
     if (entry.isDirectory()) {
       subDirectories.push(toSitePath(fullPath));
       continue;

@@ -5,6 +5,7 @@ import { NextServerComponentProps } from '@/types/next';
 import { genMaybeFromAsyncSearchParam } from '@/utils/search-params';
 import { redirect } from 'next/navigation';
 import LogInForm from './log-in-form';
+import { PageLayout, PageLayoutHeader } from '@/ds/page-layout';
 
 export default async function LogInPage({
   searchParams: asyncSearchParams,
@@ -22,12 +23,14 @@ export default async function LogInPage({
   const next = await genMaybeFromAsyncSearchParam(asyncSearchParams, 'next');
 
   return (
-    <VStack gap="md">
-      <LogInForm next={next.or('/')} />
-      <VStack gap="sm">
-        <Link href="/auth/sign-up">Need an account?</Link>
-        <Link href="/auth/recover">Forgot password?</Link>
+    <PageLayout type="form" header={<PageLayoutHeader title="Log in" />}>
+      <VStack gap="md">
+        <LogInForm next={next.or('/')} />
+        <VStack gap="sm">
+          <Link href="/auth/sign-up">Need an account?</Link>
+          <Link href="/auth/recover">Forgot password?</Link>
+        </VStack>
       </VStack>
-    </VStack>
+    </PageLayout>
   );
 }
