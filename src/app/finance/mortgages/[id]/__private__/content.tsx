@@ -33,12 +33,14 @@ import { mapToArray } from '@/utils/map';
 import StatusMessage from '@/ds/status-message';
 
 export default function Content({
+  name,
   loanID,
   initialLoan,
   initialRefinances,
   initialPayments,
   initialRecurringPayments,
 }: {
+  name: string;
   loanID: string;
   initialLoan: Loan;
   initialRefinances: WithID<Refinance>[];
@@ -64,7 +66,7 @@ export default function Content({
   return (
     <PageLayout
       type="table"
-      header={<PageLayoutHeader title="Mortgage" />}
+      header={<PageLayoutHeader title={name} />}
       leftPanel={
         <PageLayoutPanel
           side="left"

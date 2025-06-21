@@ -19,8 +19,9 @@ export default async function MortgageID({
     .from('mortgage')
     .select(
       `
-      updated_at,
       id,
+      name,
+      updated_at,
       month,
       year,
       principal,
@@ -103,6 +104,7 @@ export default async function MortgageID({
     <Suspense>
       <Content
         key={data.updated_at}
+        name={data.name}
         loanID={params.id}
         initialLoan={loan}
         initialRefinances={refinances}
