@@ -39,8 +39,8 @@ export function Form({
     >
       <FormContext.Provider value={contextValue}>
         {hiddenValues != null &&
-          Object.entries(hiddenValues).map(([name, value]) => (
-            <input key={name} name={name} value={value} />
+          Array.from(hiddenValues.entries()).map(([name, value]) => (
+            <input type="hidden" key={name} name={name} value={value} />
           ))}
         <div className="fields">{children}</div>
         {footer != null && <footer>{footer}</footer>}
