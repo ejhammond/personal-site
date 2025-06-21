@@ -80,6 +80,7 @@
   --highlight-background: #0a7660; /* accent-300 from dark theme, 3.03:1 against background-color */
   --highlight-background-pressed: #075a49; /* accent-200 from dark theme */
   --highlight-background-invalid: #cc2000; /* red-300 from dark theme */
+  --highlight-background-invalid-pressed: #9c1900; /* red-200 from dark theme */
   --highlight-foreground: white; /* 5.56:1 against highlight-background */
   --highlight-foreground-pressed: #ddd;
   --highlight-overlay: rgb(from #6f46ed r g b / 15%);

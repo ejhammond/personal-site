@@ -10,7 +10,7 @@ export function Button({
   cornerIndicator,
   ...delegatedProps
 }: ButtonProps & {
-  variant?: 'primary' | 'secondary' | 'flat';
+  variant?: 'primary' | 'secondary' | 'flat' | 'danger';
   cornerIndicator?: {
     type: 'error';
     label: string;

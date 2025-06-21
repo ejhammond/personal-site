@@ -9,6 +9,7 @@ import {
   ServerActionState,
   ServerActionStateWithMeta,
 } from '@/utils/actions';
+import { redirect } from 'next/navigation';
 import z from 'zod/v4';
 
 type LoanRow = Database['public']['Tables']['mortgage']['Row'];
@@ -33,6 +34,9 @@ export type InsertLoanPayload = Omit<
 >;
 export type InsertLoanActionState = ServerActionState<InsertLoanPayload>;
 
+export type CloneLoanPayload = InsertLoanPayload;
+export type CloneLoanActionState = ServerActionState<InsertLoanPayload>;
+
 export type UpdateLoanPayload = Partial<
   Omit<LoanRow, 'mortgage_id' | 'user_id' | 'created_at' | 'updated_at'>
 >;
@@ -40,6 +44,13 @@ type UpdateLoanMeta = { id: number };
 export type UpdateLoanActionState = ServerActionStateWithMeta<
   InsertLoanPayload,
   UpdateLoanMeta
+>;
+
+export type RenameLoanPayload = Pick<LoanRow, 'name'>;
+type RenameLoanMeta = { id: number };
+export type RenameLoanActionState = ServerActionStateWithMeta<
+  RenameLoanPayload,
+  RenameLoanMeta
 >;
 
 export type DeleteLoanPayload = Pick<LoanRow, 'id'>;
@@ -60,6 +71,29 @@ export const insertLoan = createServerAction<InsertLoanPayload>({
     if (error != null) {
       throw new ServerActionFormError(error.message);
     }
+  },
+});
+
+export const cloneLoan = createServerAction<CloneLoanPayload>({
+  schema: loanSchema.omit({
+    id: true,
+    user_id: true,
+    created_at: true,
+    updated_at: true,
+  }),
+  action: async ({ payload }) => {
+    const supabase = await createClient();
+
+    const { error, data } = await supabase
+      .from('mortgage')
+      .insert(payload)
+      .select('id');
+
+    if (error != null) {
+      throw new ServerActionFormError(error.message);
+    }
+
+    redirect(`/finance/mortgages/${data[0].id}`);
   },
 });
 
@@ -89,6 +123,27 @@ export const updateLoan = createServerActionWithMeta<
   },
 });
 
+export const renameLoan = createServerActionWithMeta<
+  RenameLoanPayload,
+  RenameLoanMeta
+>({
+  schema: loanSchema.pick({
+    name: true,
+  }),
+  action: async ({ payload, meta }) => {
+    const supabase = await createClient();
+
+    const { error } = await supabase
+      .from('mortgage')
+      .update(payload)
+      .eq('id', meta.id);
+
+    if (error != null) {
+      throw new ServerActionFormError(error.message);
+    }
+  },
+});
+
 export const deleteLoan = createServerAction<DeleteLoanPayload>({
   schema: loanSchema.pick({ id: true }),
   action: async ({ payload }) => {
@@ -102,5 +157,7 @@ export const deleteLoan = createServerAction<DeleteLoanPayload>({
     if (error != null) {
       throw new ServerActionFormError(error.message);
     }
+
+    redirect('/finance/mortgages');
   },
 });

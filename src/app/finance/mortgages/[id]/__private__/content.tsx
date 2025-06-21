@@ -31,6 +31,10 @@ import {
 import { Button } from '@/ds/button';
 import { mapToArray } from '@/utils/map';
 import StatusMessage from '@/ds/status-message';
+import { MenuButton, MenuItem } from '@/ds/menu';
+import { CloneLoanModal } from './loan/clone-loan-modal';
+import { RenameLoanModal } from './loan/rename-loan-modal';
+import { DeleteLoanModal } from './loan/delete-loan-modal';
 
 export default function Content({
   name,
@@ -63,107 +67,148 @@ export default function Content({
 
   const [error, setError] = useState<string | undefined>();
 
+  const [isRenameFormShown, setIsRenameFormShown] = useState(false);
+  const [isCloneFormShown, setIsCloneFormShown] = useState(false);
+  const [isDeleteFormShown, setIsDeleteFormShown] = useState(false);
+
   return (
-    <PageLayout
-      type="table"
-      header={<PageLayoutHeader title={name} />}
-      leftPanel={
-        <PageLayoutPanel
-          side="left"
-          footer={
-            <PageLayoutPanelFooter>
-              <VStack gap="sm" hAlign="end">
-                <Button
-                  variant="primary"
-                  onClick={() => {
-                    const originalLoan = loan;
-                    const recurringPayments = mapToArray(recurringPaymentsMap);
-                    const payments = mapToArray(paymentsMap);
-                    const refinances = mapToArray(refinancesMap);
-
-                    try {
-                      const base = amortize({ originalLoan });
-                      const withRefinances = amortize({
-                        originalLoan,
-                        refinances: refinances.map((refinance) => ({
-                          ...refinance,
-                          prePayment: 0,
-                        })),
-                      });
-                      const withRefinancesAndPrePayments = amortize({
-                        originalLoan,
-                        recurringPayments,
-                        payments,
-                        refinances,
-                      });
-
-                      setAmortizations({
-                        base,
-                        withRefinances,
-                        withRefinancesAndPrePayments,
-                      });
-
-                      setError(undefined);
-                    } catch (e: unknown) {
-                      if (e instanceof Error) {
-                        setError(e.message);
-                      }
-                    }
-                  }}
-                >
-                  Calculate
-                </Button>
-                {error != null && (
-                  <StatusMessage variant="error" message={error} />
-                )}
-              </VStack>
-            </PageLayoutPanelFooter>
-          }
-        >
-          <MortgageForm
-            loanID={loanID}
-            loan={loan}
-            refinances={refinancesMap}
-            payments={paymentsMap}
-            recurringPayments={recurringPaymentsMap}
+    <>
+      <PageLayout
+        type="table"
+        header={
+          <PageLayoutHeader
+            title={name}
+            endContent={
+              <MenuButton label="Options">
+                <MenuItem onAction={() => setIsRenameFormShown(true)}>
+                  Rename
+                </MenuItem>
+                <MenuItem onAction={() => setIsCloneFormShown(true)}>
+                  Make a copy
+                </MenuItem>
+                <MenuItem onAction={() => setIsDeleteFormShown(true)}>
+                  Delete
+                </MenuItem>
+              </MenuButton>
+            }
           />
-        </PageLayoutPanel>
-      }
-    >
-      <VStack gap="lg">
-        {amortizations != null && (
-          <VStack gap="md">
-            <h3>Statistics</h3>
-            <LoanStats
-              amortizationsForOriginalLoan={amortizations.base}
-              amortizationsWithRefinances={amortizations.withRefinances}
-              amortizationsWithRefinancesAndPrepayments={
-                amortizations.withRefinancesAndPrePayments
-              }
+        }
+        leftPanel={
+          <PageLayoutPanel
+            side="left"
+            footer={
+              <PageLayoutPanelFooter>
+                <VStack gap="sm" hAlign="end">
+                  <Button
+                    variant="primary"
+                    onClick={() => {
+                      const originalLoan = loan;
+                      const recurringPayments =
+                        mapToArray(recurringPaymentsMap);
+                      const payments = mapToArray(paymentsMap);
+                      const refinances = mapToArray(refinancesMap);
+
+                      try {
+                        const base = amortize({ originalLoan });
+                        const withRefinances = amortize({
+                          originalLoan,
+                          refinances: refinances.map((refinance) => ({
+                            ...refinance,
+                            prePayment: 0,
+                          })),
+                        });
+                        const withRefinancesAndPrePayments = amortize({
+                          originalLoan,
+                          recurringPayments,
+                          payments,
+                          refinances,
+                        });
+
+                        setAmortizations({
+                          base,
+                          withRefinances,
+                          withRefinancesAndPrePayments,
+                        });
+
+                        setError(undefined);
+                      } catch (e: unknown) {
+                        if (e instanceof Error) {
+                          setError(e.message);
+                        }
+                      }
+                    }}
+                  >
+                    Calculate
+                  </Button>
+                  {error != null && (
+                    <StatusMessage variant="error" message={error} />
+                  )}
+                </VStack>
+              </PageLayoutPanelFooter>
+            }
+          >
+            <MortgageForm
+              loanID={loanID}
+              loan={loan}
+              refinances={refinancesMap}
+              payments={paymentsMap}
+              recurringPayments={recurringPaymentsMap}
             />
-          </VStack>
-        )}
-        {amortizations != null &&
-          amortizations.withRefinancesAndPrePayments.length > 0 && (
-            <VStack gap="md" hAlign="stretch">
-              {amortizations.withRefinancesAndPrePayments.map(
-                ({ loan, amortization }, index) => (
-                  <Fragment key={index}>
-                    <h3>
-                      Loan {index + 1} - {formatUSD(loan.principal)} at{' '}
-                      {formatPercent(loan.annualizedInterestRate, 3)} for{' '}
-                      {loan.term} {plural('year', 'years', loan.term)}
-                    </h3>
-                    <AmortizationTable
-                      loan={loan}
-                      amortization={amortization}
-                    />
-                  </Fragment>
-                ),
-              )}
+          </PageLayoutPanel>
+        }
+      >
+        <VStack gap="lg">
+          {amortizations != null && (
+            <VStack gap="md">
+              <h3>Statistics</h3>
+              <LoanStats
+                amortizationsForOriginalLoan={amortizations.base}
+                amortizationsWithRefinances={amortizations.withRefinances}
+                amortizationsWithRefinancesAndPrepayments={
+                  amortizations.withRefinancesAndPrePayments
+                }
+              />
             </VStack>
           )}
-      </VStack>
-    </PageLayout>
+          {amortizations != null &&
+            amortizations.withRefinancesAndPrePayments.length > 0 && (
+              <VStack gap="md" hAlign="stretch">
+                {amortizations.withRefinancesAndPrePayments.map(
+                  ({ loan, amortization }, index) => (
+                    <Fragment key={index}>
+                      <h3>
+                        Loan {index + 1} - {formatUSD(loan.principal)} at{' '}
+                        {formatPercent(loan.annualizedInterestRate, 3)} for{' '}
+                        {loan.term} {plural('year', 'years', loan.term)}
+                      </h3>
+                      <AmortizationTable
+                        loan={loan}
+                        amortization={amortization}
+                      />
+                    </Fragment>
+                  ),
+                )}
+              </VStack>
+            )}
+        </VStack>
+      </PageLayout>
+      <RenameLoanModal
+        isOpen={isRenameFormShown}
+        onOpenChange={setIsRenameFormShown}
+        loanID={loanID}
+        initialName={name}
+      />
+      <CloneLoanModal
+        isOpen={isCloneFormShown}
+        onOpenChange={setIsCloneFormShown}
+        templateLoan={loan}
+        newLoanName={`${name} (copy)`}
+      />
+      <DeleteLoanModal
+        isOpen={isDeleteFormShown}
+        onOpenChange={setIsDeleteFormShown}
+        loanID={loanID}
+      />
+    </>
   );
 }

@@ -34,7 +34,7 @@ export default async function Mortgage() {
           <DirectoryListing
             key={id}
             label={name}
-            href={`/finance/mortgage/${id}`}
+            href={`/finance/mortgages/${id}`}
           />
         ))}
       </VStack>
