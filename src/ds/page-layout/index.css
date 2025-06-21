@@ -15,11 +15,27 @@
     padding-block: 8px;
 
     border-bottom: 1px solid var(--border-color);
+
+    .panel-toggle {
+      display: none;
+
+      @media screen and (width <= 768px) {
+        display: block;
+      }
+
+      &.panel-toggle-left {
+        margin-inline-end: 8px;
+      }
+      &.panel-toggle-right {
+        margin-inline-start: 8px;
+      }
+    }
   }
 
   > .panel-layout {
     flex-grow: 1;
 
+    position: relative;
     display: flex;
     min-height: 0;
 
@@ -30,6 +46,7 @@
 
       display: flex;
       flex-direction: column;
+      background-color: var(--background-color);
 
       &.side-left {
         border-right: 1px solid var(--border-color);
@@ -37,6 +54,18 @@
 
       &.side-right {
         border-left: 1px solid var(--border-color);
+      }
+
+      &[data-expanded='false'] {
+        display: none;
+      }
+
+      @media screen and (width <= 768px) {
+        position: absolute;
+        z-index: 1;
+        height: 100%;
+        max-width: 90%;
+        box-shadow: 0 8px 20px rgba(0 0 0 / 0.1);
       }
 
       > header {

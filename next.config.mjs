@@ -22,6 +22,9 @@ const withMDX = createMDXPlugin({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   pageExtensions: ['ts', 'tsx', 'gen.ts', 'gen.tsx'],
+  experimental: {
+    viewTransition: true,
+  },
   images: {
     remotePatterns: [
       {

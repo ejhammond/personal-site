@@ -95,7 +95,6 @@ export default function Content({
         }
         leftPanel={
           <PageLayoutPanel
-            side="left"
             footer={
               <PageLayoutPanelFooter>
                 <VStack gap="sm" hAlign="end">
@@ -158,6 +157,12 @@ export default function Content({
         }
       >
         <VStack gap="lg">
+          {amortizations == null && (
+            <StatusMessage
+              variant="info"
+              message="Press Calculate in the left panel"
+            />
+          )}
           {amortizations != null && (
             <VStack gap="md">
               <h3>Statistics</h3>
