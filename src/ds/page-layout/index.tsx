@@ -16,6 +16,12 @@ import {
   unstable_ViewTransition as ViewTransition,
 } from 'react';
 import { useIsSmallScreen } from '@/utils/use-is-small-screen';
+import {
+  LuPanelLeftClose,
+  LuPanelLeftOpen,
+  LuPanelRightClose,
+  LuPanelRightOpen,
+} from 'react-icons/lu';
 
 const PageLayoutHeaderContext = createContext<
   Readonly<{
@@ -55,7 +61,7 @@ export function PageLayout({
   leftPanel?: React.ReactNode;
   rightPanel?: React.ReactNode;
   children: React.ReactNode;
-  type?: 'editorial' | 'form' | 'table';
+  type?: 'editorial' | 'form' | 'full';
 }>) {
   const isSmallScreen = useIsSmallScreen();
 
@@ -111,7 +117,7 @@ export function PageLayout({
           className={cx(
             type === 'editorial' && 'width-editorial',
             type === 'form' && 'width-form',
-            // type: table is full width
+            // type: full is full width
           )}
         >
           {children}
@@ -149,7 +155,11 @@ export function PageLayoutHeader({
                 );
               }}
             >
-              {'>'}
+              {leftPanel.isExpanded ? (
+                <LuPanelLeftClose />
+              ) : (
+                <LuPanelLeftOpen />
+              )}
             </Button>
           </div>
         )}
@@ -170,7 +180,11 @@ export function PageLayoutHeader({
                 );
               }}
             >
-              {'<'}
+              {rightPanel.isExpanded ? (
+                <LuPanelRightClose />
+              ) : (
+                <LuPanelRightOpen />
+              )}
             </Button>
           </div>
         )}
@@ -184,18 +198,25 @@ export function PageLayoutPanel({
   header,
   footer,
 }: Readonly<{
-  children: React.ReactNode;
-  header?: React.ReactNode;
-  footer?: React.ReactNode;
+  children: (api: Readonly<{ close: () => void }>) => React.ReactNode;
+  header?: (api: Readonly<{ close: () => void }>) => React.ReactNode;
+  footer?: (api: Readonly<{ close: () => void }>) => React.ReactNode;
 }>) {
-  const { side, isExpanded } = useContext(PageLayoutPanelContext);
+  const { side, isExpanded, onToggle } = useContext(PageLayoutPanelContext);
+
+  const api = useMemo(
+    () => ({
+      close: () => onToggle(false),
+    }),
+    [onToggle],
+  );
 
   return (
     <ViewTransition>
       <aside className={cx(`side-${side}`)} data-expanded={isExpanded}>
-        {isNonEmptyNode(header) && header}
-        <section>{children}</section>
-        {isNonEmptyNode(footer) && footer}
+        {header?.(api)}
+        <section>{children(api)}</section>
+        {footer?.(api)}
       </aside>
     </ViewTransition>
   );

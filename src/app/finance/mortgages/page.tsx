@@ -21,7 +21,7 @@ export default async function Mortgage() {
 
   return (
     <PageLayout
-      type="table"
+      type="full"
       header={
         <PageLayoutHeader
           title="Mortgages"

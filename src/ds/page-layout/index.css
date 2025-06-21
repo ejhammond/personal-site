@@ -16,6 +16,12 @@
 
     border-bottom: 1px solid var(--border-color);
 
+    .breadcrumbs {
+      @media screen and (width <= 768px) {
+        display: none;
+      }
+    }
+
     .panel-toggle {
       display: none;
 
@@ -50,17 +56,25 @@
 
       &.side-left {
         border-right: 1px solid var(--border-color);
+
+        @media (width <= 768px) {
+          &[data-expanded='false'] {
+            transform: translateX(-100%);
+          }
+        }
       }
 
       &.side-right {
         border-left: 1px solid var(--border-color);
+
+        @media (width <= 768px) {
+          &[data-expanded='false'] {
+            transform: translateX(100%);
+          }
+        }
       }
 
-      &[data-expanded='false'] {
-        display: none;
-      }
-
-      @media screen and (width <= 768px) {
+      @media (width <= 768px) {
         position: absolute;
         z-index: 1;
         height: 100%;

@@ -14,17 +14,19 @@ import './index.css';
 export interface MenuButtonProps<T>
   extends MenuProps<T>,
     Omit<MenuTriggerProps, 'children'> {
-  label?: string;
+  label?: React.ReactNode;
+  'aria-label'?: string;
 }
 
 export function MenuButton<T extends object>({
   label,
+  'aria-label': ariaLabel,
   children,
   ...props
 }: MenuButtonProps<T>) {
   return (
     <MenuTrigger {...props}>
-      <Button>{label}</Button>
+      <Button aria-label={ariaLabel}>{label}</Button>
       <Popover>
         <Menu {...props}>{children}</Menu>
       </Popover>

@@ -35,6 +35,7 @@ import { MenuButton, MenuItem } from '@/ds/menu';
 import { CloneLoanModal } from './loan/clone-loan-modal';
 import { RenameLoanModal } from './loan/rename-loan-modal';
 import { DeleteLoanModal } from './loan/delete-loan-modal';
+import { CiMenuKebab } from 'react-icons/ci';
 
 export default function Content({
   name,
@@ -74,12 +75,12 @@ export default function Content({
   return (
     <>
       <PageLayout
-        type="table"
+        type="full"
         header={
           <PageLayoutHeader
             title={name}
             endContent={
-              <MenuButton label="Options">
+              <MenuButton label={<CiMenuKebab />} aria-label="Mortgage options">
                 <MenuItem onAction={() => setIsRenameFormShown(true)}>
                   Rename
                 </MenuItem>
@@ -95,7 +96,7 @@ export default function Content({
         }
         leftPanel={
           <PageLayoutPanel
-            footer={
+            footer={({ close }) => (
               <PageLayoutPanelFooter>
                 <VStack gap="sm" hAlign="end">
                   <Button
@@ -135,6 +136,8 @@ export default function Content({
                           setError(e.message);
                         }
                       }
+
+                      close();
                     }}
                   >
                     Calculate
@@ -144,15 +147,17 @@ export default function Content({
                   )}
                 </VStack>
               </PageLayoutPanelFooter>
-            }
+            )}
           >
-            <MortgageForm
-              loanID={loanID}
-              loan={loan}
-              refinances={refinancesMap}
-              payments={paymentsMap}
-              recurringPayments={recurringPaymentsMap}
-            />
+            {() => (
+              <MortgageForm
+                loanID={loanID}
+                loan={loan}
+                refinances={refinancesMap}
+                payments={paymentsMap}
+                recurringPayments={recurringPaymentsMap}
+              />
+            )}
           </PageLayoutPanel>
         }
       >

@@ -95,7 +95,7 @@ export function DirectoryTemplate() {
   }
 
   return (
-    <PageLayout type="table" header={<PageLayoutHeader title="Pages" />}>
+    <PageLayout type="full" header={<PageLayoutHeader title="Pages" />}>
       <HStack gap="lg" style={{ containerType: 'inline-size' }}>
         {directories[3] != null && (
           <DirListing
