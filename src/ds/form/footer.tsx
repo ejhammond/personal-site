@@ -30,12 +30,12 @@ export default function FormFooter({
           justifyContent: 'flex-end',
         }}
       >
-        {onCancel != null && (
+        {(onCancel != null || eventContext?.onCancel != null) && (
           <Button
             type="button"
             variant="flat"
             onPress={() => {
-              onCancel();
+              onCancel?.();
               eventContext?.onCancel();
             }}
           >
