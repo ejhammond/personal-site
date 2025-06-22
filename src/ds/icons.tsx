@@ -3,8 +3,6 @@ export {
   MdOutlineAccountCircle as AccountLoggedOutIcon,
 } from 'react-icons/md';
 
-export { CiMenuKebab as KebabMenuIcon } from 'react-icons/ci';
-
 export {
   FaArrowDown as ArrowDownIcon,
   FaArrowUp as ArrowUpIcon,
@@ -13,9 +11,10 @@ export {
   FaFile as FileIcon,
   FaFolder as FolderIcon,
   FaTwitter as TwitterIcon,
-  FaPencilAlt as PencilIcon,
+  FaPencil as PencilIcon,
   FaTrash as TrashIcon,
-} from 'react-icons/fa';
+  FaEllipsisVertical as KebabMenuIcon,
+} from 'react-icons/fa6';
 
 export {
   LuPanelLeftClose as LeftPanelCloseIcon,
