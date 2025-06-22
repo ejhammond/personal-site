@@ -4,6 +4,12 @@
   flex-basis: 25%;
 }
 
+@media (width > 768px) {
+  #back-button {
+    display: none;
+  }
+}
+
 @container (width < 600px) {
   .dir-listing-layer-2 {
     display: none;

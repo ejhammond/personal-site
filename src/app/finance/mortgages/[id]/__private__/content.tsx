@@ -31,7 +31,7 @@ import {
 import { Button } from '@/ds/button';
 import { mapToArray } from '@/utils/map';
 import StatusMessage from '@/ds/status-message';
-import { MenuButton, MenuItem } from '@/ds/menu';
+import { Menu, MenuItem } from '@/ds/menu';
 import { CloneLoanModal } from './loan/clone-loan-modal';
 import { RenameLoanModal } from './loan/rename-loan-modal';
 import { DeleteLoanModal } from './loan/delete-loan-modal';
@@ -52,7 +52,7 @@ export default function Content({
   initialPayments: WithID<Payment>[];
   initialRecurringPayments: WithID<RecurringPayment>[];
 }) {
-  const loan = useLoan(loanID, initialLoan);
+  const originalLoan = useLoan(loanID, initialLoan);
   const refinancesMap = useRefinances(loanID, initialRefinances);
   const paymentsMap = usePayments(loanID, initialPayments);
   const recurringPaymentsMap = useRecurringPayments(
@@ -80,7 +80,13 @@ export default function Content({
           <PageLayoutHeader
             title={name}
             endContent={
-              <MenuButton label={<CiMenuKebab />} aria-label="Mortgage options">
+              <Menu
+                button={
+                  <Button variant="flat" aria-label="Mortgage options">
+                    <CiMenuKebab />
+                  </Button>
+                }
+              >
                 <MenuItem onAction={() => setIsRenameFormShown(true)}>
                   Rename
                 </MenuItem>
@@ -90,7 +96,7 @@ export default function Content({
                 <MenuItem onAction={() => setIsDeleteFormShown(true)}>
                   Delete
                 </MenuItem>
-              </MenuButton>
+              </Menu>
             }
           />
         }
@@ -102,7 +108,6 @@ export default function Content({
                   <Button
                     variant="primary"
                     onClick={() => {
-                      const originalLoan = loan;
                       const recurringPayments =
                         mapToArray(recurringPaymentsMap);
                       const payments = mapToArray(paymentsMap);
@@ -152,7 +157,7 @@ export default function Content({
             {() => (
               <MortgageForm
                 loanID={loanID}
-                loan={loan}
+                loan={originalLoan}
                 refinances={refinancesMap}
                 payments={paymentsMap}
                 recurringPayments={recurringPaymentsMap}
@@ -194,6 +199,7 @@ export default function Content({
                       <AmortizationTable
                         loan={loan}
                         amortization={amortization}
+                        originalLoanStart={originalLoan.start}
                       />
                     </Fragment>
                   ),
@@ -211,7 +217,7 @@ export default function Content({
       <CloneLoanModal
         isOpen={isCloneFormShown}
         onOpenChange={setIsCloneFormShown}
-        templateLoan={loan}
+        templateLoan={originalLoan}
         newLoanName={`${name} (copy)`}
       />
       <DeleteLoanModal

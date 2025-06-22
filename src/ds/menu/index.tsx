@@ -1,6 +1,5 @@
 import {
-  Button,
-  Menu,
+  Menu as AriaMenu,
   MenuItem as AriaMenuItem,
   MenuItemProps,
   MenuProps,
@@ -14,21 +13,19 @@ import './index.css';
 export interface MenuButtonProps<T>
   extends MenuProps<T>,
     Omit<MenuTriggerProps, 'children'> {
-  label?: React.ReactNode;
-  'aria-label'?: string;
+  button: React.ReactNode;
 }
 
-export function MenuButton<T extends object>({
-  label,
-  'aria-label': ariaLabel,
+export function Menu<T extends object>({
   children,
+  button,
   ...props
 }: MenuButtonProps<T>) {
   return (
     <MenuTrigger {...props}>
-      <Button aria-label={ariaLabel}>{label}</Button>
+      {button}
       <Popover>
-        <Menu {...props}>{children}</Menu>
+        <AriaMenu {...props}>{children}</AriaMenu>
       </Popover>
     </MenuTrigger>
   );

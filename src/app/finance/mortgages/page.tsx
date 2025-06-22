@@ -14,7 +14,7 @@ export default async function Mortgage() {
   } = await supabase.auth.getUser();
 
   if (user == null) {
-    redirect(`/auth/login?next=${encodeURIComponent('/finance/mortgage')}`);
+    redirect(`/auth/login?next=${encodeURIComponent('/finance/mortgages')}`);
   }
 
   const { data } = await supabase.from('mortgage').select('id, name');

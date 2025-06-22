@@ -4,13 +4,15 @@ import { directoryIndex } from '@/templates/directory-index.gen';
 import { HStack } from '@/ds/h-stack';
 import { VStack } from '@/ds/v-stack';
 import { makeHeading } from '@/utils/string';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Directory } from '@/types/directory';
 import { useMemo } from 'react';
 
 import './directory-template.css';
 import DirectoryListing from '@/ds/directory-listing';
 import { PageLayout, PageLayoutHeader } from '@/ds/page-layout';
+import { Button } from '@/ds/button';
+import { IoArrowBack } from 'react-icons/io5';
 
 function DirListing({
   selectedDirectories,
@@ -52,6 +54,7 @@ function DirListing({
 }
 
 export function DirectoryTemplate() {
+  const router = useRouter();
   const uriPath = usePathname();
 
   /**
@@ -95,7 +98,25 @@ export function DirectoryTemplate() {
   }
 
   return (
-    <PageLayout type="full" header={<PageLayoutHeader title="Pages" />}>
+    <PageLayout
+      type="full"
+      header={
+        <PageLayoutHeader
+          title="Pages"
+          startContent={
+            directories.length > 1 && (
+              <Button
+                id="back-button"
+                variant="flat"
+                onClick={() => router.back()}
+              >
+                <IoArrowBack />
+              </Button>
+            )
+          }
+        />
+      }
+    >
       <HStack gap="lg" style={{ containerType: 'inline-size' }}>
         {directories[3] != null && (
           <DirListing

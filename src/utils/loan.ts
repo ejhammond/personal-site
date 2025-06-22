@@ -250,7 +250,7 @@ export function amortize({
     // if we're refinancing next month, we'll keep iterating with new values
     if (refinanceNextMonth != null) {
       currentLoan = {
-        start: addMonths(originalLoan.start, currentMonth),
+        start: addMonths(originalLoan.start, currentMonth + 1),
         // earlier, we calculated the refinance disbursement based on the
         // specified refinance.principal OR implicit principal from the current
         // loan balance

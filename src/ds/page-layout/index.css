@@ -16,6 +16,9 @@
 
     border-bottom: 1px solid var(--border-color);
 
+    /* block padding + border */
+    min-height: calc(var(--input-height) + 16px + 1px);
+
     .breadcrumbs {
       @media screen and (width <= 768px) {
         display: none;

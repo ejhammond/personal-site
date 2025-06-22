@@ -1,15 +1,17 @@
 import { Column, Row, Table, TableHeader } from '@/ds/table';
 import { formatUSD } from '@/utils/currency';
-import { addMonths } from '@/utils/date';
+import { addMonths, MonthAndYear } from '@/utils/date';
 import { Amortization, Loan } from '@/utils/loan';
 import { TableBody } from 'react-aria-components';
 
 export default function AmortizationTable({
   loan,
   amortization,
+  originalLoanStart,
 }: {
   loan: Loan;
   amortization: Amortization;
+  originalLoanStart: MonthAndYear;
 }) {
   return (
     <div className="mortgage-table">
@@ -47,7 +49,7 @@ export default function AmortizationTable({
               },
               index,
             ) => {
-              const monthAndYear = addMonths(loan.start, month);
+              const monthAndYear = addMonths(originalLoanStart, month);
 
               return (
                 <Row

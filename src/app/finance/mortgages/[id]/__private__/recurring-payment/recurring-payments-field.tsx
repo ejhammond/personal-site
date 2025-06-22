@@ -48,7 +48,7 @@ export default function RecurringPaymentsField({
 
   return (
     <CollectionField<WithOptimistic<WithID<RecurringPayment>>>
-      itemName="RecurringPayment"
+      itemName="Recurring Payment"
       items={mapToArray(optimisticRecurringPayments).map((r) =>
         updateState.meta?.id != null &&
         updateState.errors != null &&

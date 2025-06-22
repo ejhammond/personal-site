@@ -135,20 +135,24 @@ export function PageLayout({
 export function PageLayoutHeader({
   title,
   subtitle,
+  startContent,
   endContent,
 }: Readonly<{
   title: string;
   subtitle?: string;
+  startContent?: React.ReactNode;
   endContent?: React.ReactNode;
 }>) {
   const { leftPanel, rightPanel } = useContext(PageLayoutHeaderContext);
 
   return (
     <header>
-      <HStack vAlign="center">
+      <HStack vAlign="center" gap="sm">
+        {startContent}
         {leftPanel != null && (
           <div className="panel-toggle panel-toggle-left">
             <Button
+              variant="flat"
               onClick={() => {
                 startTransition(() =>
                   leftPanel.onToggle(!leftPanel.isExpanded),
@@ -174,6 +178,7 @@ export function PageLayoutHeader({
         {rightPanel != null && (
           <div className="panel-toggle panel-toggle-right">
             <Button
+              variant="flat"
               onClick={() => {
                 startTransition(() =>
                   rightPanel.onToggle(!rightPanel.isExpanded),
