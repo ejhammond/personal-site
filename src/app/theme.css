@@ -26,7 +26,7 @@
   --additive-background-1: rgba(255, 255, 255, 0.1);
   --additive-background-2: rgba(255, 255, 255, 0.2);
   --color-border: rgba(255, 255, 255, 0.2);
-  --shadow: rgba(0, 0, 0, 0.25);
+  --color-shadow: rgba(0, 0, 0, 0.1);
 
   --input-height: 45px;
 }
@@ -55,6 +55,11 @@
     --red-600: #731200;
 
     --background-base: #f8f8f8;
+    --background-raised: #f1f1f1;
+    --background-menu: #eaeaea;
+    --additive-background-1: rgba(0, 0, 0, 0.1);
+    --additive-background-2: rgba(0, 0, 0, 0.2);
+    --color-border: rgba(0, 0, 0, 0.2);
   }
 }
 
@@ -82,9 +87,10 @@
   --field-background: var(--gray-50);
   --field-text-color: var(--gray-600);
 
-  --overlay-background: var(--gray-50);
   --button-background: var(--additive-background-1);
   --button-background-pressed: var(--additive-background-2);
+
+  --shadow-raised: 0 4px 32px 0 var(--color-shadow);
 
   /* these colors are the same between light and dark themes
    * to ensure contrast with the foreground color */

@@ -57,6 +57,15 @@
       flex-direction: column;
       background-color: var(--background-base);
 
+      @media (width <= 768px) {
+        position: absolute;
+        z-index: 1;
+        height: 100%;
+        width: calc(100% - 32px);
+        background-color: var(--background-raised);
+        box-shadow: var(--shadow-raised);
+      }
+
       &.side-left {
         border-right: 1px solid var(--color-border);
 
@@ -75,14 +84,6 @@
             transform: translateX(100%);
           }
         }
-      }
-
-      @media (width <= 768px) {
-        position: absolute;
-        z-index: 1;
-        height: 100%;
-        max-width: 90%;
-        box-shadow: 0 8px 20px rgba(0 0 0 / 0.1);
       }
 
       > header {
