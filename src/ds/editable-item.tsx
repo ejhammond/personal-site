@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
-import { Button } from './button';
-import { HStack } from './h-stack';
+import React, { useCallback, useState } from 'react';
 import { VStack } from './v-stack';
 import { Modal } from './modal';
 import { Dialog } from './dialog';
@@ -12,14 +10,8 @@ export default function EditableItem<TItem>({
   item,
   renderEditForm,
   renderItem,
-  onRemove,
-  isPending = false,
-  hasError = false,
 }: {
   itemName: string;
-  isPending?: boolean;
-  hasError?: boolean;
-  onRemove?: () => void;
   item: TItem;
   renderEditForm: (
     args: Readonly<{
@@ -30,37 +22,18 @@ export default function EditableItem<TItem>({
   ) => React.ReactNode;
   renderItem: (
     item: TItem,
-    meta: Readonly<{ isPending: boolean }>,
+    api: Readonly<{ edit: () => void }>,
   ) => React.ReactNode;
 }) {
   const [draftItem, setDraftItem] = useState<TItem | null>(null);
 
+  const edit = useCallback(() => {
+    setDraftItem(item);
+  }, [item]);
+
   return (
     <>
-      <HStack gap="sm" vAlign="center">
-        {renderItem(item, { isPending })}
-        <HStack>
-          <Button
-            variant="flat"
-            onPress={() => setDraftItem(item)}
-            isPending={isPending}
-            cornerIndicator={
-              hasError ? { type: 'error', label: 'Error' } : undefined
-            }
-          >
-            Edit
-          </Button>
-          {onRemove != null && (
-            <Button
-              variant="flat"
-              onPress={() => onRemove()}
-              isPending={isPending}
-            >
-              Remove
-            </Button>
-          )}
-        </HStack>
-      </HStack>
+      {renderItem(item, { edit })}
       {draftItem != null && (
         <Modal
           isDismissable

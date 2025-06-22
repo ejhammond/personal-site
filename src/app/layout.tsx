@@ -7,8 +7,8 @@ import ayhotaLogo from '@/images/ayhota-logo.png';
 import Image from 'next/image';
 import { Link } from '@/ds/link';
 import { RootProviders } from './root-providers';
-import { MdAccountCircle, MdOutlineAccountCircle } from 'react-icons/md';
 import { createClient } from '@/supabase/server';
+import { AccountLoggedInIcon, AccountLoggedOutIcon } from '@/ds/icons';
 
 const normalFont = Montserrat({
   subsets: ['latin'],
@@ -100,9 +100,9 @@ export default async function RootLayout({
                 </Link>
                 <Link href={user == null ? '/auth/login' : '/auth/profile'}>
                   {user == null ? (
-                    <MdOutlineAccountCircle color="white" size={28} />
+                    <AccountLoggedOutIcon color="white" size={28} />
                   ) : (
-                    <MdAccountCircle color="white" size={28} />
+                    <AccountLoggedInIcon color="white" size={28} />
                   )}
                 </Link>
               </h1>

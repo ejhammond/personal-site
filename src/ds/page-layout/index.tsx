@@ -16,12 +16,7 @@ import {
   unstable_ViewTransition as ViewTransition,
 } from 'react';
 import { useIsSmallScreen } from '@/utils/use-is-small-screen';
-import {
-  LuPanelLeftClose,
-  LuPanelLeftOpen,
-  LuPanelRightClose,
-  LuPanelRightOpen,
-} from 'react-icons/lu';
+import { LeftPanelCloseIcon, LeftPanelOpenIcon } from '../icons';
 
 const PageLayoutHeaderContext = createContext<
   Readonly<{
@@ -160,9 +155,9 @@ export function PageLayoutHeader({
               }}
             >
               {leftPanel.isExpanded ? (
-                <LuPanelLeftClose />
+                <LeftPanelCloseIcon />
               ) : (
-                <LuPanelLeftOpen />
+                <LeftPanelOpenIcon />
               )}
             </Button>
           </div>
@@ -186,9 +181,9 @@ export function PageLayoutHeader({
               }}
             >
               {rightPanel.isExpanded ? (
-                <LuPanelRightClose />
+                <LeftPanelCloseIcon />
               ) : (
-                <LuPanelRightOpen />
+                <LeftPanelOpenIcon />
               )}
             </Button>
           </div>

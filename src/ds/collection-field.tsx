@@ -4,16 +4,12 @@ import { VStack } from './v-stack';
 import { Label } from './label';
 import EditableItem from './editable-item';
 import { WithID } from '@/utils/id';
-import { WithOptimistic } from '@/utils/with-optimistic';
 
-export default function CollectionField<
-  TItem extends WithOptimistic<WithID<unknown>>,
->({
+export default function CollectionField<TItem extends WithID<unknown>>({
   itemName,
   itemNamePlural,
   items,
   onAdd,
-  onRemove,
   renderEditForm,
   renderItem,
   initializeDraftItem,
@@ -22,40 +18,39 @@ export default function CollectionField<
   itemNamePlural?: string;
   items: TItem[];
   onAdd: (item: TItem) => void;
-  onRemove: (id: string) => void;
   initializeDraftItem: () => TItem;
   sortItems?: (a: TItem, b: TItem) => number;
-} & Omit<
-  React.ComponentProps<typeof EditableItem<TItem>>,
-  'onRemove' | 'item'
->) {
+} & Omit<React.ComponentProps<typeof EditableItem<TItem>>, 'item'>) {
   return (
-    <VStack hAlign="start">
+    <VStack gap="sm">
       <Label>{itemNamePlural ?? `${itemName}s`}</Label>
-      <div style={{ paddingInlineStart: '16px' }}>
-        <ul style={{ listStyle: 'none', padding: 0 }}>
-          {items.toSorted(sortItems).map((item) => (
-            <li key={item.id}>
-              <EditableItem
-                itemName={itemName}
-                item={item}
-                isPending={item.isPending}
-                hasError={item.hasError}
-                renderEditForm={renderEditForm}
-                renderItem={renderItem}
-                onRemove={() => onRemove(item.id)}
-              />
-            </li>
-          ))}
-        </ul>
-        <Button
-          type="button"
-          onPress={() => onAdd(initializeDraftItem())}
-          style={{ marginTop: items.length === 0 ? 8 : 0 }}
-        >
+      <VStack gap="sm" style={{ paddingInlineStart: '16px' }}>
+        {items.length > 0 && (
+          <ul
+            style={{
+              listStyle: 'none',
+              padding: 0,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
+            }}
+          >
+            {items.toSorted(sortItems).map((item) => (
+              <li key={item.id}>
+                <EditableItem
+                  itemName={itemName}
+                  item={item}
+                  renderEditForm={renderEditForm}
+                  renderItem={renderItem}
+                />
+              </li>
+            ))}
+          </ul>
+        )}
+        <Button type="button" onPress={() => onAdd(initializeDraftItem())}>
           Add {itemName.toLowerCase()}
         </Button>
-      </div>
+      </VStack>
     </VStack>
   );
 }

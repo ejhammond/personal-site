@@ -16,6 +16,8 @@ import {
 } from './payment-actions';
 import { Form } from '@/ds/form';
 import FormFooter from '@/ds/form/footer';
+import { EditableCard } from '@/ds/editable-card';
+import { DescriptionList, DescriptionListItem } from '@/ds/description-list';
 
 export default function PaymentsField({
   defaultMonth = 1,
@@ -73,15 +75,6 @@ export default function PaymentsField({
           });
         });
       }}
-      onRemove={(id) => {
-        startTransition(() => {
-          dispatchOptimistic({
-            type: 'delete',
-            id,
-          });
-          deletePayment({ id: parseInt(id, 10) });
-        });
-      }}
       renderEditForm={({ draftItem, setDraftItem, close }) => (
         <Form
           id="update-payment-form"
@@ -133,16 +126,35 @@ export default function PaymentsField({
           />
         </Form>
       )}
-      renderItem={(item, { isPending }) => {
+      renderItem={(item, { edit }) => {
         const monthAndYear = addMonths(startingMonthAndYear, item.month);
         return (
-          <span
+          <EditableCard
             style={{
-              color: isPending ? 'var(--text-color-disabled)' : 'inherit',
+              color: item.isPending ? 'var(--text-color-disabled)' : 'inherit',
+            }}
+            onEdit={edit}
+            onRemove={() => {
+              startTransition(() => {
+                dispatchOptimistic({
+                  type: 'delete',
+                  id: item.id,
+                });
+                deletePayment({ id: parseInt(item.id, 10) });
+              });
             }}
           >
-            {monthAndYear.month} {monthAndYear.year} - {formatUSD(item.amount)}
-          </span>
+            <DescriptionList>
+              <DescriptionListItem
+                label="Date"
+                value={`${monthAndYear.month} ${monthAndYear.year}`}
+              />
+              <DescriptionListItem
+                label="Amount"
+                value={formatUSD(item.amount)}
+              />
+            </DescriptionList>
+          </EditableCard>
         );
       }}
     />

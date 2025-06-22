@@ -1,5 +1,5 @@
-import { FaFile, FaFolder } from 'react-icons/fa';
 import { HStack } from './h-stack';
+import { FileIcon, FolderIcon } from './icons';
 import { Link } from './link';
 
 export default function DirectoryListing({
@@ -16,9 +16,9 @@ export default function DirectoryListing({
   const labelContent = (
     <HStack vAlign="center" gap="md">
       {type === 'file' ? (
-        <FaFile style={{ flexShrink: 0 }} />
+        <FileIcon style={{ flexShrink: 0 }} />
       ) : (
-        <FaFolder style={{ flexShrink: 0 }} />
+        <FolderIcon style={{ flexShrink: 0 }} />
       )}{' '}
       <span
         style={{

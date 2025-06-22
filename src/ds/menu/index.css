@@ -6,7 +6,6 @@
   box-sizing: border-box;
   overflow: auto;
   padding: 2px;
-  min-width: 150px;
   box-sizing: border-box;
   outline: none;
 }
@@ -20,10 +19,6 @@
   color: var(--text-color);
   font-size: 1.072rem;
   position: relative;
-  display: grid;
-  grid-template-areas:
-    'label kbd'
-    'desc  kbd';
   align-items: center;
   column-gap: 20px;
   forced-color-adjust: none;

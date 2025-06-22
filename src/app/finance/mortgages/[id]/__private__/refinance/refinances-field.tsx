@@ -20,6 +20,8 @@ import {
 } from './refinance-actions';
 import { Form } from '@/ds/form';
 import FormFooter from '@/ds/form/footer';
+import { EditableCard } from '@/ds/editable-card';
+import { DescriptionList, DescriptionListItem } from '@/ds/description-list';
 
 export default function RefinancesField({
   defaultMonth = 1,
@@ -83,15 +85,6 @@ export default function RefinancesField({
             term: draftItem.term,
             pre_payment: draftItem.prePayment,
           });
-        });
-      }}
-      onRemove={(id) => {
-        startTransition(() => {
-          dispatchOptimistic({
-            type: 'delete',
-            id,
-          });
-          deleteRefinance({ id: parseInt(id, 10) });
         });
       }}
       renderEditForm={({ draftItem, setDraftItem, close }) => (
@@ -203,22 +196,51 @@ export default function RefinancesField({
           )}
         </Form>
       )}
-      renderItem={(item, { isPending }) => {
+      renderItem={(item, { edit }) => {
         const monthAndYear = addMonths(startingMonthAndYear, item.month);
         return (
-          <span
+          <EditableCard
             style={{
-              color: isPending ? 'var(--text-color-disabled)' : 'inherit',
+              color: item.isPending ? 'var(--text-color-disabled)' : 'inherit',
+            }}
+            onEdit={edit}
+            onRemove={() => {
+              startTransition(() => {
+                dispatchOptimistic({
+                  type: 'delete',
+                  id: item.id,
+                });
+                deleteRefinance({ id: parseInt(item.id, 10) });
+              });
             }}
           >
-            {monthAndYear.month} {monthAndYear.year} -{' '}
-            {item.principal != null ? `${formatUSD(item.principal)} @ ` : ''}
-            {formatPercent(item.annualizedInterestRate, 3)} for {item.term}{' '}
-            {plural('year', 'years', item.term)}
-            {item.prePayment != null && item.prePayment !== 0
-              ? ` with ${formatUSD(item.prePayment)} down`
-              : ''}
-          </span>
+            <DescriptionList>
+              <DescriptionListItem
+                label="Date"
+                value={`${monthAndYear.month} ${monthAndYear.year}`}
+              />
+              {item.principal != null && (
+                <DescriptionListItem
+                  label="Principal"
+                  value={formatUSD(item.principal)}
+                />
+              )}
+              <DescriptionListItem
+                label="Term"
+                value={`${item.term} ${plural('year', 'years', item.term)}`}
+              />
+              <DescriptionListItem
+                label="Rate"
+                value={formatPercent(item.annualizedInterestRate, 3)}
+              />
+              {item.prePayment !== 0 && (
+                <DescriptionListItem
+                  label="Down"
+                  value={formatUSD(item.prePayment)}
+                />
+              )}
+            </DescriptionList>
+          </EditableCard>
         );
       }}
     />

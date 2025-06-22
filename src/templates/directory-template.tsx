@@ -12,7 +12,7 @@ import './directory-template.css';
 import DirectoryListing from '@/ds/directory-listing';
 import { PageLayout, PageLayoutHeader } from '@/ds/page-layout';
 import { Button } from '@/ds/button';
-import { IoArrowBack } from 'react-icons/io5';
+import { ArrowLeftIcon } from '@/ds/icons';
 
 function DirListing({
   selectedDirectories,
@@ -110,7 +110,7 @@ export function DirectoryTemplate() {
                 variant="flat"
                 onClick={() => router.back()}
               >
-                <IoArrowBack />
+                <ArrowLeftIcon />
               </Button>
             )
           }

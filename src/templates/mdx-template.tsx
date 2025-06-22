@@ -1,7 +1,6 @@
 import './mdx.css';
 
 import React from 'react';
-import { FaTwitter } from 'react-icons/fa';
 import Image from 'next/image';
 
 import { MDXArticleMetadata } from '@/types/mdx-article-metadata';
@@ -10,6 +9,7 @@ import { VStack } from '@/ds/v-stack';
 import { HStack } from '@/ds/h-stack';
 import { Link } from '@/ds/link';
 import { PageLayout, PageLayoutHeader } from '@/ds/page-layout';
+import { TwitterIcon } from '@/ds/icons';
 
 const GITHUB_USERNAME = 'ejhammond';
 const GITHUB_REPO_NAME = 'personal-site';
@@ -72,7 +72,7 @@ export function MDXTemplate({
                   gap: '4px',
                 }}
               >
-                <FaTwitter size="0.8em" />
+                <TwitterIcon size="0.8em" />
                 {'@ejhammond'}
               </Link>
             </VStack>

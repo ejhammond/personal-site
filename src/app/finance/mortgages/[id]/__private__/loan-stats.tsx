@@ -1,12 +1,12 @@
 import { Card } from '@/ds/card';
 import { HStack } from '@/ds/h-stack';
+import { ArrowDownIcon, ArrowUpIcon } from '@/ds/icons';
 import { formatUSD } from '@/utils/currency';
 import { addMonths, formatMonths } from '@/utils/date';
 import { Amortizations } from '@/utils/loan';
 import { formatCompact } from '@/utils/number';
 import React, { ReactNode } from 'react';
 import { Text } from 'react-aria-components';
-import { FaArrowDown, FaArrowUp } from 'react-icons/fa';
 
 function MetricDelta({
   direction,
@@ -23,9 +23,9 @@ function MetricDelta({
   return (
     <HStack gap="sm" vAlign="center">
       {direction === 'up' ? (
-        <FaArrowUp style={{ color }} />
+        <ArrowUpIcon style={{ color }} />
       ) : (
-        <FaArrowDown style={{ color }} />
+        <ArrowDownIcon style={{ color }} />
       )}
       <div>{children}</div>
     </HStack>

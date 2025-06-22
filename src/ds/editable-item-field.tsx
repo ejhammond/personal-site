@@ -8,7 +8,7 @@ export default function EditableItemField<TItem>({
   ...delegated
 }: React.ComponentProps<typeof EditableItem<TItem>>) {
   return (
-    <VStack>
+    <VStack gap="sm">
       <Label>{itemName}</Label>
       <div style={{ paddingInlineStart: '16px' }}>
         <EditableItem itemName={itemName} {...delegated} />

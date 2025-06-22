@@ -1,0 +1,9 @@
+dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 8px;
+}
+
+dt {
+  font-weight: bold;
+}

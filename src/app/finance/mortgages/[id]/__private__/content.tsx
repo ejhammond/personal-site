@@ -35,7 +35,7 @@ import { Menu, MenuItem } from '@/ds/menu';
 import { CloneLoanModal } from './loan/clone-loan-modal';
 import { RenameLoanModal } from './loan/rename-loan-modal';
 import { DeleteLoanModal } from './loan/delete-loan-modal';
-import { CiMenuKebab } from 'react-icons/ci';
+import { KebabMenuIcon } from '@/ds/icons';
 
 export default function Content({
   name,
@@ -83,7 +83,7 @@ export default function Content({
               <Menu
                 button={
                   <Button variant="flat" aria-label="Mortgage options">
-                    <CiMenuKebab />
+                    <KebabMenuIcon />
                   </Button>
                 }
               >

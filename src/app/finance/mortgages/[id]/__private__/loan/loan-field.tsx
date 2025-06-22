@@ -12,6 +12,8 @@ import { useOptimistic, useState } from 'react';
 import { updateLoan, UpdateLoanActionState } from './loan-actions';
 import MonthAndYearField from '@/ds/month-and-year-field';
 import { monthToNumber } from '@/utils/date';
+import { DescriptionList, DescriptionListItem } from '@/ds/description-list';
+import { EditableCard } from '@/ds/editable-card';
 
 export default function LoanField({
   loan,
@@ -30,24 +32,40 @@ export default function LoanField({
 
   return (
     <EditableItemField<WithOptimistic<Loan>>
-      isPending={optimisticLoan.isPending}
-      hasError={updateState.errors != null}
       itemName="Loan"
       item={optimisticLoan}
-      renderItem={(item, { isPending }) => (
-        <span
+      renderItem={(item, { edit }) => (
+        <EditableCard
           style={{
-            color: isPending ? 'var(--text-color-disabled)' : 'inherit',
+            color: updateIsPending ? 'var(--text-color-disabled)' : 'inherit',
           }}
+          onEdit={edit}
         >
-          {`${item.start.month} ${item.start.year} - `}
-          {`${formatUSD(item.principal)} @ `}
-          {formatPercent(item.annualizedInterestRate, 3)} for {item.term}{' '}
-          {plural('year', 'years', item.term)}
-          {item.prePayment != null && item.prePayment !== 0
-            ? ` with ${formatUSD(item.prePayment)} down`
-            : ''}
-        </span>
+          <DescriptionList>
+            <DescriptionListItem
+              label="Date"
+              value={`${item.start.month} ${item.start.year}`}
+            />
+            <DescriptionListItem
+              label="Principal"
+              value={formatUSD(item.principal)}
+            />
+            <DescriptionListItem
+              label="Term"
+              value={`${item.term} ${plural('year', 'years', item.term)}`}
+            />
+            <DescriptionListItem
+              label="Rate"
+              value={formatPercent(item.annualizedInterestRate, 3)}
+            />
+            {item.prePayment !== 0 && (
+              <DescriptionListItem
+                label="Down"
+                value={formatUSD(item.prePayment)}
+              />
+            )}
+          </DescriptionList>
+        </EditableCard>
       )}
       renderEditForm={({ draftItem, setDraftItem, close }) => (
         <Form

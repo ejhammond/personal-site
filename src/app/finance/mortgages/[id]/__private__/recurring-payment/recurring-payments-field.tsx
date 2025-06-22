@@ -16,6 +16,8 @@ import {
 } from './recurring-payment-actions';
 import { Form } from '@/ds/form';
 import FormFooter from '@/ds/form/footer';
+import { EditableCard } from '@/ds/editable-card';
+import { DescriptionList, DescriptionListItem } from '@/ds/description-list';
 
 export default function RecurringPaymentsField({
   defaultMonth = 1,
@@ -75,15 +77,6 @@ export default function RecurringPaymentsField({
           });
         });
       }}
-      onRemove={(id) => {
-        startTransition(() => {
-          dispatchOptimistic({
-            type: 'delete',
-            id,
-          });
-          deleteRecurringPayment({ id: parseInt(id, 10) });
-        });
-      }}
       renderEditForm={({ draftItem, setDraftItem, close }) => (
         <Form
           id="update-recurring-payment-form"
@@ -138,20 +131,38 @@ export default function RecurringPaymentsField({
           />
         </Form>
       )}
-      renderItem={(item, { isPending }) => {
+      renderItem={(item, { edit }) => {
         const monthAndYear = addMonths(
           startingMonthAndYear,
           item.startingMonth,
         );
         return (
-          <span
+          <EditableCard
             style={{
-              color: isPending ? 'var(--text-color-disabled)' : 'inherit',
+              color: item.isPending ? 'var(--text-color-disabled)' : 'inherit',
+            }}
+            onEdit={edit}
+            onRemove={() => {
+              startTransition(() => {
+                dispatchOptimistic({
+                  type: 'delete',
+                  id: item.id,
+                });
+                deleteRecurringPayment({ id: parseInt(item.id, 10) });
+              });
             }}
           >
-            {monthAndYear.month} {monthAndYear.year} - {formatUSD(item.amount)}
-            /month
-          </span>
+            <DescriptionList>
+              <DescriptionListItem
+                label="Starting date"
+                value={`${monthAndYear.month} ${monthAndYear.year}`}
+              />
+              <DescriptionListItem
+                label="Amount"
+                value={formatUSD(item.amount)}
+              />
+            </DescriptionList>
+          </EditableCard>
         );
       }}
     />
