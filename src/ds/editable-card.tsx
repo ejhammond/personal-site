@@ -61,7 +61,7 @@ export function EditableCard({
     <Card {...delegated}>
       <HStack vAlign="start">
         <div style={{ flexGrow: 1 }}>{children}</div>
-        <div style={{ marginBlockStart: -12, marginInlineEnd: -4 }}>
+        <div style={{ marginBlockStart: -12, marginInlineEnd: -12 }}>
           {actionButton}
         </div>
       </HStack>

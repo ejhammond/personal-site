@@ -8,6 +8,7 @@ export function Button({
   variant = 'secondary',
   children,
   cornerIndicator,
+  isToggled = false,
   ...delegatedProps
 }: ButtonProps & {
   variant?: 'primary' | 'secondary' | 'flat' | 'danger';
@@ -15,9 +16,14 @@ export function Button({
     type: 'error';
     label: string;
   };
+  isToggled?: boolean;
 }) {
   return (
-    <AriaButton data-variant={variant} {...delegatedProps}>
+    <AriaButton
+      data-toggled={isToggled}
+      data-variant={variant}
+      {...delegatedProps}
+    >
       {(...args) => (
         <>
           {typeof children === 'function' ? children(...args) : children}

@@ -147,6 +147,7 @@ export function PageLayoutHeader({
         {leftPanel != null && (
           <div className="panel-toggle panel-toggle-left">
             <Button
+              isToggled={leftPanel.isExpanded}
               variant="flat"
               onClick={() => {
                 startTransition(() =>
