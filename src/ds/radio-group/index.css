@@ -22,14 +22,14 @@
     width: 1.286rem;
     height: 1.286rem;
     box-sizing: border-box;
-    border: 0.143rem solid var(--border-color);
+    border: 0.143rem solid var(--color-border);
     background: var(--field-background);
     border-radius: 1.286rem;
     transition: all 200ms;
   }
 
   &[data-pressed]:before {
-    border-color: var(--border-color-pressed);
+    border-color: var(--color-border-pressed);
   }
 
   &[data-selected] {
@@ -80,7 +80,7 @@
     color: var(--text-color-disabled);
 
     &:before {
-      border-color: var(--border-color-disabled);
+      border-color: var(--color-border-disabled);
     }
   }
 }

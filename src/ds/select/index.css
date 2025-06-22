@@ -106,10 +106,10 @@
 
   .react-aria-Button {
     &[data-disabled] {
-      border-color: var(--border-color-disabled);
+      border-color: var(--color-border-disabled);
       color: var(--text-color-disabled);
       span[aria-hidden] {
-        background: var(--border-color-disabled);
+        background: var(--color-border-disabled);
         color: var(--text-color-disabled);
       }
 

@@ -27,7 +27,7 @@
       content: '';
       display: block;
       position: absolute;
-      background: var(--border-color);
+      background: var(--color-border);
     }
   }
 
@@ -36,7 +36,7 @@
     height: 1.429rem;
     border-radius: 50%;
     background: var(--highlight-background);
-    border: 2px solid var(--background-color);
+    border: 2px solid var(--background-base);
     forced-color-adjust: none;
 
     &[data-dragging] {
@@ -97,11 +97,11 @@
 
   &[data-disabled] {
     .react-aria-SliderTrack:before {
-      background: var(--border-color-disabled);
+      background: var(--color-border-disabled);
     }
 
     .react-aria-SliderThumb {
-      background: var(--border-color-disabled);
+      background: var(--color-border-disabled);
     }
   }
 }

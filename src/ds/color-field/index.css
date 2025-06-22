@@ -10,7 +10,7 @@
   .react-aria-Input {
     padding: 0.286rem;
     margin: 0;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--color-border);
     border-radius: 6px;
     background: var(--field-background);
     font-size: 1.143rem;
@@ -43,7 +43,7 @@
 
   .react-aria-Input {
     &[data-disabled] {
-      border-color: var(--border-color-disabled);
+      border-color: var(--color-border-disabled);
       color: var(--text-color-disabled);
     }
   }

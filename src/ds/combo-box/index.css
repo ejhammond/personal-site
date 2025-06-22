@@ -12,7 +12,7 @@
     font-size: 1.072rem;
     background: var(--field-background);
     color: var(--field-text-color);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--color-border);
     border-radius: 6px;
     padding: 0.286rem 2rem 0.286rem 0.571rem;
     vertical-align: middle;
@@ -97,13 +97,13 @@
 .react-aria-ComboBox {
   .react-aria-Input {
     &[data-disabled] {
-      border-color: var(--border-color-disabled);
+      border-color: var(--color-border-disabled);
     }
   }
 
   .react-aria-Button {
     &[data-disabled] {
-      background: var(--border-color-disabled);
+      background: var(--color-border-disabled);
     }
   }
 

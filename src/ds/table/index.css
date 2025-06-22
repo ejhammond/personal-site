@@ -6,9 +6,9 @@
 
 .react-aria-Table {
   padding: 0.286rem;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
-  background: var(--overlay-background);
+  background: var(--background-base);
   outline: none;
   border-spacing: 0;
   min-height: 100px;
@@ -33,7 +33,7 @@
     }
 
     & tr:last-child .react-aria-Column {
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--color-border);
       cursor: default;
     }
   }
@@ -149,9 +149,9 @@
   max-width: 400px;
   overflow: auto;
   position: relative;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
-  background: var(--background-color);
+  background: var(--background-base);
 
   .react-aria-Table {
     border: none;
@@ -159,7 +159,7 @@
 
   .column-name,
   .react-aria-Button {
-    --background-color: var(--overlay-background);
+    --background-color: var(--background-raised);
     flex: 1;
     font: inherit;
     color: inherit;

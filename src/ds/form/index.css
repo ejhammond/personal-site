@@ -20,7 +20,7 @@
 
 .react-aria-Form [role='alert'] {
   border: 2px solid var(--invalid-color);
-  background: var(--overlay-background);
+  background: var(--background-raised);
   border-radius: 6px;
   padding: 12px;
   max-width: 250px;

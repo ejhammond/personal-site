@@ -37,7 +37,7 @@ export default function DirectoryListing({
         boxSizing: 'border-box',
         paddingInline: '8px',
         fontWeight: isSelected ? 'bold' : 'inherit',
-        outline: isSelected ? '1px solid var(--border-color)' : 'none',
+        outline: isSelected ? '1px solid var(--color-border)' : 'none',
       }}
     >
       {href != null ? (

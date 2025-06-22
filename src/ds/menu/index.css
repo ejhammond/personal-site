@@ -79,7 +79,7 @@
 
   .react-aria-Separator {
     height: 1px;
-    background: var(--border-color);
+    background: var(--color-border);
     margin: 2px 4px;
   }
 }

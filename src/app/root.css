@@ -1,7 +1,7 @@
 @import './theme.css';
 
 :root {
-  background: var(--background-color);
+  background: var(--background-base);
   font-family: var(--global-font-normal);
   color: var(--text-color);
   font-size: 16px;

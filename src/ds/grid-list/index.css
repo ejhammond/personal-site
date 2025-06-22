@@ -9,9 +9,9 @@
   max-height: inherit;
   overflow: auto;
   padding: 4px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--color-border);
   border-radius: 6px;
-  background: var(--overlay-background);
+  background: var(--background-raised);
   forced-color-adjust: none;
   outline: none;
   width: 250px;
