@@ -4,7 +4,6 @@ import { redirect } from 'next/navigation';
 import { notFound } from 'next/navigation';
 import { PageLayout, PageLayoutHeader } from '@/ds/page-layout';
 import { VStack } from '@/ds/v-stack';
-import { HStack } from '@/ds/h-stack';
 import { CreateWorkoutInstanceButton } from './__private__/create-workout-instance-button';
 import { WorkoutInstanceItem } from './__private__/workout-instance-item';
 import { WorkoutMenu } from './__private__/workout-menu';
@@ -49,24 +48,20 @@ export default async function WorkoutID({
       header={
         <PageLayoutHeader
           title={`${workout.name} (${workout.sets} × ${workout.reps})`}
-          endContent={
-            <HStack gap="sm" vAlign="center">
-              <CreateWorkoutInstanceButton workoutID={params.id} />
-              <WorkoutMenu workout={workout} />
-            </HStack>
-          }
+          endContent={<WorkoutMenu workout={workout} />}
         />
       }
     >
-      {instances != null && instances.length > 0 ? (
-        <VStack gap="sm">
-          {instances.map((instance) => (
-            <WorkoutInstanceItem key={instance.id} instance={instance} />
-          ))}
-        </VStack>
-      ) : (
+      <VStack gap="md">
         <CreateWorkoutInstanceButton workoutID={params.id} />
-      )}
+        {instances != null && instances.length > 0 && (
+          <VStack gap="sm">
+            {instances.map((instance) => (
+              <WorkoutInstanceItem key={instance.id} instance={instance} />
+            ))}
+          </VStack>
+        )}
+      </VStack>
     </PageLayout>
   );
 }

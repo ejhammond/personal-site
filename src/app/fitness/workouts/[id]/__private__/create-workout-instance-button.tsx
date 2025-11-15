@@ -44,12 +44,12 @@ export function CreateWorkoutInstanceButton({
     <>
       <Button
         variant="primary"
-        onClick={() => {
-          setDraftInstance(defaultInstance);
-        }}
+        style={{ alignSelf: 'flex-start' }}
+        onClick={() => setDraftInstance(defaultInstance)}
       >
         Log Workout
       </Button>
+
       {draftInstance != null && (
         <Modal
           isDismissable
