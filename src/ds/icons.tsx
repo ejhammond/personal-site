@@ -14,6 +14,7 @@ export {
   FaPencil as PencilIcon,
   FaTrash as TrashIcon,
   FaEllipsisVertical as KebabMenuIcon,
+  FaEquals as EqualsIcon,
 } from 'react-icons/fa6';
 
 export {

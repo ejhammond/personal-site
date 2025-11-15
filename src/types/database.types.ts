@@ -48,6 +48,8 @@ export type Database = {
           signal: Database['public']['Enums']['gym_workout_instance_signal'];
           timestamp: string;
           user_id: string;
+          weight: number;
+          workout_id: number;
         };
         Insert: {
           created_at?: string;
@@ -55,6 +57,8 @@ export type Database = {
           signal: Database['public']['Enums']['gym_workout_instance_signal'];
           timestamp?: string;
           user_id?: string;
+          weight: number;
+          workout_id: number;
         };
         Update: {
           created_at?: string;
@@ -62,8 +66,18 @@ export type Database = {
           signal?: Database['public']['Enums']['gym_workout_instance_signal'];
           timestamp?: string;
           user_id?: string;
+          weight?: number;
+          workout_id?: number;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: 'gym_workout_instance_workout_id_fkey';
+            columns: ['workout_id'];
+            isOneToOne: false;
+            referencedRelation: 'gym_workout';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       mortgage: {
         Row: {

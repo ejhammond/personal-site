@@ -14,7 +14,7 @@ export default async function Workouts() {
   } = await supabase.auth.getUser();
 
   if (user == null) {
-    redirect(`/auth/login?next=${encodeURIComponent('/gym/workouts')}`);
+    redirect(`/auth/login?next=${encodeURIComponent('/fitness/workouts')}`);
   }
 
   const { data } = await supabase.from('gym_workout').select('*');
@@ -34,7 +34,7 @@ export default async function Workouts() {
           <DirectoryListing
             key={workout.id}
             label={`${workout.name} (${workout.sets} × ${workout.reps})`}
-            href={`/gym/workouts/${workout.id}`}
+            href={`/fitness/workouts/${workout.id}`}
           />
         ))}
       </VStack>
