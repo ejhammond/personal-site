@@ -4,10 +4,8 @@ import { redirect } from 'next/navigation';
 import { notFound } from 'next/navigation';
 import { PageLayout, PageLayoutHeader } from '@/ds/page-layout';
 import { VStack } from '@/ds/v-stack';
-import { HStack } from '@/ds/h-stack';
-import { Text } from '@/ds/text';
 import { CreateWorkoutInstanceButton } from './__private__/create-workout-instance-button';
-import { ArrowUpIcon, ArrowDownIcon, EqualsIcon } from '@/ds/icons';
+import { WorkoutInstanceItem } from './__private__/workout-instance-item';
 
 export default async function WorkoutID({
   params: asyncParams,
@@ -55,57 +53,9 @@ export default async function WorkoutID({
     >
       {instances != null && instances.length > 0 ? (
         <VStack gap="sm">
-          {instances.map((instance) => {
-            const SignalIcon =
-              instance.signal === 'INCREASE'
-                ? ArrowUpIcon
-                : instance.signal === 'DECREASE'
-                  ? ArrowDownIcon
-                  : EqualsIcon;
-
-            const iconColor =
-              instance.signal === 'INCREASE'
-                ? 'var(--positive-color)'
-                : instance.signal === 'DECREASE'
-                  ? 'var(--negative-color)'
-                  : undefined;
-
-            return (
-              <HStack
-                key={instance.id}
-                gap="md"
-                vAlign="center"
-                style={{
-                  padding: '12px',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: '8px',
-                }}
-              >
-                <div style={{ flexGrow: 1 }}>
-                  <Text
-                    style={{
-                      fontSize: '24px',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    {instance.weight} lbs
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: '14px',
-                      color: 'var(--color-text-secondary)',
-                    }}
-                  >
-                    {new Date(instance.timestamp).toLocaleString()}
-                  </Text>
-                </div>
-                <SignalIcon
-                  size={24}
-                  style={iconColor ? { color: iconColor } : undefined}
-                />
-              </HStack>
-            );
-          })}
+          {instances.map((instance) => (
+            <WorkoutInstanceItem key={instance.id} instance={instance} />
+          ))}
         </VStack>
       ) : (
         <CreateWorkoutInstanceButton workoutID={params.id} />

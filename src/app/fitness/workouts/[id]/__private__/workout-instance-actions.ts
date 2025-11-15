@@ -4,8 +4,10 @@ import { createClient } from '@/supabase/server';
 import { Database } from '@/types/database.types';
 import {
   createServerAction,
+  createServerActionWithMeta,
   ServerActionFormError,
   ServerActionState,
+  ServerActionStateWithMeta,
 } from '@/utils/actions';
 import z from 'zod/v4';
 
@@ -29,6 +31,19 @@ export type InsertWorkoutInstancePayload = Omit<
 export type InsertWorkoutInstanceActionState =
   ServerActionState<InsertWorkoutInstancePayload>;
 
+export type UpdateWorkoutInstancePayload = Partial<
+  Omit<WorkoutInstanceRow, 'workout_id' | 'user_id' | 'created_at'>
+>;
+type UpdateWorkoutInstanceMeta = { id: number };
+export type UpdateWorkoutInstanceActionState = ServerActionStateWithMeta<
+  UpdateWorkoutInstancePayload,
+  UpdateWorkoutInstanceMeta
+>;
+
+export type DeleteWorkoutInstancePayload = Pick<WorkoutInstanceRow, 'id'>;
+export type DeleteWorkoutInstanceActionState =
+  ServerActionState<DeleteWorkoutInstancePayload>;
+
 export const insertWorkoutInstance =
   createServerAction<InsertWorkoutInstancePayload>({
     schema: workoutInstanceSchema.omit({
@@ -42,6 +57,48 @@ export const insertWorkoutInstance =
       const { error } = await supabase
         .from('gym_workout_instance')
         .insert(payload);
+
+      if (error != null) {
+        throw new ServerActionFormError(error.message);
+      }
+    },
+  });
+
+export const updateWorkoutInstance = createServerActionWithMeta<
+  UpdateWorkoutInstancePayload,
+  UpdateWorkoutInstanceMeta
+>({
+  schema: workoutInstanceSchema
+    .omit({
+      workout_id: true,
+      user_id: true,
+      created_at: true,
+    })
+    .partial(),
+  action: async ({ payload, meta }) => {
+    const supabase = await createClient();
+
+    const { error } = await supabase
+      .from('gym_workout_instance')
+      .update(payload)
+      .eq('id', meta.id);
+
+    if (error != null) {
+      throw new ServerActionFormError(error.message);
+    }
+  },
+});
+
+export const deleteWorkoutInstance =
+  createServerAction<DeleteWorkoutInstancePayload>({
+    schema: workoutInstanceSchema.pick({ id: true }),
+    action: async ({ payload }) => {
+      const supabase = await createClient();
+
+      const { error } = await supabase
+        .from('gym_workout_instance')
+        .delete()
+        .eq('id', payload.id);
 
       if (error != null) {
         throw new ServerActionFormError(error.message);
