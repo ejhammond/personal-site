@@ -48,7 +48,28 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
           tags: [],
         },
       ],
-      subDirectories: ['/articles', '/dnd', '/finance'],
+      subDirectories: ['/articles', '/dnd', '/finance', '/gym'],
+    },
+  ],
+  [
+    '/gym',
+    {
+      path: '/gym',
+      files: [],
+      subDirectories: ['/gym/workouts'],
+    },
+  ],
+  [
+    '/gym/workouts',
+    {
+      path: '/gym/workouts',
+      files: [
+        {
+          path: '/gym/workouts/page.tsx',
+          tags: ['page'],
+        },
+      ],
+      subDirectories: [],
     },
   ],
   [

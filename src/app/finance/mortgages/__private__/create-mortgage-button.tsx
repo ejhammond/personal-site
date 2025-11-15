@@ -53,7 +53,7 @@ export function CreateMortgageButton() {
                       const today = new Date();
 
                       setIsPending(true);
-                      const state = await insertLoan({
+                      await insertLoan({
                         name: draftMortgage.name,
                         principal: 100000,
                         term: 30,
@@ -62,7 +62,6 @@ export function CreateMortgageButton() {
                         month: today.getMonth() + 1,
                         year: today.getFullYear(),
                       });
-                      console.log(state);
                       setIsPending(false);
                       close();
                     }}
