@@ -1,17 +1,13 @@
 'use client';
 
-import {CheckboxInput} from '@astryxdesign/core/CheckboxInput';
-import {Divider} from '@astryxdesign/core/Divider';
-import {
-  Layout,
-  LayoutContent,
-  LayoutHeader,
-} from '@astryxdesign/core/Layout';
-import {NumberInput} from '@astryxdesign/core/NumberInput';
-import {HStack, VStack} from '@astryxdesign/core/Stack';
-import {Heading, Text} from '@astryxdesign/core/Text';
-import {Roll, rollToString} from '@/utils/dnd';
-import {useCallback, useState} from 'react';
+import { CheckboxInput } from '@astryxdesign/core/CheckboxInput';
+import { Divider } from '@astryxdesign/core/Divider';
+import { Layout, LayoutContent, LayoutHeader } from '@astryxdesign/core/Layout';
+import { NumberInput } from '@astryxdesign/core/NumberInput';
+import { HStack, VStack } from '@astryxdesign/core/Stack';
+import { Heading, Text } from '@astryxdesign/core/Text';
+import { Roll, rollToString } from '@/utils/dnd';
+import { useCallback, useState } from 'react';
 
 type DamageFormData = Roll & {
   critical: boolean;
@@ -68,7 +64,7 @@ const Damage: React.FC = () => {
     critical: false,
   });
 
-  const {critical, d4, d6, d8, d10, d12, modifier} = damageFormData;
+  const { critical, d4, d6, d8, d10, d12, modifier } = damageFormData;
   const roll: Roll = {
     d4: critical ? 2 * d4 : d4,
     d6: critical ? 2 * d6 : d6,
@@ -80,7 +76,7 @@ const Damage: React.FC = () => {
 
   const updateDamageFormData = useCallback(
     (merge: Partial<DamageFormData>) => {
-      setDamageFormData((p) => ({...p, ...merge}));
+      setDamageFormData((p) => ({ ...p, ...merge }));
     },
     [setDamageFormData],
   );
@@ -110,7 +106,7 @@ const Damage: React.FC = () => {
                   hasNumberSteppers
                   value={damageFormData.d4}
                   onChange={(number) => {
-                    updateDamageFormData({d4: number});
+                    updateDamageFormData({ d4: number });
                   }}
                 />
                 <NumberInput
@@ -121,7 +117,7 @@ const Damage: React.FC = () => {
                   hasNumberSteppers
                   value={damageFormData.d6}
                   onChange={(number) => {
-                    updateDamageFormData({d6: number});
+                    updateDamageFormData({ d6: number });
                   }}
                 />
                 <NumberInput
@@ -132,7 +128,7 @@ const Damage: React.FC = () => {
                   hasNumberSteppers
                   value={damageFormData.d8}
                   onChange={(number) => {
-                    updateDamageFormData({d8: number});
+                    updateDamageFormData({ d8: number });
                   }}
                 />
                 <NumberInput
@@ -143,7 +139,7 @@ const Damage: React.FC = () => {
                   hasNumberSteppers
                   value={damageFormData.d10}
                   onChange={(number) => {
-                    updateDamageFormData({d10: number});
+                    updateDamageFormData({ d10: number });
                   }}
                 />
                 <NumberInput
@@ -154,7 +150,7 @@ const Damage: React.FC = () => {
                   hasNumberSteppers
                   value={damageFormData.d12}
                   onChange={(number) => {
-                    updateDamageFormData({d12: number});
+                    updateDamageFormData({ d12: number });
                   }}
                 />
                 <NumberInput
@@ -164,14 +160,14 @@ const Damage: React.FC = () => {
                   hasNumberSteppers
                   value={damageFormData.modifier}
                   onChange={(number) => {
-                    updateDamageFormData({modifier: number});
+                    updateDamageFormData({ modifier: number });
                   }}
                 />
                 <CheckboxInput
                   label="Critical"
                   value={damageFormData.critical}
                   onChange={(isCritical) => {
-                    updateDamageFormData({critical: isCritical});
+                    updateDamageFormData({ critical: isCritical });
                   }}
                 />
               </VStack>

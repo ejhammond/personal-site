@@ -1,15 +1,11 @@
 'use client';
 
-import {Divider} from '@astryxdesign/core/Divider';
-import {
-  Layout,
-  LayoutContent,
-  LayoutHeader,
-} from '@astryxdesign/core/Layout';
-import {NumberInput} from '@astryxdesign/core/NumberInput';
-import {Selector} from '@astryxdesign/core/Selector';
-import {VStack} from '@astryxdesign/core/Stack';
-import {Heading, Text} from '@astryxdesign/core/Text';
+import { Divider } from '@astryxdesign/core/Divider';
+import { Layout, LayoutContent, LayoutHeader } from '@astryxdesign/core/Layout';
+import { NumberInput } from '@astryxdesign/core/NumberInput';
+import { Selector } from '@astryxdesign/core/Selector';
+import { VStack } from '@astryxdesign/core/Stack';
+import { Heading, Text } from '@astryxdesign/core/Text';
 import * as React from 'react';
 
 type Advantage = 'none' | 'advantage' | 'disadvantage';
@@ -60,9 +56,9 @@ function calculateHitChance({
 }
 
 const ADVANTAGE_SELECTOR_ITEMS = [
-  {label: 'None', value: 'none'},
-  {label: 'Advantage', value: 'advantage'},
-  {label: 'Disadvantage', value: 'disadvantage'},
+  { label: 'None', value: 'none' },
+  { label: 'Advantage', value: 'advantage' },
+  { label: 'Disadvantage', value: 'disadvantage' },
 ];
 
 const D20: React.FC = () => {
@@ -73,7 +69,7 @@ const D20: React.FC = () => {
   });
   const updateD20FormData = React.useCallback(
     (merge: Partial<D20FormData>) => {
-      setD20FormData((p) => ({...p, ...merge}));
+      setD20FormData((p) => ({ ...p, ...merge }));
     },
     [setD20FormData],
   );
@@ -103,7 +99,7 @@ const D20: React.FC = () => {
                   hasNumberSteppers
                   value={d20FormData.threshold}
                   onChange={(number) => {
-                    updateD20FormData({threshold: number});
+                    updateD20FormData({ threshold: number });
                   }}
                 />
                 <NumberInput
@@ -115,7 +111,7 @@ const D20: React.FC = () => {
                   hasNumberSteppers
                   value={d20FormData.modifier}
                   onChange={(number) => {
-                    updateD20FormData({modifier: number});
+                    updateD20FormData({ modifier: number });
                   }}
                 />
                 <Selector
