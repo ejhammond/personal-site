@@ -1,13 +1,13 @@
 'use client';
 
-import {Button} from '@astryxdesign/core/Button';
-import {Card} from '@astryxdesign/core/Card';
-import {Dialog, DialogHeader} from '@astryxdesign/core/Dialog';
-import {MoreMenu} from '@astryxdesign/core/MoreMenu';
-import {HStack, StackItem, VStack} from '@astryxdesign/core/Stack';
-import {Text} from '@astryxdesign/core/Text';
-import {WithID} from '@/utils/id';
-import React, {useCallback, useState} from 'react';
+import { Button } from '@astryxdesign/core/Button';
+import { Card } from '@astryxdesign/core/Card';
+import { Dialog, DialogHeader } from '@astryxdesign/core/Dialog';
+import { MoreMenu } from '@astryxdesign/core/MoreMenu';
+import { HStack, StackItem, VStack } from '@astryxdesign/core/Stack';
+import { Text } from '@astryxdesign/core/Text';
+import { WithID } from '@/utils/id';
+import React, { useCallback, useState } from 'react';
 
 /**
  * Astryx replacements for the old ds editable-item / editable-card /
@@ -39,8 +39,8 @@ export function EditableCard({
         label="Options"
         alignment="end"
         items={[
-          {label: 'Edit', onClick: onEdit},
-          {label: 'Remove', onClick: onRemove, variant: 'destructive'},
+          { label: 'Edit', onClick: onEdit },
+          { label: 'Remove', onClick: onRemove, variant: 'destructive' },
         ]}
       />
     );
@@ -50,7 +50,7 @@ export function EditableCard({
     <Card>
       <HStack gap={2} vAlign="start">
         <StackItem size="fill">
-          <VStack style={isPending ? {opacity: 0.55} : undefined}>
+          <VStack style={isPending ? { opacity: 0.55 } : undefined}>
             {children}
           </VStack>
         </StackItem>
@@ -77,7 +77,7 @@ export function EditableItem<TItem>({
   ) => React.ReactNode;
   renderItem: (
     item: TItem,
-    api: Readonly<{edit: () => void}>,
+    api: Readonly<{ edit: () => void }>,
   ) => React.ReactNode;
 }) {
   const [draftItem, setDraftItem] = useState<TItem | null>(null);
@@ -92,7 +92,7 @@ export function EditableItem<TItem>({
 
   return (
     <>
-      {renderItem(item, {edit})}
+      {renderItem(item, { edit })}
       <Dialog
         isOpen={draftItem != null}
         onOpenChange={(isOpen) => {
@@ -104,7 +104,7 @@ export function EditableItem<TItem>({
         <DialogHeader title={itemName} onOpenChange={close} />
         {draftItem != null && (
           <VStack gap={4} padding={4}>
-            {renderEditForm({draftItem, setDraftItem, close})}
+            {renderEditForm({ draftItem, setDraftItem, close })}
           </VStack>
         )}
       </Dialog>

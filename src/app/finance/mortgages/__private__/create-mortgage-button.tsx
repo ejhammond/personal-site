@@ -1,15 +1,15 @@
 'use client';
 
-import {Button} from '@astryxdesign/core/Button';
-import {Dialog, DialogHeader} from '@astryxdesign/core/Dialog';
-import {VStack} from '@astryxdesign/core/Stack';
-import {TextInput} from '@astryxdesign/core/TextInput';
-import {useState} from 'react';
-import {insertLoan} from '../[id]/__private__/loan/loan-actions';
-import {FormFooter} from '@/components/form-footer';
+import { Button } from '@astryxdesign/core/Button';
+import { Dialog, DialogHeader } from '@astryxdesign/core/Dialog';
+import { VStack } from '@astryxdesign/core/Stack';
+import { TextInput } from '@astryxdesign/core/TextInput';
+import { useState } from 'react';
+import { insertLoan } from '../[id]/__private__/loan/loan-actions';
+import { FormFooter } from '@/components/form-footer';
 
 export function CreateMortgageButton() {
-  const [draftMortgage, setDraftMortgage] = useState<{name: string} | null>(
+  const [draftMortgage, setDraftMortgage] = useState<{ name: string } | null>(
     null,
   );
 
@@ -71,9 +71,7 @@ export function CreateMortgageButton() {
                   label="Name"
                   htmlName="name"
                   value={draftMortgage.name}
-                  onChange={(name) =>
-                    setDraftMortgage((p) => ({...p, name}))
-                  }
+                  onChange={(name) => setDraftMortgage((p) => ({ ...p, name }))}
                 />
                 <FormFooter
                   isPending={isPending}

@@ -1,13 +1,13 @@
-import {createClient} from '@/supabase/server';
-import {redirect} from 'next/navigation';
-import {EmptyState} from '@astryxdesign/core/EmptyState';
-import {Layout, LayoutContent} from '@astryxdesign/core/Layout';
-import {Link} from '@astryxdesign/core/Link';
-import {HStack, StackItem, VStack} from '@astryxdesign/core/Stack';
-import {Table, pixel, proportional} from '@astryxdesign/core/Table';
-import type {TableColumn} from '@astryxdesign/core/Table';
-import {Heading, Text} from '@astryxdesign/core/Text';
-import {CreateWorkoutButton} from './__private__/create-workout-button';
+import { createClient } from '@/supabase/server';
+import { redirect } from 'next/navigation';
+import { EmptyState } from '@astryxdesign/core/EmptyState';
+import { Layout, LayoutContent } from '@astryxdesign/core/Layout';
+import { Link } from '@astryxdesign/core/Link';
+import { HStack, StackItem, VStack } from '@astryxdesign/core/Stack';
+import { Table, pixel, proportional } from '@astryxdesign/core/Table';
+import type { TableColumn } from '@astryxdesign/core/Table';
+import { Heading, Text } from '@astryxdesign/core/Text';
+import { CreateWorkoutButton } from './__private__/create-workout-button';
 
 type WorkoutRow = {
   id: number;
@@ -45,14 +45,14 @@ export default async function Workouts() {
   const supabase = await createClient();
 
   const {
-    data: {user},
+    data: { user },
   } = await supabase.auth.getUser();
 
   if (user == null) {
     redirect(`/auth/login?next=${encodeURIComponent('/fitness/workouts')}`);
   }
 
-  const {data} = await supabase.from('gym_workout').select('*');
+  const { data } = await supabase.from('gym_workout').select('*');
   const rows: WorkoutRow[] =
     data?.map((workout) => ({
       id: workout.id,

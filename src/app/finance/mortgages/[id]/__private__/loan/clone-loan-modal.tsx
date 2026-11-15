@@ -1,12 +1,12 @@
 'use client';
 
-import {Dialog, DialogHeader} from '@astryxdesign/core/Dialog';
-import {VStack} from '@astryxdesign/core/Stack';
-import {useState} from 'react';
-import {cloneLoan, CloneLoanActionState} from './loan-actions';
-import {FormFooter} from '@/components/form-footer';
-import {Loan} from '@/utils/loan';
-import {monthToNumber} from '@/utils/date';
+import { Dialog, DialogHeader } from '@astryxdesign/core/Dialog';
+import { VStack } from '@astryxdesign/core/Stack';
+import { useState } from 'react';
+import { cloneLoan, CloneLoanActionState } from './loan-actions';
+import { FormFooter } from '@/components/form-footer';
+import { Loan } from '@/utils/loan';
+import { monthToNumber } from '@/utils/date';
 
 export function CloneLoanModal({
   isOpen,
@@ -38,8 +38,7 @@ export function CloneLoanModal({
                 month: monthToNumber(templateLoan.start.month),
                 year: templateLoan.start.year,
                 principal: templateLoan.principal,
-                annualized_interest_rate:
-                  templateLoan.annualizedInterestRate,
+                annualized_interest_rate: templateLoan.annualizedInterestRate,
                 term: templateLoan.term,
                 pre_payment: templateLoan.prePayment,
               });

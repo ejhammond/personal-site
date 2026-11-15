@@ -1,9 +1,9 @@
-import {Table, proportional} from '@astryxdesign/core/Table';
-import type {TableColumn} from '@astryxdesign/core/Table';
-import {Text} from '@astryxdesign/core/Text';
-import {formatUSD} from '@/utils/currency';
-import {addMonths, MonthAndYear} from '@/utils/date';
-import {Amortization, Loan} from '@/utils/loan';
+import { Table, proportional } from '@astryxdesign/core/Table';
+import type { TableColumn } from '@astryxdesign/core/Table';
+import { Text } from '@astryxdesign/core/Text';
+import { formatUSD } from '@/utils/currency';
+import { addMonths, MonthAndYear } from '@/utils/date';
+import { Amortization, Loan } from '@/utils/loan';
 
 type AmortizationRow = {
   key: string;
@@ -79,16 +79,14 @@ export default function AmortizationTable({
       balance: formatUSD(loan.principal - loan.prePayment),
     },
     ...amortization.map(
-      (
-        {
-          month,
-          interest,
-          principal,
-          balance,
-          extra,
-          refinanceDisbursement = 0,
-        },
-      ) => {
+      ({
+        month,
+        interest,
+        principal,
+        balance,
+        extra,
+        refinanceDisbursement = 0,
+      }) => {
         const monthAndYear = addMonths(originalLoanStart, month);
 
         return {

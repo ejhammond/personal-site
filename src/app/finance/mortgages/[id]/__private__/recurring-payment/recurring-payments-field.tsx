@@ -1,21 +1,24 @@
 'use client';
 
-import {createUniqueID, WithID} from '@/utils/id';
-import {RecurringPayment} from '@/utils/loan';
-import {MonthAndYearInput} from '@/components/month-and-year-input';
-import {addMonths, MonthAndYear, monthDifference} from '@/utils/date';
-import {CurrencyInput} from '@/components/currency-input';
-import {formatUSD} from '@/utils/currency';
+import { createUniqueID, WithID } from '@/utils/id';
+import { RecurringPayment } from '@/utils/loan';
+import { MonthAndYearInput } from '@/components/month-and-year-input';
+import { addMonths, MonthAndYear, monthDifference } from '@/utils/date';
+import { CurrencyInput } from '@/components/currency-input';
+import { formatUSD } from '@/utils/currency';
 import {
   CollectionField,
   EditableCard,
 } from '@/components/editable-collection';
-import {FormFooter} from '@/components/form-footer';
-import {MetadataList, MetadataListItem} from '@astryxdesign/core/MetadataList';
-import {VStack} from '@astryxdesign/core/Stack';
-import {startTransition, useOptimistic, useState} from 'react';
-import {optimisticPending, WithOptimistic} from '@/utils/with-optimistic';
-import {mapToArray, removeFromMap, setInMap} from '@/utils/map';
+import { FormFooter } from '@/components/form-footer';
+import {
+  MetadataList,
+  MetadataListItem,
+} from '@astryxdesign/core/MetadataList';
+import { VStack } from '@astryxdesign/core/Stack';
+import { startTransition, useOptimistic, useState } from 'react';
+import { optimisticPending, WithOptimistic } from '@/utils/with-optimistic';
+import { mapToArray, removeFromMap, setInMap } from '@/utils/map';
 import {
   deleteRecurringPayment,
   insertRecurringPayment,
@@ -36,8 +39,8 @@ export default function RecurringPaymentsField({
 }) {
   const [optimisticRecurringPayments, dispatchOptimistic] = useOptimistic<
     ReadonlyMap<string, WithOptimistic<WithID<RecurringPayment>>>,
-    | {type: 'upsert'; item: WithID<RecurringPayment>}
-    | {type: 'delete'; id: string}
+    | { type: 'upsert'; item: WithID<RecurringPayment> }
+    | { type: 'delete'; id: string }
   >(items, (prev, action) => {
     switch (action.type) {
       case 'upsert':
@@ -59,7 +62,7 @@ export default function RecurringPaymentsField({
         updateState.meta?.id != null &&
         updateState.errors != null &&
         r.id === updateState.meta.id.toString()
-          ? {...r, hasError: true}
+          ? { ...r, hasError: true }
           : r,
       )}
       initializeDraftItem={() => ({
@@ -81,13 +84,13 @@ export default function RecurringPaymentsField({
           });
         });
       }}
-      renderEditForm={({draftItem, setDraftItem, close}) => (
+      renderEditForm={({ draftItem, setDraftItem, close }) => (
         <form
           id="update-recurring-payment-form"
           onSubmit={(event) => {
             event.preventDefault();
             void (async () => {
-              dispatchOptimistic({type: 'upsert', item: draftItem});
+              dispatchOptimistic({ type: 'upsert', item: draftItem });
 
               setUpdateIsPending(true);
               setUpdateState({});
@@ -128,7 +131,7 @@ export default function RecurringPaymentsField({
               isRequired
               value={draftItem.amount}
               onChange={(value) =>
-                setDraftItem({...draftItem, amount: value})
+                setDraftItem({ ...draftItem, amount: value })
               }
             />
             <FormFooter
@@ -139,7 +142,7 @@ export default function RecurringPaymentsField({
           </VStack>
         </form>
       )}
-      renderItem={(item, {edit}) => {
+      renderItem={(item, { edit }) => {
         const monthAndYear = addMonths(
           startingMonthAndYear,
           item.startingMonth,
@@ -154,7 +157,7 @@ export default function RecurringPaymentsField({
                   type: 'delete',
                   id: item.id,
                 });
-                deleteRecurringPayment({id: parseInt(item.id, 10)});
+                deleteRecurringPayment({ id: parseInt(item.id, 10) });
               });
             }}
           >

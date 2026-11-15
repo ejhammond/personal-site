@@ -2,7 +2,7 @@ import { WithID } from '@/utils/id';
 import { Loan, Payment, RecurringPayment, Refinance } from '@/utils/loan';
 
 import RefinancesField from './refinance/refinances-field';
-import {VStack} from '@astryxdesign/core/Stack';
+import { VStack } from '@astryxdesign/core/Stack';
 import { useMemo } from 'react';
 import { mapToArray } from '@/utils/map';
 

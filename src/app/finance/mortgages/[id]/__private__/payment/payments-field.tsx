@@ -1,21 +1,24 @@
 'use client';
 
-import {createUniqueID, WithID} from '@/utils/id';
-import {Payment} from '@/utils/loan';
-import {MonthAndYearInput} from '@/components/month-and-year-input';
-import {addMonths, MonthAndYear, monthDifference} from '@/utils/date';
-import {CurrencyInput} from '@/components/currency-input';
-import {formatUSD} from '@/utils/currency';
+import { createUniqueID, WithID } from '@/utils/id';
+import { Payment } from '@/utils/loan';
+import { MonthAndYearInput } from '@/components/month-and-year-input';
+import { addMonths, MonthAndYear, monthDifference } from '@/utils/date';
+import { CurrencyInput } from '@/components/currency-input';
+import { formatUSD } from '@/utils/currency';
 import {
   CollectionField,
   EditableCard,
 } from '@/components/editable-collection';
-import {FormFooter} from '@/components/form-footer';
-import {MetadataList, MetadataListItem} from '@astryxdesign/core/MetadataList';
-import {VStack} from '@astryxdesign/core/Stack';
-import {startTransition, useOptimistic, useState} from 'react';
-import {optimisticPending, WithOptimistic} from '@/utils/with-optimistic';
-import {mapToArray, removeFromMap, setInMap} from '@/utils/map';
+import { FormFooter } from '@/components/form-footer';
+import {
+  MetadataList,
+  MetadataListItem,
+} from '@astryxdesign/core/MetadataList';
+import { VStack } from '@astryxdesign/core/Stack';
+import { startTransition, useOptimistic, useState } from 'react';
+import { optimisticPending, WithOptimistic } from '@/utils/with-optimistic';
+import { mapToArray, removeFromMap, setInMap } from '@/utils/map';
 import {
   deletePayment,
   insertPayment,
@@ -36,7 +39,7 @@ export default function PaymentsField({
 }) {
   const [optimisticPayments, dispatchOptimistic] = useOptimistic<
     ReadonlyMap<string, WithOptimistic<WithID<Payment>>>,
-    {type: 'upsert'; item: WithID<Payment>} | {type: 'delete'; id: string}
+    { type: 'upsert'; item: WithID<Payment> } | { type: 'delete'; id: string }
   >(items, (prev, action) => {
     switch (action.type) {
       case 'upsert':
@@ -57,7 +60,7 @@ export default function PaymentsField({
         updateState.meta?.id != null &&
         updateState.errors != null &&
         p.id === updateState.meta.id.toString()
-          ? {...p, hasError: true}
+          ? { ...p, hasError: true }
           : p,
       )}
       initializeDraftItem={() => ({
@@ -79,13 +82,13 @@ export default function PaymentsField({
           });
         });
       }}
-      renderEditForm={({draftItem, setDraftItem, close}) => (
+      renderEditForm={({ draftItem, setDraftItem, close }) => (
         <form
           id="update-payment-form"
           onSubmit={(event) => {
             event.preventDefault();
             void (async () => {
-              dispatchOptimistic({type: 'upsert', item: draftItem});
+              dispatchOptimistic({ type: 'upsert', item: draftItem });
 
               setUpdateIsPending(true);
               setUpdateState({});
@@ -123,7 +126,7 @@ export default function PaymentsField({
               isRequired
               value={draftItem.amount}
               onChange={(value) =>
-                setDraftItem({...draftItem, amount: value})
+                setDraftItem({ ...draftItem, amount: value })
               }
             />
             <FormFooter
@@ -134,7 +137,7 @@ export default function PaymentsField({
           </VStack>
         </form>
       )}
-      renderItem={(item, {edit}) => {
+      renderItem={(item, { edit }) => {
         const monthAndYear = addMonths(startingMonthAndYear, item.month);
         return (
           <EditableCard
@@ -146,7 +149,7 @@ export default function PaymentsField({
                   type: 'delete',
                   id: item.id,
                 });
-                deletePayment({id: parseInt(item.id, 10)});
+                deletePayment({ id: parseInt(item.id, 10) });
               });
             }}
           >

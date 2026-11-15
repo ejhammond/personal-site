@@ -1,13 +1,13 @@
-import {createClient} from '@/supabase/server';
-import {redirect} from 'next/navigation';
-import {EmptyState} from '@astryxdesign/core/EmptyState';
-import {Layout, LayoutContent} from '@astryxdesign/core/Layout';
-import {Link} from '@astryxdesign/core/Link';
-import {HStack, StackItem, VStack} from '@astryxdesign/core/Stack';
-import {Table, proportional} from '@astryxdesign/core/Table';
-import type {TableColumn} from '@astryxdesign/core/Table';
-import {Heading} from '@astryxdesign/core/Text';
-import {CreateMortgageButton} from './__private__/create-mortgage-button';
+import { createClient } from '@/supabase/server';
+import { redirect } from 'next/navigation';
+import { EmptyState } from '@astryxdesign/core/EmptyState';
+import { Layout, LayoutContent } from '@astryxdesign/core/Layout';
+import { Link } from '@astryxdesign/core/Link';
+import { HStack, StackItem, VStack } from '@astryxdesign/core/Stack';
+import { Table, proportional } from '@astryxdesign/core/Table';
+import type { TableColumn } from '@astryxdesign/core/Table';
+import { Heading } from '@astryxdesign/core/Text';
+import { CreateMortgageButton } from './__private__/create-mortgage-button';
 
 type MortgageRow = {
   id: number;
@@ -29,14 +29,14 @@ export default async function Mortgage() {
   const supabase = await createClient();
 
   const {
-    data: {user},
+    data: { user },
   } = await supabase.auth.getUser();
 
   if (user == null) {
     redirect(`/auth/login?next=${encodeURIComponent('/finance/mortgages')}`);
   }
 
-  const {data} = await supabase.from('mortgage').select('id, name');
+  const { data } = await supabase.from('mortgage').select('id, name');
   const rows: MortgageRow[] = data ?? [];
 
   return (

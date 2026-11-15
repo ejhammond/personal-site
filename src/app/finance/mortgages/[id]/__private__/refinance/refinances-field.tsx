@@ -1,25 +1,28 @@
 'use client';
 
-import {CheckboxInput} from '@astryxdesign/core/CheckboxInput';
-import {NumberInput} from '@astryxdesign/core/NumberInput';
-import {createUniqueID, WithID} from '@/utils/id';
-import {Refinance} from '@/utils/loan';
-import {formatPercent} from '@/utils/number';
-import {plural} from '@/utils/string';
-import {MonthAndYearInput} from '@/components/month-and-year-input';
-import {addMonths, MonthAndYear, monthDifference} from '@/utils/date';
-import {CurrencyInput} from '@/components/currency-input';
-import {formatUSD} from '@/utils/currency';
+import { CheckboxInput } from '@astryxdesign/core/CheckboxInput';
+import { NumberInput } from '@astryxdesign/core/NumberInput';
+import { createUniqueID, WithID } from '@/utils/id';
+import { Refinance } from '@/utils/loan';
+import { formatPercent } from '@/utils/number';
+import { plural } from '@/utils/string';
+import { MonthAndYearInput } from '@/components/month-and-year-input';
+import { addMonths, MonthAndYear, monthDifference } from '@/utils/date';
+import { CurrencyInput } from '@/components/currency-input';
+import { formatUSD } from '@/utils/currency';
 import {
   CollectionField,
   EditableCard,
 } from '@/components/editable-collection';
-import {FormFooter} from '@/components/form-footer';
-import {MetadataList, MetadataListItem} from '@astryxdesign/core/MetadataList';
-import {VStack} from '@astryxdesign/core/Stack';
-import {startTransition, useOptimistic, useState} from 'react';
-import {optimisticPending, WithOptimistic} from '@/utils/with-optimistic';
-import {mapToArray, removeFromMap, setInMap} from '@/utils/map';
+import { FormFooter } from '@/components/form-footer';
+import {
+  MetadataList,
+  MetadataListItem,
+} from '@astryxdesign/core/MetadataList';
+import { VStack } from '@astryxdesign/core/Stack';
+import { startTransition, useOptimistic, useState } from 'react';
+import { optimisticPending, WithOptimistic } from '@/utils/with-optimistic';
+import { mapToArray, removeFromMap, setInMap } from '@/utils/map';
 import {
   deleteRefinance,
   insertRefinance,
@@ -40,7 +43,7 @@ export default function RefinancesField({
 }) {
   const [optimisticRefinances, dispatchOptimistic] = useOptimistic<
     ReadonlyMap<string, WithOptimistic<WithID<Refinance>>>,
-    {type: 'upsert'; item: WithID<Refinance>} | {type: 'delete'; id: string}
+    { type: 'upsert'; item: WithID<Refinance> } | { type: 'delete'; id: string }
   >(items, (prev, action) => {
     switch (action.type) {
       case 'upsert':
@@ -63,7 +66,7 @@ export default function RefinancesField({
         updateState.meta?.id != null &&
         updateState.errors != null &&
         r.id === updateState.meta.id.toString()
-          ? {...r, hasError: true}
+          ? { ...r, hasError: true }
           : r,
       )}
       initializeDraftItem={() => ({
@@ -91,13 +94,13 @@ export default function RefinancesField({
           });
         });
       }}
-      renderEditForm={({draftItem, setDraftItem, close}) => (
+      renderEditForm={({ draftItem, setDraftItem, close }) => (
         <form
           id="update-refinance-form"
           onSubmit={(event) => {
             event.preventDefault();
             void (async () => {
-              dispatchOptimistic({type: 'upsert', item: draftItem});
+              dispatchOptimistic({ type: 'upsert', item: draftItem });
 
               setUpdateIsPending(true);
               setUpdateState({});
@@ -139,10 +142,8 @@ export default function RefinancesField({
               isRequired
               isIntegerOnly
               value={draftItem.term}
-              onChange={(value) => setDraftItem({...draftItem, term: value})}
-              formatValue={(term) =>
-                `${term} ${plural('year', 'years', term)}`
-              }
+              onChange={(value) => setDraftItem({ ...draftItem, term: value })}
+              formatValue={(term) => `${term} ${plural('year', 'years', term)}`}
             />
             <NumberInput
               label="Rate"
@@ -153,7 +154,7 @@ export default function RefinancesField({
               step={0.001}
               value={draftItem.annualizedInterestRate}
               onChange={(value) =>
-                setDraftItem({...draftItem, annualizedInterestRate: value})
+                setDraftItem({ ...draftItem, annualizedInterestRate: value })
               }
               formatValue={(rate) => formatPercent(rate, 3)}
             />
@@ -163,7 +164,7 @@ export default function RefinancesField({
               description="Extra payment after down payment and before the first month's payment"
               value={draftItem.prePayment}
               onChange={(value) =>
-                setDraftItem({...draftItem, prePayment: value})
+                setDraftItem({ ...draftItem, prePayment: value })
               }
             />
             <CheckboxInput
@@ -171,9 +172,9 @@ export default function RefinancesField({
               value={draftItem.principal != null}
               onChange={(isChecked) => {
                 if (isChecked) {
-                  setDraftItem({...draftItem, principal: NaN});
+                  setDraftItem({ ...draftItem, principal: NaN });
                 } else {
-                  setDraftItem({...draftItem, principal: null});
+                  setDraftItem({ ...draftItem, principal: null });
                 }
               }}
             />
@@ -182,12 +183,10 @@ export default function RefinancesField({
                 label="Amount financed"
                 htmlName="principal"
                 value={
-                  Number.isNaN(draftItem.principal)
-                    ? null
-                    : draftItem.principal
+                  Number.isNaN(draftItem.principal) ? null : draftItem.principal
                 }
                 onChange={(value) =>
-                  setDraftItem({...draftItem, principal: value})
+                  setDraftItem({ ...draftItem, principal: value })
                 }
               />
             )}
@@ -199,7 +198,7 @@ export default function RefinancesField({
           </VStack>
         </form>
       )}
-      renderItem={(item, {edit}) => {
+      renderItem={(item, { edit }) => {
         const monthAndYear = addMonths(startingMonthAndYear, item.month);
         return (
           <EditableCard
@@ -211,7 +210,7 @@ export default function RefinancesField({
                   type: 'delete',
                   id: item.id,
                 });
-                deleteRefinance({id: parseInt(item.id, 10)});
+                deleteRefinance({ id: parseInt(item.id, 10) });
               });
             }}
           >

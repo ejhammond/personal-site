@@ -1,20 +1,20 @@
 'use client';
 
-import {Button} from '@astryxdesign/core/Button';
-import {Dialog, DialogHeader} from '@astryxdesign/core/Dialog';
-import {NumberInput} from '@astryxdesign/core/NumberInput';
-import {Selector} from '@astryxdesign/core/Selector';
-import {VStack} from '@astryxdesign/core/Stack';
-import {useState} from 'react';
-import {insertWorkoutInstance} from './workout-instance-actions';
-import {FormFooter} from '@/components/form-footer';
+import { Button } from '@astryxdesign/core/Button';
+import { Dialog, DialogHeader } from '@astryxdesign/core/Dialog';
+import { NumberInput } from '@astryxdesign/core/NumberInput';
+import { Selector } from '@astryxdesign/core/Selector';
+import { VStack } from '@astryxdesign/core/Stack';
+import { useState } from 'react';
+import { insertWorkoutInstance } from './workout-instance-actions';
+import { FormFooter } from '@/components/form-footer';
 
 type Signal = 'INCREASE' | 'MAINTAIN' | 'DECREASE';
 
 const SIGNAL_ITEMS = [
-  {label: 'Increase weight', value: 'INCREASE' as Signal},
-  {label: 'Maintain weight', value: 'MAINTAIN' as Signal},
-  {label: 'Decrease weight', value: 'DECREASE' as Signal},
+  { label: 'Increase weight', value: 'INCREASE' as Signal },
+  { label: 'Maintain weight', value: 'MAINTAIN' as Signal },
+  { label: 'Decrease weight', value: 'DECREASE' as Signal },
 ];
 
 const defaultInstance = {

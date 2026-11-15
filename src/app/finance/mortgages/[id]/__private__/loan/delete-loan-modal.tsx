@@ -1,10 +1,10 @@
 'use client';
 
-import {Dialog, DialogHeader} from '@astryxdesign/core/Dialog';
-import {VStack} from '@astryxdesign/core/Stack';
-import {useState} from 'react';
-import {deleteLoan, DeleteLoanActionState} from './loan-actions';
-import {FormFooter} from '@/components/form-footer';
+import { Dialog, DialogHeader } from '@astryxdesign/core/Dialog';
+import { VStack } from '@astryxdesign/core/Stack';
+import { useState } from 'react';
+import { deleteLoan, DeleteLoanActionState } from './loan-actions';
+import { FormFooter } from '@/components/form-footer';
 
 export function DeleteLoanModal({
   isOpen,

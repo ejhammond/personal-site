@@ -1,15 +1,15 @@
 'use client';
 
-import {useState} from 'react';
-import {Dialog, DialogHeader} from '@astryxdesign/core/Dialog';
-import {HStack, VStack} from '@astryxdesign/core/Stack';
-import {Icon} from '@astryxdesign/core/Icon';
-import {ListItem} from '@astryxdesign/core/List';
-import {MoreMenu} from '@astryxdesign/core/MoreMenu';
-import {NumberInput} from '@astryxdesign/core/NumberInput';
-import {Selector} from '@astryxdesign/core/Selector';
-import {Text} from '@astryxdesign/core/Text';
-import {FormFooter} from '@/components/form-footer';
+import { useState } from 'react';
+import { Dialog, DialogHeader } from '@astryxdesign/core/Dialog';
+import { HStack, VStack } from '@astryxdesign/core/Stack';
+import { Icon } from '@astryxdesign/core/Icon';
+import { ListItem } from '@astryxdesign/core/List';
+import { MoreMenu } from '@astryxdesign/core/MoreMenu';
+import { NumberInput } from '@astryxdesign/core/NumberInput';
+import { Selector } from '@astryxdesign/core/Selector';
+import { Text } from '@astryxdesign/core/Text';
+import { FormFooter } from '@/components/form-footer';
 import {
   updateWorkoutInstance,
   deleteWorkoutInstance,
@@ -18,9 +18,9 @@ import {
 type Signal = 'INCREASE' | 'MAINTAIN' | 'DECREASE';
 
 const SIGNAL_ITEMS = [
-  {label: 'Increase weight', value: 'INCREASE' as Signal},
-  {label: 'Maintain weight', value: 'MAINTAIN' as Signal},
-  {label: 'Decrease weight', value: 'DECREASE' as Signal},
+  { label: 'Increase weight', value: 'INCREASE' as Signal },
+  { label: 'Maintain weight', value: 'MAINTAIN' as Signal },
+  { label: 'Decrease weight', value: 'DECREASE' as Signal },
 ];
 
 type WorkoutInstance = {
@@ -39,26 +39,16 @@ function EqualsIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-function SignalIcon({signal}: {signal: Signal}) {
+function SignalIcon({ signal }: { signal: Signal }) {
   if (signal === 'INCREASE') {
     return (
-      <Icon
-        icon="arrowUp"
-        size="lg"
-        color="success"
-        label="Increase weight"
-      />
+      <Icon icon="arrowUp" size="lg" color="success" label="Increase weight" />
     );
   }
 
   if (signal === 'DECREASE') {
     return (
-      <Icon
-        icon="arrowDown"
-        size="lg"
-        color="error"
-        label="Decrease weight"
-      />
+      <Icon icon="arrowDown" size="lg" color="error" label="Decrease weight" />
     );
   }
 
@@ -142,7 +132,7 @@ export function WorkoutInstanceItem({
                     signal: editData.signal,
                     timestamp: editData.timestamp,
                   },
-                  {id: instance.id},
+                  { id: instance.id },
                 );
                 setIsPending(false);
                 setIsEditModalOpen(false);
@@ -172,10 +162,7 @@ export function WorkoutInstanceItem({
                 }
                 options={SIGNAL_ITEMS}
               />
-              <FormFooter
-                isPending={isPending}
-                onCancel={closeEditModal}
-              />
+              <FormFooter isPending={isPending} onCancel={closeEditModal} />
             </VStack>
           </form>
         </VStack>
@@ -194,7 +181,7 @@ export function WorkoutInstanceItem({
               event.preventDefault();
               void (async () => {
                 setIsPending(true);
-                await deleteWorkoutInstance({id: instance.id});
+                await deleteWorkoutInstance({ id: instance.id });
                 setIsPending(false);
                 setIsDeleteModalOpen(false);
               })();

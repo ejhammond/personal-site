@@ -1,6 +1,6 @@
 'use client';
 
-import {Fragment, useState} from 'react';
+import { Fragment, useState } from 'react';
 import {
   Amortizations,
   amortize,
@@ -9,38 +9,38 @@ import {
   RecurringPayment,
   Refinance,
 } from '@/utils/loan';
-import {formatUSD} from '@/utils/currency';
-import {plural} from '@/utils/string';
+import { formatUSD } from '@/utils/currency';
+import { plural } from '@/utils/string';
 import React from 'react';
 import AmortizationTable from './amortization-table';
 import MortgageForm from './mortgage-form';
-import {formatPercent} from '@/utils/number';
+import { formatPercent } from '@/utils/number';
 import LoanStats from './loan-stats';
-import {WithID} from '@/utils/id';
-import {useLoan} from './loan/use-loan';
+import { WithID } from '@/utils/id';
+import { useLoan } from './loan/use-loan';
 import useRefinances from './refinance/use-refinances';
 import usePayments from './payment/use-payments';
 import useRecurringPayments from './recurring-payment/use-recurring-payments';
-import {Banner} from '@astryxdesign/core/Banner';
-import {Button} from '@astryxdesign/core/Button';
-import {Dialog, DialogHeader} from '@astryxdesign/core/Dialog';
-import {useMediaQuery} from '@astryxdesign/core/hooks';
-import {Icon} from '@astryxdesign/core/Icon';
+import { Banner } from '@astryxdesign/core/Banner';
+import { Button } from '@astryxdesign/core/Button';
+import { Dialog, DialogHeader } from '@astryxdesign/core/Dialog';
+import { useMediaQuery } from '@astryxdesign/core/hooks';
+import { Icon } from '@astryxdesign/core/Icon';
 import {
   Layout,
   LayoutContent,
   LayoutHeader,
   LayoutPanel,
 } from '@astryxdesign/core/Layout';
-import {Link} from '@astryxdesign/core/Link';
-import {MoreMenu} from '@astryxdesign/core/MoreMenu';
-import {Section} from '@astryxdesign/core/Section';
-import {HStack, StackItem, VStack} from '@astryxdesign/core/Stack';
-import {Heading} from '@astryxdesign/core/Text';
-import {mapToArray} from '@/utils/map';
-import {CloneLoanModal} from './loan/clone-loan-modal';
-import {RenameLoanModal} from './loan/rename-loan-modal';
-import {DeleteLoanModal} from './loan/delete-loan-modal';
+import { Link } from '@astryxdesign/core/Link';
+import { MoreMenu } from '@astryxdesign/core/MoreMenu';
+import { Section } from '@astryxdesign/core/Section';
+import { HStack, StackItem, VStack } from '@astryxdesign/core/Stack';
+import { Heading } from '@astryxdesign/core/Text';
+import { mapToArray } from '@/utils/map';
+import { CloneLoanModal } from './loan/clone-loan-modal';
+import { RenameLoanModal } from './loan/rename-loan-modal';
+import { DeleteLoanModal } from './loan/delete-loan-modal';
 
 export default function Content({
   name,
@@ -95,7 +95,7 @@ export default function Content({
     const refinances = mapToArray(refinancesMap);
 
     try {
-      const base = amortize({originalLoan});
+      const base = amortize({ originalLoan });
       const withRefinances = amortize({
         originalLoan,
         refinances: refinances.map((refinance) => ({
@@ -208,10 +208,7 @@ export default function Content({
           <LayoutContent role="main">
             <VStack gap={4}>
               {amortizations == null && (
-                <Banner
-                  status="info"
-                  title="Press Calculate in the panel"
-                />
+                <Banner status="info" title="Press Calculate in the panel" />
               )}
               {amortizations != null && (
                 <Section>
@@ -231,15 +228,12 @@ export default function Content({
                 amortizations.withRefinancesAndPrePayments.length > 0 && (
                   <VStack gap={4}>
                     {amortizations.withRefinancesAndPrePayments.map(
-                      ({loan, amortization}, index) => (
+                      ({ loan, amortization }, index) => (
                         <Section key={index}>
                           <VStack gap={4}>
                             <Heading level={2}>
                               Loan {index + 1} - {formatUSD(loan.principal)} at{' '}
-                              {formatPercent(
-                                loan.annualizedInterestRate,
-                                3,
-                              )}{' '}
+                              {formatPercent(loan.annualizedInterestRate, 3)}{' '}
                               for {loan.term}{' '}
                               {plural('year', 'years', loan.term)}
                             </Heading>

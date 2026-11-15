@@ -1,11 +1,11 @@
 'use client';
 
-import {Dialog, DialogHeader} from '@astryxdesign/core/Dialog';
-import {VStack} from '@astryxdesign/core/Stack';
-import {TextInput} from '@astryxdesign/core/TextInput';
-import {useState} from 'react';
-import {renameLoan, RenameLoanActionState} from './loan-actions';
-import {FormFooter} from '@/components/form-footer';
+import { Dialog, DialogHeader } from '@astryxdesign/core/Dialog';
+import { VStack } from '@astryxdesign/core/Stack';
+import { TextInput } from '@astryxdesign/core/TextInput';
+import { useState } from 'react';
+import { renameLoan, RenameLoanActionState } from './loan-actions';
+import { FormFooter } from '@/components/form-footer';
 
 export function RenameLoanModal({
   isOpen,
@@ -35,7 +35,7 @@ export function RenameLoanModal({
               setIsPending(true);
               setActionState({});
               const state = await renameLoan(
-                {name},
+                { name },
                 {
                   id: parseInt(loanID, 10),
                 },

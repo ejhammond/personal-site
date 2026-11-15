@@ -1,8 +1,8 @@
 'use client';
 
-import {Banner} from '@astryxdesign/core/Banner';
-import {Button} from '@astryxdesign/core/Button';
-import {HStack, VStack} from '@astryxdesign/core/Stack';
+import { Banner } from '@astryxdesign/core/Banner';
+import { Button } from '@astryxdesign/core/Button';
+import { HStack, VStack } from '@astryxdesign/core/Stack';
 
 /**
  * Footer for the modal/edit forms: Cancel + submit buttons, with an error
@@ -41,9 +41,7 @@ export function FormFooter({
           isLoading={isPending}
         />
       </HStack>
-      {errorMessage != null && (
-        <Banner status="error" title={errorMessage} />
-      )}
+      {errorMessage != null && <Banner status="error" title={errorMessage} />}
       {successMessage != null && (
         <Banner status="success" title={successMessage} />
       )}

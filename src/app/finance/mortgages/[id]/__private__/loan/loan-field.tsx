@@ -1,23 +1,26 @@
 'use client';
 
-import {CurrencyInput} from '@/components/currency-input';
+import { CurrencyInput } from '@/components/currency-input';
 import {
   EditableCard,
   EditableItemField,
 } from '@/components/editable-collection';
-import {FormFooter} from '@/components/form-footer';
-import {MonthAndYearInput} from '@/components/month-and-year-input';
-import {MetadataList, MetadataListItem} from '@astryxdesign/core/MetadataList';
-import {NumberInput} from '@astryxdesign/core/NumberInput';
-import {VStack} from '@astryxdesign/core/Stack';
-import {formatUSD} from '@/utils/currency';
-import {Loan} from '@/utils/loan';
-import {formatPercent} from '@/utils/number';
-import {plural} from '@/utils/string';
-import {optimisticPending, WithOptimistic} from '@/utils/with-optimistic';
-import {useOptimistic, useState} from 'react';
-import {updateLoan, UpdateLoanActionState} from './loan-actions';
-import {monthToNumber} from '@/utils/date';
+import { FormFooter } from '@/components/form-footer';
+import { MonthAndYearInput } from '@/components/month-and-year-input';
+import {
+  MetadataList,
+  MetadataListItem,
+} from '@astryxdesign/core/MetadataList';
+import { NumberInput } from '@astryxdesign/core/NumberInput';
+import { VStack } from '@astryxdesign/core/Stack';
+import { formatUSD } from '@/utils/currency';
+import { Loan } from '@/utils/loan';
+import { formatPercent } from '@/utils/number';
+import { plural } from '@/utils/string';
+import { optimisticPending, WithOptimistic } from '@/utils/with-optimistic';
+import { useOptimistic, useState } from 'react';
+import { updateLoan, UpdateLoanActionState } from './loan-actions';
+import { monthToNumber } from '@/utils/date';
 
 export default function LoanField({
   loan,
@@ -38,7 +41,7 @@ export default function LoanField({
     <EditableItemField<WithOptimistic<Loan>>
       itemName="Loan"
       item={optimisticLoan}
-      renderItem={(item, {edit}) => (
+      renderItem={(item, { edit }) => (
         <EditableCard isPending={updateIsPending} onEdit={edit}>
           <MetadataList>
             <MetadataListItem label="Date">
@@ -61,7 +64,7 @@ export default function LoanField({
           </MetadataList>
         </EditableCard>
       )}
-      renderEditForm={({draftItem, setDraftItem, close}) => (
+      renderEditForm={({ draftItem, setDraftItem, close }) => (
         <form
           id="update-loan-form"
           onSubmit={(event) => {
@@ -96,7 +99,7 @@ export default function LoanField({
               description="Month when the first payment is due"
               isRequired
               value={draftItem.start}
-              onChange={(start) => setDraftItem({...draftItem, start})}
+              onChange={(start) => setDraftItem({ ...draftItem, start })}
             />
             <CurrencyInput
               htmlName="principal"
@@ -104,7 +107,7 @@ export default function LoanField({
               isRequired
               value={draftItem.principal}
               onChange={(principal) =>
-                setDraftItem({...draftItem, principal})
+                setDraftItem({ ...draftItem, principal })
               }
             />
             <NumberInput
@@ -114,10 +117,8 @@ export default function LoanField({
               isRequired
               isIntegerOnly
               value={draftItem.term}
-              onChange={(term) => setDraftItem({...draftItem, term})}
-              formatValue={(term) =>
-                `${term} ${plural('year', 'years', term)}`
-              }
+              onChange={(term) => setDraftItem({ ...draftItem, term })}
+              formatValue={(term) => `${term} ${plural('year', 'years', term)}`}
             />
             <NumberInput
               htmlName="rate"
@@ -128,7 +129,7 @@ export default function LoanField({
               step={0.001}
               value={draftItem.annualizedInterestRate}
               onChange={(annualizedInterestRate) =>
-                setDraftItem({...draftItem, annualizedInterestRate})
+                setDraftItem({ ...draftItem, annualizedInterestRate })
               }
               formatValue={(rate) => formatPercent(rate, 3)}
             />
@@ -138,7 +139,7 @@ export default function LoanField({
               description="Extra payment after down payment and before the first month's payment"
               value={draftItem.prePayment}
               onChange={(prePayment) =>
-                setDraftItem({...draftItem, prePayment})
+                setDraftItem({ ...draftItem, prePayment })
               }
             />
             <FormFooter

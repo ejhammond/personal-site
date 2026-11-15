@@ -1,13 +1,13 @@
 'use client';
 
-import {useState} from 'react';
-import {Dialog, DialogHeader} from '@astryxdesign/core/Dialog';
-import {MoreMenu} from '@astryxdesign/core/MoreMenu';
-import {NumberInput} from '@astryxdesign/core/NumberInput';
-import {VStack} from '@astryxdesign/core/Stack';
-import {Text} from '@astryxdesign/core/Text';
-import {TextInput} from '@astryxdesign/core/TextInput';
-import {FormFooter} from '@/components/form-footer';
+import { useState } from 'react';
+import { Dialog, DialogHeader } from '@astryxdesign/core/Dialog';
+import { MoreMenu } from '@astryxdesign/core/MoreMenu';
+import { NumberInput } from '@astryxdesign/core/NumberInput';
+import { VStack } from '@astryxdesign/core/Stack';
+import { Text } from '@astryxdesign/core/Text';
+import { TextInput } from '@astryxdesign/core/TextInput';
+import { FormFooter } from '@/components/form-footer';
 import {
   updateWorkout,
   deleteWorkout,
@@ -20,7 +20,7 @@ type Workout = {
   reps: number;
 };
 
-export function WorkoutMenu({workout}: {workout: Workout}) {
+export function WorkoutMenu({ workout }: { workout: Workout }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isPending, setIsPending] = useState(false);
@@ -80,7 +80,7 @@ export function WorkoutMenu({workout}: {workout: Workout}) {
                     sets: editData.sets,
                     reps: editData.reps,
                   },
-                  {id: workout.id},
+                  { id: workout.id },
                 );
                 setIsPending(false);
                 setIsEditModalOpen(false);
@@ -92,12 +92,12 @@ export function WorkoutMenu({workout}: {workout: Workout}) {
                 label="Name"
                 htmlName="name"
                 value={editData.name}
-                onChange={(name) => setEditData((p) => ({...p, name}))}
+                onChange={(name) => setEditData((p) => ({ ...p, name }))}
               />
               <NumberInput
                 label="Sets"
                 value={editData.sets}
-                onChange={(sets) => setEditData((p) => ({...p, sets}))}
+                onChange={(sets) => setEditData((p) => ({ ...p, sets }))}
                 min={1}
                 isIntegerOnly
                 hasNumberSteppers
@@ -105,7 +105,7 @@ export function WorkoutMenu({workout}: {workout: Workout}) {
               <NumberInput
                 label="Reps"
                 value={editData.reps}
-                onChange={(reps) => setEditData((p) => ({...p, reps}))}
+                onChange={(reps) => setEditData((p) => ({ ...p, reps }))}
                 min={1}
                 isIntegerOnly
                 hasNumberSteppers
@@ -123,8 +123,8 @@ export function WorkoutMenu({workout}: {workout: Workout}) {
         />
         <VStack gap={4} padding={4}>
           <Text>
-            Are you sure you want to delete this workout and all of the
-            logged data?
+            Are you sure you want to delete this workout and all of the logged
+            data?
           </Text>
           <form
             id="delete-workout"
@@ -132,7 +132,7 @@ export function WorkoutMenu({workout}: {workout: Workout}) {
               event.preventDefault();
               void (async () => {
                 setIsPending(true);
-                await deleteWorkout({id: workout.id});
+                await deleteWorkout({ id: workout.id });
                 setIsPending(false);
                 setIsDeleteModalOpen(false);
               })();

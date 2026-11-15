@@ -1,9 +1,9 @@
 'use client';
 
-import {NumberInput} from '@astryxdesign/core/NumberInput';
-import {Selector} from '@astryxdesign/core/Selector';
-import {HStack, VStack} from '@astryxdesign/core/Stack';
-import {Text} from '@astryxdesign/core/Text';
+import { NumberInput } from '@astryxdesign/core/NumberInput';
+import { Selector } from '@astryxdesign/core/Selector';
+import { HStack, VStack } from '@astryxdesign/core/Stack';
+import { Text } from '@astryxdesign/core/Text';
 import {
   MONTHS,
   Month,
@@ -45,7 +45,7 @@ export function MonthAndYearInput({
           isRequired={isRequired}
           value={value.month}
           onChange={(month) => {
-            const next = {month: month as Month, year: value.year};
+            const next = { month: month as Month, year: value.year };
             if (minValue != null && monthDifference(minValue, next) < 0) {
               // value is less than minValue
               return;
@@ -72,7 +72,7 @@ export function MonthAndYearInput({
           formatValue={(year) => String(year)}
           value={value.year}
           onChange={(year) => {
-            const next = {month: value.month, year};
+            const next = { month: value.month, year };
             if (minValue != null && monthDifference(minValue, next) < 0) {
               // value is less than minValue
               return;
@@ -82,9 +82,7 @@ export function MonthAndYearInput({
           }}
         />
       </HStack>
-      {description != null && (
-        <Text type="supporting">{description}</Text>
-      )}
+      {description != null && <Text type="supporting">{description}</Text>}
     </VStack>
   );
 }

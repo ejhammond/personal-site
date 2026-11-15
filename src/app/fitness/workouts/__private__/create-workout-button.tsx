@@ -1,13 +1,13 @@
 'use client';
 
-import {Button} from '@astryxdesign/core/Button';
-import {Dialog, DialogHeader} from '@astryxdesign/core/Dialog';
-import {NumberInput} from '@astryxdesign/core/NumberInput';
-import {VStack} from '@astryxdesign/core/Stack';
-import {TextInput} from '@astryxdesign/core/TextInput';
-import {useState} from 'react';
-import {insertWorkout} from './workout-actions';
-import {FormFooter} from '@/components/form-footer';
+import { Button } from '@astryxdesign/core/Button';
+import { Dialog, DialogHeader } from '@astryxdesign/core/Dialog';
+import { NumberInput } from '@astryxdesign/core/NumberInput';
+import { VStack } from '@astryxdesign/core/Stack';
+import { TextInput } from '@astryxdesign/core/TextInput';
+import { useState } from 'react';
+import { insertWorkout } from './workout-actions';
+import { FormFooter } from '@/components/form-footer';
 
 const defaultWorkout = {
   name: '',

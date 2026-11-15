@@ -1,7 +1,7 @@
 'use client';
 
-import {NumberInput} from '@astryxdesign/core/NumberInput';
-import {formatUSD} from '@/utils/currency';
+import { NumberInput } from '@astryxdesign/core/NumberInput';
+import { formatUSD } from '@/utils/currency';
 
 /**
  * Currency input, mirroring the old ds CurrencyField: a number input with a
@@ -29,7 +29,7 @@ export function CurrencyInput({
       value={value}
       onChange={onChange}
       min={0}
-      formatValue={(amount) => formatUSD(amount, {showCents: true})}
+      formatValue={(amount) => formatUSD(amount, { showCents: true })}
       isRequired={isRequired}
       htmlName={htmlName}
     />

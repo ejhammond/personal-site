@@ -1,13 +1,13 @@
-import {Card} from '@astryxdesign/core/Card';
-import {Grid} from '@astryxdesign/core/Grid';
-import {Icon} from '@astryxdesign/core/Icon';
-import {HStack, VStack} from '@astryxdesign/core/Stack';
-import {Heading, Text} from '@astryxdesign/core/Text';
-import {formatUSD} from '@/utils/currency';
-import {addMonths, formatMonths} from '@/utils/date';
-import {Amortizations} from '@/utils/loan';
-import {formatCompact} from '@/utils/number';
-import React, {ReactNode} from 'react';
+import { Card } from '@astryxdesign/core/Card';
+import { Grid } from '@astryxdesign/core/Grid';
+import { Icon } from '@astryxdesign/core/Icon';
+import { HStack, VStack } from '@astryxdesign/core/Stack';
+import { Heading, Text } from '@astryxdesign/core/Text';
+import { formatUSD } from '@/utils/currency';
+import { addMonths, formatMonths } from '@/utils/date';
+import { Amortizations } from '@/utils/loan';
+import { formatCompact } from '@/utils/number';
+import React, { ReactNode } from 'react';
 
 function MetricDelta({
   direction,
@@ -45,19 +45,19 @@ export default function LoanStats({
 
   const totalFromPrincipalPrePayments =
     amortizationsWithRefinancesAndPrepayments.reduce(
-      (acc, {loan: {prePayment}}) => acc + prePayment,
+      (acc, { loan: { prePayment } }) => acc + prePayment,
       0,
     );
 
   const totalFromMinPrincipalPayments =
     amortizationsWithRefinancesAndPrepayments
-      .flatMap(({amortization}) => amortization)
-      .reduce((acc, {principal}) => acc + principal, 0);
+      .flatMap(({ amortization }) => amortization)
+      .reduce((acc, { principal }) => acc + principal, 0);
 
   const totalFromExtraPrincipalPayments =
     amortizationsWithRefinancesAndPrepayments
-      .flatMap(({amortization}) => amortization)
-      .reduce((acc, {extra}) => acc + extra, 0);
+      .flatMap(({ amortization }) => amortization)
+      .reduce((acc, { extra }) => acc + extra, 0);
 
   const totalPrincipalPaid =
     totalFromPrincipalPrePayments +
@@ -65,16 +65,16 @@ export default function LoanStats({
     totalFromExtraPrincipalPayments;
 
   const totalInterestPaid = amortizationsWithRefinancesAndPrepayments
-    .flatMap(({amortization}) => amortization)
-    .reduce((acc, {interest}) => acc + interest, 0);
+    .flatMap(({ amortization }) => amortization)
+    .reduce((acc, { interest }) => acc + interest, 0);
 
   const expectedTotalInterestPaidForOriginalLoan = amortizationsForOriginalLoan
-    .flatMap(({amortization}) => amortization)
-    .reduce((acc, {interest}) => acc + interest, 0);
+    .flatMap(({ amortization }) => amortization)
+    .reduce((acc, { interest }) => acc + interest, 0);
 
   const expectedTotalInterestPaidWithRefinances = amortizationsWithRefinances
-    .flatMap(({amortization}) => amortization)
-    .reduce((acc, {interest}) => acc + interest, 0);
+    .flatMap(({ amortization }) => amortization)
+    .reduce((acc, { interest }) => acc + interest, 0);
 
   const interestSavings =
     expectedTotalInterestPaidForOriginalLoan - totalInterestPaid;
@@ -88,13 +88,13 @@ export default function LoanStats({
 
   const durationInMonths =
     amortizationsWithRefinancesAndPrepayments
-      .flatMap(({amortization}) => amortization)
+      .flatMap(({ amortization }) => amortization)
       // assume there's at least one element
       .at(-1)!.month + 1; // add 1 to adjust 0-index
 
   const expectedDurationInMonths =
     amortizationsForOriginalLoan
-      .flatMap(({amortization}) => amortization)
+      .flatMap(({ amortization }) => amortization)
       // assume there's at least one element
       .at(-1)!.month + 1; // add 1 to adjust 0-index
 
@@ -103,7 +103,7 @@ export default function LoanStats({
   const endDate = addMonths(startingMonthAndYear, durationInMonths);
 
   return (
-    <Grid columns={{minWidth: 240}} gap={4}>
+    <Grid columns={{ minWidth: 240 }} gap={4}>
       <Card>
         <VStack gap={2}>
           <Heading level={3}>Principal paid</Heading>
