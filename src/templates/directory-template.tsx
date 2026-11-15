@@ -16,10 +16,7 @@ export function DirectoryTemplate() {
   const router = useRouter();
   const uriPath = usePathname();
 
-  const directory = useMemo(
-    () => directoryIndex.get(uriPath),
-    [uriPath],
-  );
+  const directory = useMemo(() => directoryIndex.get(uriPath), [uriPath]);
 
   if (directory == null) {
     return null;
@@ -53,16 +50,11 @@ export function DirectoryTemplate() {
               {subDirectories.map((dir) => {
                 const subDirectory = directoryIndex.get(dir);
                 const isPage =
-                  subDirectory?.files?.some((f) => f.tags.has('page')) ??
-                  false;
+                  subDirectory?.files?.some((f) => f.tags.has('page')) ?? false;
                 const name = dir.split('/').at(-1) ?? dir;
                 const label = makeHeading(name);
                 return (
-                  <ClickableCard
-                    key={dir}
-                    label={`Open ${label}`}
-                    href={dir}
-                  >
+                  <ClickableCard key={dir} label={`Open ${label}`} href={dir}>
                     <VStack gap={0.5}>
                       <Text type="body" weight="bold">
                         {label}
