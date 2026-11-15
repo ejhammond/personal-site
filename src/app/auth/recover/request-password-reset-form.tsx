@@ -1,11 +1,11 @@
 'use client';
 
-import { TextField } from '@/ds/text-field';
+import { useActionState, useState } from 'react';
+import { Banner } from '@astryxdesign/core/Banner';
+import { Button } from '@astryxdesign/core/Button';
+import { VStack } from '@astryxdesign/core/Stack';
+import { TextInput } from '@astryxdesign/core/TextInput';
 import { requestPasswordReset, RequestPasswordResetFormState } from './actions';
-import { useActionState, useMemo } from 'react';
-import { Form } from '@/ds/form';
-import FormFooter from '@/ds/form/footer';
-import FormSubmitButton from '@/ds/form/submit-button';
 
 export default function RequestPasswordResetForm({
   next,
@@ -16,39 +16,48 @@ export default function RequestPasswordResetForm({
     RequestPasswordResetFormState,
     FormData
   >(requestPasswordReset, { type: null });
-
-  const hiddenValues = useMemo(() => {
-    const values = new Map();
-
-    if (next != null) {
-      values.set('next', next);
-    }
-
-    return values;
-  }, [next]);
+  const [email, setEmail] = useState('');
 
   return (
-    <Form
-      id="reset-password"
-      isPending={isPending}
-      action={action}
-      hiddenValues={hiddenValues}
-      validationErrors={actionState.type === 'error' ? actionState.errors : {}}
-      footer={
-        <FormFooter
-          errorMessage={
-            actionState.type === 'error' ? actionState.errors.form : undefined
-          }
-          successMessage={
-            actionState.type === 'success'
-              ? 'Check your email for a reset link!'
+    <form id="reset-password" action={action}>
+      {next != null && <input type="hidden" name="next" value={next} />}
+      <VStack gap={4}>
+        {actionState.type === 'error' && actionState.errors.form != null && (
+          <Banner
+            status="error"
+            title={actionState.errors.form}
+            container="card"
+          />
+        )}
+        {actionState.type === 'success' && (
+          <Banner
+            status="success"
+            title="Check your email for a reset link!"
+            container="card"
+          />
+        )}
+        <TextInput
+          label="Email"
+          htmlName="email"
+          type="email"
+          isRequired
+          value={email}
+          onChange={setEmail}
+          isDisabled={isPending}
+          status={
+            actionState.type === 'error' &&
+            actionState.errors.email != null
+              ? { type: 'error', message: actionState.errors.email }
               : undefined
           }
-          submitButton={<FormSubmitButton>Request reset link</FormSubmitButton>}
         />
-      }
-    >
-      <TextField label="Email" name="email" type="email" isRequired />
-    </Form>
+        <Button
+          label="Request reset link"
+          variant="primary"
+          type="submit"
+          isLoading={isPending}
+        />
+      </VStack>
+    </form>
   );
 }

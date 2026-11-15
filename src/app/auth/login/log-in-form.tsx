@@ -1,36 +1,66 @@
 'use client';
 
-import { Form } from '@/ds/form';
-import { TextField } from '@/ds/text-field';
-import { useActionState, useMemo } from 'react';
+import { useActionState, useState } from 'react';
+import { Banner } from '@astryxdesign/core/Banner';
+import { Button } from '@astryxdesign/core/Button';
+import { VStack } from '@astryxdesign/core/Stack';
+import { TextInput } from '@astryxdesign/core/TextInput';
 import { logIn, LogInFormState } from './actions';
-import FormFooter from '@/ds/form/footer';
-import FormSubmitButton from '@/ds/form/submit-button';
 
 export default function LogInForm({ next }: { next: string }) {
   const [actionState, action, isPending] = useActionState<
     LogInFormState,
     FormData
   >(logIn, {});
-
-  const hiddenValues = useMemo(() => new Map([['next', next]]), [next]);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   return (
-    <Form
-      id="log-in"
-      action={action}
-      isPending={isPending}
-      hiddenValues={hiddenValues}
-      footer={
-        <FormFooter
-          errorMessage={actionState.errors?.form}
-          submitButton={<FormSubmitButton>Log in</FormSubmitButton>}
+    <form id="log-in" action={action}>
+      <input type="hidden" name="next" value={next} />
+      <VStack gap={4}>
+        {actionState.errors?.form != null && (
+          <Banner
+            status="error"
+            title={actionState.errors.form}
+            container="card"
+          />
+        )}
+        <TextInput
+          label="Email"
+          htmlName="email"
+          type="email"
+          isRequired
+          value={email}
+          onChange={setEmail}
+          isDisabled={isPending}
+          status={
+            actionState.errors?.email != null
+              ? { type: 'error', message: actionState.errors.email }
+              : undefined
+          }
         />
-      }
-      validationErrors={actionState.errors}
-    >
-      <TextField label="Email" name="email" type="email" isRequired />
-      <TextField label="Password" name="password" type="password" isRequired />
-    </Form>
+        <TextInput
+          label="Password"
+          htmlName="password"
+          type="password"
+          isRequired
+          value={password}
+          onChange={setPassword}
+          isDisabled={isPending}
+          status={
+            actionState.errors?.password != null
+              ? { type: 'error', message: actionState.errors.password }
+              : undefined
+          }
+        />
+        <Button
+          label="Log in"
+          variant="primary"
+          type="submit"
+          isLoading={isPending}
+        />
+      </VStack>
+    </form>
   );
 }

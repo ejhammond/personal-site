@@ -1,10 +1,11 @@
 'use client';
 
-import { Form } from '@/ds/form';
-import { TextField } from '@/ds/text-field';
+import { useActionState, useState } from 'react';
+import { Banner } from '@astryxdesign/core/Banner';
+import { Button } from '@astryxdesign/core/Button';
+import { VStack } from '@astryxdesign/core/Stack';
+import { TextInput } from '@astryxdesign/core/TextInput';
 import { updateUser, UpdateUserFormState } from './actions';
-import { useActionState } from 'react';
-import FormFooter from '@/ds/form/footer';
 
 export default function EditProfileForm({
   initialDisplayName,
@@ -17,36 +18,58 @@ export default function EditProfileForm({
     UpdateUserFormState,
     FormData
   >(updateUser, { type: null });
+  const [displayName, setDisplayName] = useState(initialDisplayName);
+  const [email, setEmail] = useState(initialEmail ?? '');
+  const [password, setPassword] = useState('');
 
   return (
-    <Form
-      id="edit-profile"
-      action={action}
-      isPending={isPending}
-      footer={
-        <FormFooter
-          successMessage={
-            actionState.type === 'success' ? 'Updated account info!' : undefined
-          }
-          errorMessage={
-            actionState.type === 'error' ? actionState.errors.form : undefined
-          }
+    <form id="edit-profile" action={action}>
+      <VStack gap={4}>
+        {actionState.type === 'success' && (
+          <Banner
+            status="success"
+            title="Updated account info!"
+            container="card"
+          />
+        )}
+        {actionState.type === 'error' && actionState.errors.form != null && (
+          <Banner
+            status="error"
+            title={actionState.errors.form}
+            container="card"
+          />
+        )}
+        <TextInput
+          label="Display name"
+          htmlName="display-name"
+          type="text"
+          value={displayName}
+          onChange={setDisplayName}
+          isDisabled={isPending}
         />
-      }
-    >
-      <TextField
-        label="Display name"
-        name="display-name"
-        type="text"
-        defaultValue={initialDisplayName}
-      />
-      <TextField
-        label="Email"
-        name="email"
-        type="email"
-        defaultValue={initialEmail}
-      />
-      <TextField label="New password" name="password" type="password" />
-    </Form>
+        <TextInput
+          label="Email"
+          htmlName="email"
+          type="email"
+          value={email}
+          onChange={setEmail}
+          isDisabled={isPending}
+        />
+        <TextInput
+          label="New password"
+          htmlName="password"
+          type="password"
+          value={password}
+          onChange={setPassword}
+          isDisabled={isPending}
+        />
+        <Button
+          label="Submit"
+          variant="primary"
+          type="submit"
+          isLoading={isPending}
+        />
+      </VStack>
+    </form>
   );
 }

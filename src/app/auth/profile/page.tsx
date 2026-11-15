@@ -1,9 +1,20 @@
-import { Button } from '@/ds/button';
+import { Button } from '@astryxdesign/core/Button';
+import { HStack, StackItem } from '@astryxdesign/core/Stack';
+import { Heading } from '@astryxdesign/core/Text';
+import { Center } from '@astryxdesign/core/Center';
+import { Layout, LayoutContent, LayoutHeader } from '@astryxdesign/core/Layout';
+import { VStack } from '@astryxdesign/core/Stack';
 import { createClient } from '@/supabase/server';
-import EditProfileForm from './edit-profile-form';
-import { VStack } from '@/ds/v-stack';
 import { redirect } from 'next/navigation';
-import { PageLayout, PageLayoutHeader } from '@/ds/page-layout';
+import EditProfileForm from './edit-profile-form';
+import type { CSSProperties } from 'react';
+
+// Cap the column but let it shrink to fit narrow screens (Stack has no
+// maxWidth prop, so it's set here).
+const contentStyle: CSSProperties = {
+  width: '100%',
+  maxWidth: 480,
+};
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -20,26 +31,34 @@ export default async function ProfilePage() {
   const profileFormKey = `${user.user_metadata.display_name}:${user.email}`;
 
   return (
-    <PageLayout
-      type="form"
+    <Layout
+      height="fill"
+      contentWidth={1200}
       header={
-        <PageLayoutHeader
-          title="Profile"
-          endContent={
+        <LayoutHeader hasDivider>
+          <HStack vAlign="center">
+            <StackItem size="fill">
+              <Heading level={1}>Profile</Heading>
+            </StackItem>
             <form id="logout" action="/auth/logout" method="post">
-              <Button type="submit">Sign out</Button>
+              <Button label="Sign out" type="submit" />
             </form>
-          }
-        />
+          </HStack>
+        </LayoutHeader>
       }
-    >
-      <VStack gap="md">
-        <EditProfileForm
-          key={profileFormKey}
-          initialDisplayName={user.user_metadata.display_name}
-          initialEmail={user.email}
-        />
-      </VStack>
-    </PageLayout>
+      content={
+        <LayoutContent padding={8}>
+          <Center axis="horizontal">
+            <VStack gap={4} style={contentStyle}>
+              <EditProfileForm
+                key={profileFormKey}
+                initialDisplayName={user.user_metadata.display_name}
+                initialEmail={user.email}
+              />
+            </VStack>
+          </Center>
+        </LayoutContent>
+      }
+    />
   );
 }

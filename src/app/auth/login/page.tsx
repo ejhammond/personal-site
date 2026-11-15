@@ -1,11 +1,11 @@
-import { Link } from '@/ds/link';
-import { VStack } from '@/ds/v-stack';
+import { Link } from '@astryxdesign/core/Link';
+import { VStack } from '@astryxdesign/core/Stack';
 import { createClient } from '@/supabase/server';
 import { NextServerComponentProps } from '@/types/next';
 import { genMaybeFromAsyncSearchParam } from '@/utils/search-params';
 import { redirect } from 'next/navigation';
+import { AuthLayout } from '../auth-layout';
 import LogInForm from './log-in-form';
-import { PageLayout, PageLayoutHeader } from '@/ds/page-layout';
 
 export default async function LogInPage({
   searchParams: asyncSearchParams,
@@ -23,14 +23,12 @@ export default async function LogInPage({
   const next = await genMaybeFromAsyncSearchParam(asyncSearchParams, 'next');
 
   return (
-    <PageLayout type="form" header={<PageLayoutHeader title="Log in" />}>
-      <VStack gap="md">
-        <LogInForm next={next.or('/')} />
-        <VStack gap="sm">
-          <Link href="/auth/sign-up">Need an account?</Link>
-          <Link href="/auth/recover">Forgot password?</Link>
-        </VStack>
+    <AuthLayout title="Log in">
+      <LogInForm next={next.or('/')} />
+      <VStack gap={1} hAlign="center">
+        <Link href="/auth/sign-up">Need an account?</Link>
+        <Link href="/auth/recover">Forgot password?</Link>
       </VStack>
-    </PageLayout>
+    </AuthLayout>
   );
 }

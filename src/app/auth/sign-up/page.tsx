@@ -1,9 +1,9 @@
-import { Link } from '@/ds/link';
-import { VStack } from '@/ds/v-stack';
+import { Link } from '@astryxdesign/core/Link';
+import { VStack } from '@astryxdesign/core/Stack';
 import { NextServerComponentProps } from '@/types/next';
 import { genMaybeFromAsyncSearchParam } from '@/utils/search-params';
+import { AuthLayout } from '../auth-layout';
 import SignUpForm from './sign-up-form';
-import { PageLayout, PageLayoutHeader } from '@/ds/page-layout';
 
 export default async function SignUpPage({
   searchParams: asyncSearchParams,
@@ -11,11 +11,11 @@ export default async function SignUpPage({
   const next = await genMaybeFromAsyncSearchParam(asyncSearchParams, 'next');
 
   return (
-    <PageLayout type="form" header={<PageLayoutHeader title="Sign up" />}>
-      <VStack gap="md">
-        <SignUpForm next={next.or('/')} />
+    <AuthLayout title="Sign up">
+      <SignUpForm next={next.or('/')} />
+      <VStack gap={1} hAlign="center">
         <Link href="/auth/login">Already have an account?</Link>
       </VStack>
-    </PageLayout>
+    </AuthLayout>
   );
 }

@@ -1,7 +1,7 @@
 import { NextServerComponentProps } from '@/types/next';
 import { genMaybeFromAsyncSearchParam } from '@/utils/search-params';
+import { AuthLayout } from '../auth-layout';
 import ResetPasswordForm from './reset-password-form';
-import { PageLayout, PageLayoutHeader } from '@/ds/page-layout';
 
 export default async function ResetPage({
   searchParams: asyncSearchParams,
@@ -9,11 +9,8 @@ export default async function ResetPage({
   const next = await genMaybeFromAsyncSearchParam(asyncSearchParams, 'next');
 
   return (
-    <PageLayout
-      type="form"
-      header={<PageLayoutHeader title="Reset password" />}
-    >
+    <AuthLayout title="Reset password">
       <ResetPasswordForm next={next.or('/')} />
-    </PageLayout>
+    </AuthLayout>
   );
 }
