@@ -1,5 +1,9 @@
 import './reset.css';
 import './root.css';
+import '@astryxdesign/core/reset.css';
+import '@astryxdesign/core/astryx.css';
+import { Theme } from '@astryxdesign/core/theme';
+import { themes, defaultThemeSlug } from '@/astryx-themes';
 
 import type { Metadata, Viewport } from 'next';
 import { Montserrat, Fira_Code } from 'next/font/google';
@@ -64,6 +68,7 @@ export default async function RootLayout({
             flexDirection: 'column',
           }}
         >
+          <Theme theme={themes[defaultThemeSlug]}>
           <header
             style={{
               backgroundColor: 'var(--color-brand)',
@@ -111,6 +116,7 @@ export default async function RootLayout({
           <div style={{ flexGrow: 1, minHeight: 0, overflow: 'hidden' }}>
             {children}
           </div>
+          </Theme>
         </body>
       </RootProviders>
     </html>

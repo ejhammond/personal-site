@@ -16,6 +16,8 @@
     "db-types": "npx --yes supabase gen types typescript --project-id \"tcvwcqptuysegmdhpngw\" --schema public > ./src/types/database.types.ts"
   },
   "dependencies": {
+    "@astryxdesign/core": "^0.7.16",
+    "@astryxdesign/theme-neutral": "^0.7.16",
     "@mdx-js/loader": "^3.0.0",
     "@mdx-js/react": "^3.0.0",
     "@next/mdx": "^14.1.0",
