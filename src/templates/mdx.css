@@ -81,3 +81,26 @@ code[data-theme*=' '] span {
     list-style-type: decimal;
   }
 }
+
+/*
+Color mode
+
+Restored verbatim from the old src/app/root.css (deleted in Phase 1): in
+some cases it's convenient to simply render 2 versions of some
+element--a dark-mode version and a light-mode version--and to hide
+whichever one is not relevant. Used by ColorModeImage/ColorModeSwitch in
+the redux-minus-react article. Note the old rules' asymmetry: under a
+light color scheme the dark variant is hidden but the base rule still
+hides the light variant too, so a ColorModeImage shows nothing in light
+mode — pre-existing behavior, preserved as-is.
+*/
+
+[data-colormode='light'] {
+  display: none;
+}
+
+@media (prefers-color-scheme: light) {
+  [data-colormode='dark'] {
+    display: none;
+  }
+}

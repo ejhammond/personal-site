@@ -1,7 +1,0 @@
-.ds-status-message {
-  font-size: 0.75em;
-}
-
-.ds-status-message-error {
-  color: var(--invalid-color);
-}
