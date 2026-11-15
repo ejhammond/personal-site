@@ -1,44 +1,22 @@
-import './reset.css';
-import './root.css';
 import '@astryxdesign/core/reset.css';
 import '@astryxdesign/core/astryx.css';
 import { Theme } from '@astryxdesign/core/theme';
 import { themes, defaultThemeSlug } from '@/astryx-themes';
-
-import type { Metadata, Viewport } from 'next';
-import { Montserrat, Fira_Code } from 'next/font/google';
+import { AppShell } from '@astryxdesign/core/AppShell';
+import { TopNav, TopNavHeading, TopNavItem } from '@astryxdesign/core/TopNav';
+import type { Metadata } from 'next';
 import ayhotaLogo from '@/images/ayhota-logo.png';
 import Image from 'next/image';
-import { Link } from '@/ds/link';
+import { AccountLink } from './account-link';
 import { RootProviders } from './root-providers';
 import { createClient } from '@/supabase/server';
-import { AccountLoggedInIcon, AccountLoggedOutIcon } from '@/ds/icons';
-
-const normalFont = Montserrat({
-  subsets: ['latin'],
-  variable: '--global-font-normal',
-});
-const monospaceFont = Fira_Code({
-  subsets: ['latin'],
-  variable: '--global-font-monospace',
-});
-
-/*
-TODO: find a way to include this in the head
-<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#385170">
-*/
 
 export const metadata: Metadata = {
   title: 'Ayhota',
   applicationName: 'Ayhota',
   other: {
     'apple-mobile-web-app-title': 'Ayhota',
-    'msapplication-TileColor': '#385170',
   },
-};
-
-export const viewport: Viewport = {
-  themeColor: '#385170',
 };
 
 export default async function RootLayout({
@@ -53,69 +31,43 @@ export default async function RootLayout({
   } = await supabase.auth.getUser();
 
   return (
-    <html
-      id="root"
-      lang="en"
-      // exposes css variables for each font.
-      className={`${normalFont.variable} ${monospaceFont.variable}`}
-    >
+    <html lang="en">
       <RootProviders>
-        <body
-          style={{
-            minHeight: '100dvh',
-            height: 0,
-            display: 'flex',
-            flexDirection: 'column',
-          }}
-        >
-          <Theme theme={themes[defaultThemeSlug]}>
-            <header
-              style={{
-                backgroundColor: 'var(--color-brand)',
-                padding: '16px',
-                flexGrow: 0,
-                flexShrink: 0,
-              }}
-            >
-              <div style={{ display: 'flex' }}>
-                <h1
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    width: '100%',
-                  }}
-                >
-                  <Link
-                    style={{
-                      color: 'white',
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                    href="/"
-                  >
-                    <Image
-                      src={ayhotaLogo}
-                      alt="Ayhota logo"
-                      style={{
-                        height: '48px',
-                        width: '48px',
-                      }}
+        <body>
+          <Theme theme={themes[defaultThemeSlug]} mode="system">
+            <AppShell
+              height="auto"
+              topNav={
+                <TopNav
+                  label="Top navigation"
+                  heading={
+                    <TopNavHeading
+                      logo={
+                        <Image
+                          src={ayhotaLogo}
+                          alt="Ayhota logo"
+                          width={48}
+                          height={48}
+                        />
+                      }
+                      heading="Ayhota"
+                      headingHref="/"
                     />
-                  </Link>
-                  <Link href={user == null ? '/auth/login' : '/auth/profile'}>
-                    {user == null ? (
-                      <AccountLoggedOutIcon color="white" size={28} />
-                    ) : (
-                      <AccountLoggedInIcon color="white" size={28} />
-                    )}
-                  </Link>
-                </h1>
-              </div>
-            </header>
-            <div style={{ flexGrow: 1, minHeight: 0, overflow: 'hidden' }}>
+                  }
+                  startContent={
+                    <>
+                      <TopNavItem label="Articles" href="/articles" />
+                      <TopNavItem label="Dnd" href="/dnd" />
+                      <TopNavItem label="Finance" href="/finance" />
+                      <TopNavItem label="Fitness" href="/fitness" />
+                    </>
+                  }
+                  endContent={<AccountLink isLoggedIn={user != null} />}
+                />
+              }
+            >
               {children}
-            </div>
+            </AppShell>
           </Theme>
         </body>
       </RootProviders>

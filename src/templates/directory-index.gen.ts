@@ -16,6 +16,10 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
       path: '/',
       files: [
         {
+          path: '/account-link.tsx',
+          tags: [],
+        },
+        {
           path: '/apple-icon.png',
           tags: [],
         },
@@ -32,19 +36,7 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
           tags: [],
         },
         {
-          path: '/reset.css',
-          tags: [],
-        },
-        {
           path: '/root-providers.tsx',
-          tags: [],
-        },
-        {
-          path: '/root.css',
-          tags: [],
-        },
-        {
-          path: '/theme.css',
           tags: [],
         },
       ],

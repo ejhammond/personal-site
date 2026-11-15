@@ -1,153 +1,83 @@
 'use client';
 
 import { directoryIndex } from '@/templates/directory-index.gen';
-import { HStack } from '@/ds/h-stack';
-import { VStack } from '@/ds/v-stack';
 import { makeHeading } from '@/utils/string';
 import { usePathname, useRouter } from 'next/navigation';
-import { Directory } from '@/types/directory';
 import { useMemo } from 'react';
-
-import './directory-template.css';
-import DirectoryListing from '@/ds/directory-listing';
-import { PageLayout, PageLayoutHeader } from '@/ds/page-layout';
-import { Button } from '@/ds/button';
-import { ArrowLeftIcon } from '@/ds/icons';
-
-function DirListing({
-  selectedDirectories,
-  directories,
-  className,
-  style,
-}: Readonly<{
-  selectedDirectories: ReadonlySet<string>;
-  directories: ReadonlyArray<string>;
-  className?: string;
-  style?: React.CSSProperties;
-}>) {
-  const sortedDirectories = useMemo(
-    () => directories.toSorted(),
-    [directories],
-  );
-  return (
-    <VStack className={className} style={style} gap="sm">
-      {sortedDirectories.map((dir) => {
-        const directory = directoryIndex.get(dir);
-        const isPage = directory?.files?.some((f) => f.tags.has('page'));
-        const parts = dir.split('/');
-        const name = parts.at(-1);
-        const label = name != null ? makeHeading(name) : '<missing-name>';
-        const isSelected = selectedDirectories.has(dir);
-
-        return (
-          <DirectoryListing
-            key={dir}
-            label={label}
-            isSelected={isSelected}
-            href={selectedDirectories.has(dir) ? null : dir}
-            type={isPage ? 'file' : 'folder'}
-          />
-        );
-      })}
-    </VStack>
-  );
-}
+import { Button } from '@astryxdesign/core/Button';
+import { ClickableCard } from '@astryxdesign/core/ClickableCard';
+import { Grid } from '@astryxdesign/core/Grid';
+import { Icon } from '@astryxdesign/core/Icon';
+import { Heading, Text } from '@astryxdesign/core/Text';
+import { Layout, LayoutContent } from '@astryxdesign/core/Layout';
+import { VStack } from '@astryxdesign/core/Stack';
 
 export function DirectoryTemplate() {
   const router = useRouter();
   const uriPath = usePathname();
 
-  /**
-   * List of directories with the current directory first
-   */
-  const directories = useMemo<ReadonlyArray<Directory>>(() => {
-    if (uriPath === '/') {
-      const directory = directoryIndex.get('/');
-      return directory != null ? [directory] : [];
-    }
+  const directory = useMemo(
+    () => directoryIndex.get(uriPath),
+    [uriPath],
+  );
 
-    const pathParts = uriPath.split('/');
-
-    const subPaths: Array<string> = [];
-    while (pathParts.length > 0) {
-      if (pathParts.length === 1) {
-        subPaths.push('/');
-      } else {
-        subPaths.push(pathParts.join('/'));
-      }
-      pathParts.pop();
-    }
-
-    const nonNullDirectories = [];
-    for (const subPath of subPaths) {
-      const directory = directoryIndex.get(subPath);
-      if (directory != null) {
-        nonNullDirectories.push(directory);
-      }
-    }
-
-    return nonNullDirectories;
-  }, [uriPath]);
-
-  const selectedDirectories = useMemo(() => {
-    return new Set(directories.map((d) => d.path));
-  }, [directories]);
-
-  if (directories.length == 0) {
+  if (directory == null) {
     return null;
   }
 
+  const isRoot = uriPath === '/';
+  const title = isRoot
+    ? 'Pages'
+    : makeHeading(directory.path.split('/').at(-1) ?? 'Pages');
+  const subDirectories = directory.subDirectories.toSorted();
+
   return (
-    <PageLayout
-      type="full"
-      header={
-        <PageLayoutHeader
-          title="Pages"
-          startContent={
-            directories.length > 1 && (
-              <Button
-                id="back-button"
-                variant="flat"
-                onClick={() => router.back()}
-              >
-                <ArrowLeftIcon />
-              </Button>
-            )
-          }
-        />
+    <Layout
+      height="fill"
+      contentWidth={1200}
+      content={
+        <LayoutContent padding={8}>
+          <VStack gap={10}>
+            <VStack gap={4}>
+              <Heading level={1}>{title}</Heading>
+              {!isRoot && (
+                <Button
+                  label="Back"
+                  variant="ghost"
+                  icon={<Icon icon="chevronLeft" />}
+                  onClick={() => router.back()}
+                />
+              )}
+            </VStack>
+            <Grid columns={{ minWidth: 260 }} gap={2}>
+              {subDirectories.map((dir) => {
+                const subDirectory = directoryIndex.get(dir);
+                const isPage =
+                  subDirectory?.files?.some((f) => f.tags.has('page')) ??
+                  false;
+                const name = dir.split('/').at(-1) ?? dir;
+                const label = makeHeading(name);
+                return (
+                  <ClickableCard
+                    key={dir}
+                    label={`Open ${label}`}
+                    href={dir}
+                  >
+                    <VStack gap={0.5}>
+                      <Text type="body" weight="bold">
+                        {label}
+                      </Text>
+                      <Text type="body" color="secondary">
+                        {isPage ? 'Page' : 'Folder'}
+                      </Text>
+                    </VStack>
+                  </ClickableCard>
+                );
+              })}
+            </Grid>
+          </VStack>
+        </LayoutContent>
       }
-    >
-      <HStack gap="lg" style={{ containerType: 'inline-size' }}>
-        {directories[3] != null && (
-          <DirListing
-            className="dir-listing dir-listing-layer-4"
-            directories={directories[3].subDirectories}
-            selectedDirectories={selectedDirectories}
-          />
-        )}
-        {directories[2] != null && (
-          <DirListing
-            className="dir-listing dir-listing-layer-3"
-            directories={directories[2].subDirectories}
-            selectedDirectories={selectedDirectories}
-          />
-        )}
-        {directories[1] != null && (
-          <DirListing
-            className="dir-listing dir-listing-layer-2"
-            directories={directories[1].subDirectories}
-            selectedDirectories={selectedDirectories}
-          />
-        )}
-        {directories[0] != null && (
-          <DirListing
-            className="dir-listing dir-listing-layer-1"
-            key={directories[0].path}
-            directories={directories[0].subDirectories}
-            selectedDirectories={selectedDirectories}
-          />
-        )}
-      </HStack>
-    </PageLayout>
+    />
   );
 }
