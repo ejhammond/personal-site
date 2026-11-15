@@ -45,8 +45,7 @@ export default function RequestPasswordResetForm({
           onChange={setEmail}
           isDisabled={isPending}
           status={
-            actionState.type === 'error' &&
-            actionState.errors.email != null
+            actionState.type === 'error' && actionState.errors.email != null
               ? { type: 'error', message: actionState.errors.email }
               : undefined
           }
