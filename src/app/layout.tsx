@@ -69,53 +69,53 @@ export default async function RootLayout({
           }}
         >
           <Theme theme={themes[defaultThemeSlug]}>
-          <header
-            style={{
-              backgroundColor: 'var(--color-brand)',
-              padding: '16px',
-              flexGrow: 0,
-              flexShrink: 0,
-            }}
-          >
-            <div style={{ display: 'flex' }}>
-              <h1
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  width: '100%',
-                }}
-              >
-                <Link
+            <header
+              style={{
+                backgroundColor: 'var(--color-brand)',
+                padding: '16px',
+                flexGrow: 0,
+                flexShrink: 0,
+              }}
+            >
+              <div style={{ display: 'flex' }}>
+                <h1
                   style={{
-                    color: 'white',
                     display: 'flex',
+                    justifyContent: 'space-between',
                     alignItems: 'center',
+                    width: '100%',
                   }}
-                  href="/"
                 >
-                  <Image
-                    src={ayhotaLogo}
-                    alt="Ayhota logo"
+                  <Link
                     style={{
-                      height: '48px',
-                      width: '48px',
+                      color: 'white',
+                      display: 'flex',
+                      alignItems: 'center',
                     }}
-                  />
-                </Link>
-                <Link href={user == null ? '/auth/login' : '/auth/profile'}>
-                  {user == null ? (
-                    <AccountLoggedOutIcon color="white" size={28} />
-                  ) : (
-                    <AccountLoggedInIcon color="white" size={28} />
-                  )}
-                </Link>
-              </h1>
+                    href="/"
+                  >
+                    <Image
+                      src={ayhotaLogo}
+                      alt="Ayhota logo"
+                      style={{
+                        height: '48px',
+                        width: '48px',
+                      }}
+                    />
+                  </Link>
+                  <Link href={user == null ? '/auth/login' : '/auth/profile'}>
+                    {user == null ? (
+                      <AccountLoggedOutIcon color="white" size={28} />
+                    ) : (
+                      <AccountLoggedInIcon color="white" size={28} />
+                    )}
+                  </Link>
+                </h1>
+              </div>
+            </header>
+            <div style={{ flexGrow: 1, minHeight: 0, overflow: 'hidden' }}>
+              {children}
             </div>
-          </header>
-          <div style={{ flexGrow: 1, minHeight: 0, overflow: 'hidden' }}>
-            {children}
-          </div>
           </Theme>
         </body>
       </RootProviders>
