@@ -1,17 +1,13 @@
 'use client';
 
-import { Button } from '@/ds/button';
-import { Counter } from '@/ds/counter';
-import { Dialog } from '@/ds/dialog';
-import { Form } from '@/ds/form';
-import { FormEventContextProvider } from '@/ds/form/event-context';
-import FormFooter from '@/ds/form/footer';
-import { Modal } from '@/ds/modal';
-import { TextField } from '@/ds/text-field';
-import { VStack } from '@/ds/v-stack';
-import { useState } from 'react';
-import { Heading } from 'react-aria-components';
-import { insertWorkout } from './workout-actions';
+import {Button} from '@astryxdesign/core/Button';
+import {Dialog, DialogHeader} from '@astryxdesign/core/Dialog';
+import {NumberInput} from '@astryxdesign/core/NumberInput';
+import {VStack} from '@astryxdesign/core/Stack';
+import {TextInput} from '@astryxdesign/core/TextInput';
+import {useState} from 'react';
+import {insertWorkout} from './workout-actions';
+import {FormFooter} from '@/components/form-footer';
 
 const defaultWorkout = {
   name: '',
@@ -31,83 +27,93 @@ export function CreateWorkoutButton() {
   return (
     <>
       <Button
+        label="Create"
         variant="primary"
         onClick={() => {
           setDraftWorkout(defaultWorkout);
         }}
+      />
+      <Dialog
+        isOpen={draftWorkout != null}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            setDraftWorkout(null);
+          }
+        }}
       >
-        Create
-      </Button>
-      {draftWorkout != null && (
-        <Modal
-          isDismissable
-          isOpen={draftWorkout != null}
+        <DialogHeader
+          title="Create Workout"
           onOpenChange={(isOpen) => {
             if (!isOpen) {
               setDraftWorkout(null);
             }
           }}
-        >
-          <Dialog>
-            {({ close }) => (
-              <VStack gap="md">
-                <Heading slot="title">Create Workout</Heading>
-                <FormEventContextProvider onCancel={close}>
-                  <Form
-                    id="create-workout"
-                    isPending={isPending}
-                    action={async () => {
-                      setIsPending(true);
-                      await insertWorkout({
-                        name: draftWorkout.name,
-                        sets: draftWorkout.sets,
-                        reps: draftWorkout.reps,
-                      });
-                      setIsPending(false);
-                      close();
-                    }}
-                    footer={<FormFooter />}
-                  >
-                    <TextField
-                      label="Name"
-                      name="name"
-                      value={draftWorkout.name}
-                      onChange={(name) =>
-                        setDraftWorkout((p) => ({
-                          ...(p ?? defaultWorkout),
-                          name,
-                        }))
-                      }
-                    />
-                    <Counter
-                      label="Sets"
-                      value={draftWorkout.sets}
-                      onChange={(sets) =>
-                        setDraftWorkout((p) => ({
-                          ...(p ?? defaultWorkout),
-                          sets,
-                        }))
-                      }
-                      min={1}
-                    />
-                    <Counter
-                      label="Reps"
-                      value={draftWorkout.reps}
-                      onChange={(reps) =>
-                        setDraftWorkout((p) => ({
-                          ...(p ?? defaultWorkout),
-                          reps,
-                        }))
-                      }
-                      min={1}
-                    />
-                  </Form>
-                </FormEventContextProvider>
+        />
+        {draftWorkout != null && (
+          <VStack gap={4} padding={4}>
+            <form
+              id="create-workout"
+              onSubmit={(event) => {
+                event.preventDefault();
+                void (async () => {
+                  setIsPending(true);
+                  await insertWorkout({
+                    name: draftWorkout.name,
+                    sets: draftWorkout.sets,
+                    reps: draftWorkout.reps,
+                  });
+                  setIsPending(false);
+                  setDraftWorkout(null);
+                })();
+              }}
+            >
+              <VStack gap={3}>
+                <TextInput
+                  label="Name"
+                  htmlName="name"
+                  value={draftWorkout.name}
+                  onChange={(name) =>
+                    setDraftWorkout((p) => ({
+                      ...(p ?? defaultWorkout),
+                      name,
+                    }))
+                  }
+                />
+                <NumberInput
+                  label="Sets"
+                  value={draftWorkout.sets}
+                  onChange={(sets) =>
+                    setDraftWorkout((p) => ({
+                      ...(p ?? defaultWorkout),
+                      sets,
+                    }))
+                  }
+                  min={1}
+                  isIntegerOnly
+                  hasNumberSteppers
+                />
+                <NumberInput
+                  label="Reps"
+                  value={draftWorkout.reps}
+                  onChange={(reps) =>
+                    setDraftWorkout((p) => ({
+                      ...(p ?? defaultWorkout),
+                      reps,
+                    }))
+                  }
+                  min={1}
+                  isIntegerOnly
+                  hasNumberSteppers
+                />
+                <FormFooter
+                  isPending={isPending}
+                  onCancel={() => setDraftWorkout(null)}
+                />
               </VStack>
-            )}
-          </Dialog>
-        </Modal>
-      )}
+            </form>
+          </VStack>
+        )}
+      </Dialog>
     </>
   );
 }

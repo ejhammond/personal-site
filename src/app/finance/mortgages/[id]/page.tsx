@@ -1,5 +1,4 @@
-import React, { Suspense } from 'react';
-import './page.css';
+import React, {Suspense} from 'react';
 import Content from './__private__/content';
 import { createClient } from '@/supabase/server';
 import { Loan, Payment, RecurringPayment, Refinance } from '@/utils/loan';

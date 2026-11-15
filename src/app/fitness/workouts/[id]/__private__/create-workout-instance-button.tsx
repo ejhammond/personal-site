@@ -1,24 +1,20 @@
 'use client';
 
-import { Button } from '@/ds/button';
-import { Dialog } from '@/ds/dialog';
-import { Form } from '@/ds/form';
-import { FormEventContextProvider } from '@/ds/form/event-context';
-import FormFooter from '@/ds/form/footer';
-import { Modal } from '@/ds/modal';
-import { NumberField } from '@/ds/number-field';
-import { Select, SelectItem } from '@/ds/select';
-import { VStack } from '@/ds/v-stack';
-import { useState } from 'react';
-import { Heading } from 'react-aria-components';
-import { insertWorkoutInstance } from './workout-instance-actions';
+import {Button} from '@astryxdesign/core/Button';
+import {Dialog, DialogHeader} from '@astryxdesign/core/Dialog';
+import {NumberInput} from '@astryxdesign/core/NumberInput';
+import {Selector} from '@astryxdesign/core/Selector';
+import {VStack} from '@astryxdesign/core/Stack';
+import {useState} from 'react';
+import {insertWorkoutInstance} from './workout-instance-actions';
+import {FormFooter} from '@/components/form-footer';
 
 type Signal = 'INCREASE' | 'MAINTAIN' | 'DECREASE';
 
 const SIGNAL_ITEMS = [
-  { label: 'Increase weight', value: 'INCREASE' as Signal },
-  { label: 'Maintain weight', value: 'MAINTAIN' as Signal },
-  { label: 'Decrease weight', value: 'DECREASE' as Signal },
+  {label: 'Increase weight', value: 'INCREASE' as Signal},
+  {label: 'Maintain weight', value: 'MAINTAIN' as Signal},
+  {label: 'Decrease weight', value: 'DECREASE' as Signal},
 ];
 
 const defaultInstance = {
@@ -43,78 +39,78 @@ export function CreateWorkoutInstanceButton({
   return (
     <>
       <Button
+        label="Log Workout"
         variant="primary"
-        style={{ alignSelf: 'flex-start' }}
         onClick={() => setDraftInstance(defaultInstance)}
-      >
-        Log Workout
-      </Button>
+      />
 
-      {draftInstance != null && (
-        <Modal
-          isDismissable
-          isOpen={draftInstance != null}
+      <Dialog
+        isOpen={draftInstance != null}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            setDraftInstance(null);
+          }
+        }}
+      >
+        <DialogHeader
+          title="Log Workout"
           onOpenChange={(isOpen) => {
             if (!isOpen) {
               setDraftInstance(null);
             }
           }}
-        >
-          <Dialog>
-            {({ close }) => (
-              <VStack gap="md">
-                <Heading slot="title">Log Workout</Heading>
-                <FormEventContextProvider onCancel={close}>
-                  <Form
-                    id="create-workout-instance"
-                    isPending={isPending}
-                    action={async () => {
-                      setIsPending(true);
-                      await insertWorkoutInstance({
-                        workout_id: Number(workoutID),
-                        signal: draftInstance.signal,
-                        timestamp: draftInstance.timestamp,
-                        weight: draftInstance.weight,
-                      });
-                      setIsPending(false);
-                      close();
-                    }}
-                    footer={<FormFooter />}
-                  >
-                    <NumberField
-                      label="Weight"
-                      isRequired
-                      value={draftInstance.weight}
-                      hasSelectOnFocus
-                      onChange={(value) =>
-                        setDraftInstance((p) => ({
-                          ...(p ?? defaultInstance),
-                          weight: value,
-                        }))
-                      }
-                    />
-                    <Select
-                      label="Next Workout"
-                      selectedKey={draftInstance.signal}
-                      onSelectionChange={(value) =>
-                        setDraftInstance((p) => ({
-                          ...(p ?? defaultInstance),
-                          signal: value as Signal,
-                        }))
-                      }
-                      items={SIGNAL_ITEMS}
-                    >
-                      {(item) => (
-                        <SelectItem id={item.value}>{item.label}</SelectItem>
-                      )}
-                    </Select>
-                  </Form>
-                </FormEventContextProvider>
+        />
+        {draftInstance != null && (
+          <VStack gap={4} padding={4}>
+            <form
+              id="create-workout-instance"
+              onSubmit={(event) => {
+                event.preventDefault();
+                void (async () => {
+                  setIsPending(true);
+                  await insertWorkoutInstance({
+                    workout_id: Number(workoutID),
+                    signal: draftInstance.signal,
+                    timestamp: draftInstance.timestamp,
+                    weight: draftInstance.weight,
+                  });
+                  setIsPending(false);
+                  setDraftInstance(null);
+                })();
+              }}
+            >
+              <VStack gap={3}>
+                <NumberInput
+                  label="Weight"
+                  isRequired
+                  value={draftInstance.weight}
+                  onChange={(value) =>
+                    setDraftInstance((p) => ({
+                      ...(p ?? defaultInstance),
+                      weight: value,
+                    }))
+                  }
+                />
+                <Selector
+                  label="Next Workout"
+                  value={draftInstance.signal}
+                  onChange={(value) =>
+                    setDraftInstance((p) => ({
+                      ...(p ?? defaultInstance),
+                      signal: value as Signal,
+                    }))
+                  }
+                  options={SIGNAL_ITEMS}
+                />
+                <FormFooter
+                  isPending={isPending}
+                  onCancel={() => setDraftInstance(null)}
+                />
               </VStack>
-            )}
-          </Dialog>
-        </Modal>
-      )}
+            </form>
+          </VStack>
+        )}
+      </Dialog>
     </>
   );
 }

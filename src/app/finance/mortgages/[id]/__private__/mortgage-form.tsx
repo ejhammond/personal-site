@@ -2,7 +2,7 @@ import { WithID } from '@/utils/id';
 import { Loan, Payment, RecurringPayment, Refinance } from '@/utils/loan';
 
 import RefinancesField from './refinance/refinances-field';
-import { VStack } from '@/ds/v-stack';
+import {VStack} from '@astryxdesign/core/Stack';
 import { useMemo } from 'react';
 import { mapToArray } from '@/utils/map';
 
@@ -46,7 +46,7 @@ export default function MortgageForm({
   }, [payments, recurringPayments, refinances]);
 
   return (
-    <VStack gap="md">
+    <VStack gap={4}>
       <LoanField loanID={loanID} loan={loan} />
       <RefinancesField
         loanID={loanID}

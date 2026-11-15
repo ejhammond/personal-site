@@ -1,19 +1,13 @@
 'use client';
 
-import { useState } from 'react';
-import { Button } from '@/ds/button';
-import { Menu, MenuItem } from '@/ds/menu';
-import { KebabMenuIcon, PencilIcon, TrashIcon } from '@/ds/icons';
-import { Dialog } from '@/ds/dialog';
-import { Modal } from '@/ds/modal';
-import { Form } from '@/ds/form';
-import { FormEventContextProvider } from '@/ds/form/event-context';
-import FormFooter from '@/ds/form/footer';
-import { TextField } from '@/ds/text-field';
-import { Counter } from '@/ds/counter';
-import { VStack } from '@/ds/v-stack';
-import { Text } from '@/ds/text';
-import { Heading } from 'react-aria-components';
+import {useState} from 'react';
+import {Dialog, DialogHeader} from '@astryxdesign/core/Dialog';
+import {MoreMenu} from '@astryxdesign/core/MoreMenu';
+import {NumberInput} from '@astryxdesign/core/NumberInput';
+import {VStack} from '@astryxdesign/core/Stack';
+import {Text} from '@astryxdesign/core/Text';
+import {TextInput} from '@astryxdesign/core/TextInput';
+import {FormFooter} from '@/components/form-footer';
 import {
   updateWorkout,
   deleteWorkout,
@@ -26,8 +20,7 @@ type Workout = {
   reps: number;
 };
 
-export function WorkoutMenu({ workout }: { workout: Workout }) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+export function WorkoutMenu({workout}: {workout: Workout}) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isPending, setIsPending] = useState(false);
@@ -38,135 +31,122 @@ export function WorkoutMenu({ workout }: { workout: Workout }) {
     reps: workout.reps,
   });
 
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+    setEditData({
+      name: workout.name,
+      sets: workout.sets,
+      reps: workout.reps,
+    });
+  };
+
   return (
     <>
-      <Menu
-        isOpen={isMenuOpen}
-        onOpenChange={setIsMenuOpen}
-        button={
-          <Button variant="flat" aria-label="Workout options">
-            <KebabMenuIcon />
-          </Button>
-        }
+      <MoreMenu
+        label="Workout options"
+        alignment="end"
+        items={[
+          {
+            label: 'Edit',
+            onClick: () => setIsEditModalOpen(true),
+          },
+          {
+            label: 'Delete',
+            onClick: () => setIsDeleteModalOpen(true),
+            variant: 'destructive',
+          },
+        ]}
+      />
+
+      <Dialog
+        isOpen={isEditModalOpen}
+        onOpenChange={(isOpen) => {
+          if (!isOpen) {
+            closeEditModal();
+          }
+        }}
       >
-        <MenuItem
-          onAction={() => {
-            setIsMenuOpen(false);
-            setIsEditModalOpen(true);
-          }}
-        >
-          <PencilIcon />
-        </MenuItem>
-        <MenuItem
-          onAction={() => {
-            setIsMenuOpen(false);
-            setIsDeleteModalOpen(true);
-          }}
-        >
-          <TrashIcon />
-        </MenuItem>
-      </Menu>
+        <DialogHeader title="Edit Workout" onOpenChange={closeEditModal} />
+        <VStack gap={4} padding={4}>
+          <form
+            id="edit-workout"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void (async () => {
+                setIsPending(true);
+                await updateWorkout(
+                  {
+                    name: editData.name,
+                    sets: editData.sets,
+                    reps: editData.reps,
+                  },
+                  {id: workout.id},
+                );
+                setIsPending(false);
+                setIsEditModalOpen(false);
+              })();
+            }}
+          >
+            <VStack gap={3}>
+              <TextInput
+                label="Name"
+                htmlName="name"
+                value={editData.name}
+                onChange={(name) => setEditData((p) => ({...p, name}))}
+              />
+              <NumberInput
+                label="Sets"
+                value={editData.sets}
+                onChange={(sets) => setEditData((p) => ({...p, sets}))}
+                min={1}
+                isIntegerOnly
+                hasNumberSteppers
+              />
+              <NumberInput
+                label="Reps"
+                value={editData.reps}
+                onChange={(reps) => setEditData((p) => ({...p, reps}))}
+                min={1}
+                isIntegerOnly
+                hasNumberSteppers
+              />
+              <FormFooter isPending={isPending} onCancel={closeEditModal} />
+            </VStack>
+          </form>
+        </VStack>
+      </Dialog>
 
-      {isEditModalOpen && (
-        <Modal
-          isDismissable
-          isOpen={isEditModalOpen}
-          onOpenChange={(isOpen) => {
-            if (!isOpen) {
-              setIsEditModalOpen(false);
-              setEditData({
-                name: workout.name,
-                sets: workout.sets,
-                reps: workout.reps,
-              });
-            }
-          }}
-        >
-          <Dialog>
-            {({ close }) => (
-              <VStack gap="md">
-                <Heading slot="title">Edit Workout</Heading>
-                <FormEventContextProvider onCancel={close}>
-                  <Form
-                    id="edit-workout"
-                    isPending={isPending}
-                    action={async () => {
-                      setIsPending(true);
-                      await updateWorkout(
-                        {
-                          name: editData.name,
-                          sets: editData.sets,
-                          reps: editData.reps,
-                        },
-                        { id: workout.id },
-                      );
-                      setIsPending(false);
-                      close();
-                    }}
-                    footer={<FormFooter />}
-                  >
-                    <TextField
-                      label="Name"
-                      name="name"
-                      value={editData.name}
-                      onChange={(name) => setEditData((p) => ({ ...p, name }))}
-                    />
-                    <Counter
-                      label="Sets"
-                      value={editData.sets}
-                      onChange={(sets) => setEditData((p) => ({ ...p, sets }))}
-                      min={1}
-                    />
-                    <Counter
-                      label="Reps"
-                      value={editData.reps}
-                      onChange={(reps) => setEditData((p) => ({ ...p, reps }))}
-                      min={1}
-                    />
-                  </Form>
-                </FormEventContextProvider>
-              </VStack>
-            )}
-          </Dialog>
-        </Modal>
-      )}
-
-      {isDeleteModalOpen && (
-        <Modal
-          isDismissable
-          isOpen={isDeleteModalOpen}
-          onOpenChange={(isOpen) => {
-            if (!isOpen) {
-              setIsDeleteModalOpen(false);
-            }
-          }}
-        >
-          <Dialog>
-            {({ close }) => (
-              <VStack gap="md">
-                <Heading slot="title">Delete Workout</Heading>
-                <Text>
-                  Are you sure you want to delete this workout and all of the
-                  logged data?
-                </Text>
-                <FormEventContextProvider onCancel={close}>
-                  <Form
-                    id="delete-workout"
-                    isPending={isPending}
-                    action={async () => {
-                      setIsPending(true);
-                      await deleteWorkout({ id: workout.id });
-                      setIsPending(false);
-                      close();
-                    }}
-                    footer={<FormFooter />}
-                  />
-                </FormEventContextProvider>
-              </VStack>
-            )}
-          </Dialog>
-        </Modal>
-      )}
+      <Dialog isOpen={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+        <DialogHeader
+          title="Delete Workout"
+          onOpenChange={setIsDeleteModalOpen}
+        />
+        <VStack gap={4} padding={4}>
+          <Text>
+            Are you sure you want to delete this workout and all of the
+            logged data?
+          </Text>
+          <form
+            id="delete-workout"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void (async () => {
+                setIsPending(true);
+                await deleteWorkout({id: workout.id});
+                setIsPending(false);
+                setIsDeleteModalOpen(false);
+              })();
+            }}
+          >
+            <VStack gap={3}>
+              <FormFooter
+                isPending={isPending}
+                onCancel={() => setIsDeleteModalOpen(false)}
+              />
+            </VStack>
+          </form>
+        </VStack>
+      </Dialog>
     </>
   );
 }

@@ -1,16 +1,11 @@
 'use client';
 
-import { Dialog } from '@/ds/dialog';
-import { Form } from '@/ds/form';
-import { FormEventContextProvider } from '@/ds/form/event-context';
-import { Modal } from '@/ds/modal';
-import { VStack } from '@/ds/v-stack';
-import { useState } from 'react';
-import { Heading } from 'react-aria-components';
-import { renameLoan, RenameLoanActionState } from './loan-actions';
-import FormFooter from '@/ds/form/footer';
-import FormSubmitButton from '@/ds/form/submit-button';
-import { TextField } from '@/ds/text-field';
+import {Dialog, DialogHeader} from '@astryxdesign/core/Dialog';
+import {VStack} from '@astryxdesign/core/Stack';
+import {TextInput} from '@astryxdesign/core/TextInput';
+import {useState} from 'react';
+import {renameLoan, RenameLoanActionState} from './loan-actions';
+import {FormFooter} from '@/components/form-footer';
 
 export function RenameLoanModal({
   isOpen,
@@ -29,45 +24,40 @@ export function RenameLoanModal({
   const [name, setName] = useState(initialName);
 
   return (
-    <Modal isDismissable isOpen={isOpen} onOpenChange={onOpenChange}>
-      <Dialog>
-        {({ close }) => (
-          <VStack gap="md">
-            <Heading slot="title">Rename mortgage</Heading>
-            <FormEventContextProvider onCancel={close}>
-              <Form
-                id="rename"
-                isPending={isPending}
-                action={async () => {
-                  setIsPending(true);
-                  setActionState({});
-                  const state = await renameLoan(
-                    { name },
-                    {
-                      id: parseInt(loanID, 10),
-                    },
-                  );
-                  setActionState(state);
-                  setIsPending(false);
+    <Dialog isOpen={isOpen} onOpenChange={onOpenChange}>
+      <DialogHeader title="Rename mortgage" onOpenChange={onOpenChange} />
+      <VStack gap={4} padding={4}>
+        <form
+          id="rename"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void (async () => {
+              setIsPending(true);
+              setActionState({});
+              const state = await renameLoan(
+                {name},
+                {
+                  id: parseInt(loanID, 10),
+                },
+              );
+              setActionState(state);
+              setIsPending(false);
 
-                  close();
-                }}
-                validationErrors={actionState.errors}
-                footer={
-                  <FormFooter
-                    errorMessage={actionState.errors?.form}
-                    submitButton={
-                      <FormSubmitButton>Rename mortgage</FormSubmitButton>
-                    }
-                  />
-                }
-              >
-                <TextField label="Name" value={name} onChange={setName} />
-              </Form>
-            </FormEventContextProvider>
+              onOpenChange(false);
+            })();
+          }}
+        >
+          <VStack gap={3}>
+            <TextInput label="Name" value={name} onChange={setName} />
+            <FormFooter
+              isPending={isPending}
+              submitLabel="Rename mortgage"
+              errorMessage={actionState.errors?.form}
+              onCancel={() => onOpenChange(false)}
+            />
           </VStack>
-        )}
-      </Dialog>
-    </Modal>
+        </form>
+      </VStack>
+    </Dialog>
   );
 }

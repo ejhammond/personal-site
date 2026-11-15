@@ -1,15 +1,10 @@
 'use client';
 
-import { Dialog } from '@/ds/dialog';
-import { Form } from '@/ds/form';
-import { FormEventContextProvider } from '@/ds/form/event-context';
-import { Modal } from '@/ds/modal';
-import { VStack } from '@/ds/v-stack';
-import { useState } from 'react';
-import { Heading } from 'react-aria-components';
-import { deleteLoan, DeleteLoanActionState } from './loan-actions';
-import FormFooter from '@/ds/form/footer';
-import FormSubmitButton from '@/ds/form/submit-button';
+import {Dialog, DialogHeader} from '@astryxdesign/core/Dialog';
+import {VStack} from '@astryxdesign/core/Stack';
+import {useState} from 'react';
+import {deleteLoan, DeleteLoanActionState} from './loan-actions';
+import {FormFooter} from '@/components/form-footer';
 
 export function DeleteLoanModal({
   isOpen,
@@ -24,39 +19,35 @@ export function DeleteLoanModal({
   const [isPending, setIsPending] = useState<boolean>(false);
 
   return (
-    <Modal isDismissable isOpen={isOpen} onOpenChange={onOpenChange}>
-      <Dialog>
-        {({ close }) => (
-          <VStack gap="md">
-            <Heading slot="title">Delete mortgage?</Heading>
-            <FormEventContextProvider onCancel={close}>
-              <Form
-                id="delete"
-                isPending={isPending}
-                action={async () => {
-                  setIsPending(true);
-                  setActionState({});
-                  const state = await deleteLoan({
-                    id: parseInt(loanID, 10),
-                  });
-                  setActionState(state);
-                  setIsPending(false);
-                }}
-                footer={
-                  <FormFooter
-                    errorMessage={actionState.errors?.form}
-                    submitButton={
-                      <FormSubmitButton variant="danger">
-                        Delete mortgage
-                      </FormSubmitButton>
-                    }
-                  />
-                }
-              />
-            </FormEventContextProvider>
+    <Dialog isOpen={isOpen} onOpenChange={onOpenChange}>
+      <DialogHeader title="Delete mortgage?" onOpenChange={onOpenChange} />
+      <VStack gap={4} padding={4}>
+        <form
+          id="delete"
+          onSubmit={(event) => {
+            event.preventDefault();
+            void (async () => {
+              setIsPending(true);
+              setActionState({});
+              const state = await deleteLoan({
+                id: parseInt(loanID, 10),
+              });
+              setActionState(state);
+              setIsPending(false);
+            })();
+          }}
+        >
+          <VStack gap={3}>
+            <FormFooter
+              isPending={isPending}
+              submitLabel="Delete mortgage"
+              submitVariant="destructive"
+              errorMessage={actionState.errors?.form}
+              onCancel={() => onOpenChange(false)}
+            />
           </VStack>
-        )}
-      </Dialog>
-    </Modal>
+        </form>
+      </VStack>
+    </Dialog>
   );
 }

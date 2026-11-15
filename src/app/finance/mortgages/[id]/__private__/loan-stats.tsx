@@ -1,12 +1,13 @@
-import { Card } from '@/ds/card';
-import { HStack } from '@/ds/h-stack';
-import { ArrowDownIcon, ArrowUpIcon } from '@/ds/icons';
-import { formatUSD } from '@/utils/currency';
-import { addMonths, formatMonths } from '@/utils/date';
-import { Amortizations } from '@/utils/loan';
-import { formatCompact } from '@/utils/number';
-import React, { ReactNode } from 'react';
-import { Text } from 'react-aria-components';
+import {Card} from '@astryxdesign/core/Card';
+import {Grid} from '@astryxdesign/core/Grid';
+import {Icon} from '@astryxdesign/core/Icon';
+import {HStack, VStack} from '@astryxdesign/core/Stack';
+import {Heading, Text} from '@astryxdesign/core/Text';
+import {formatUSD} from '@/utils/currency';
+import {addMonths, formatMonths} from '@/utils/date';
+import {Amortizations} from '@/utils/loan';
+import {formatCompact} from '@/utils/number';
+import React, {ReactNode} from 'react';
 
 function MetricDelta({
   direction,
@@ -17,17 +18,16 @@ function MetricDelta({
   sentiment: '+' | '-';
   children: ReactNode;
 }) {
-  const color =
-    sentiment === '+' ? 'var(--positive-color)' : 'var(--negative-color)';
-
   return (
-    <HStack gap="sm" vAlign="center">
-      {direction === 'up' ? (
-        <ArrowUpIcon style={{ color }} />
-      ) : (
-        <ArrowDownIcon style={{ color }} />
-      )}
-      <div>{children}</div>
+    <HStack gap={1} vAlign="center">
+      <Icon
+        icon={direction === 'up' ? 'arrowUp' : 'arrowDown'}
+        size="sm"
+        color={sentiment === '+' ? 'success' : 'error'}
+      />
+      <Text type="supporting" weight="bold">
+        {children}
+      </Text>
     </HStack>
   );
 }
@@ -45,19 +45,19 @@ export default function LoanStats({
 
   const totalFromPrincipalPrePayments =
     amortizationsWithRefinancesAndPrepayments.reduce(
-      (acc, { loan: { prePayment } }) => acc + prePayment,
+      (acc, {loan: {prePayment}}) => acc + prePayment,
       0,
     );
 
   const totalFromMinPrincipalPayments =
     amortizationsWithRefinancesAndPrepayments
-      .flatMap(({ amortization }) => amortization)
-      .reduce((acc, { principal }) => acc + principal, 0);
+      .flatMap(({amortization}) => amortization)
+      .reduce((acc, {principal}) => acc + principal, 0);
 
   const totalFromExtraPrincipalPayments =
     amortizationsWithRefinancesAndPrepayments
-      .flatMap(({ amortization }) => amortization)
-      .reduce((acc, { extra }) => acc + extra, 0);
+      .flatMap(({amortization}) => amortization)
+      .reduce((acc, {extra}) => acc + extra, 0);
 
   const totalPrincipalPaid =
     totalFromPrincipalPrePayments +
@@ -65,16 +65,16 @@ export default function LoanStats({
     totalFromExtraPrincipalPayments;
 
   const totalInterestPaid = amortizationsWithRefinancesAndPrepayments
-    .flatMap(({ amortization }) => amortization)
-    .reduce((acc, { interest }) => acc + interest, 0);
+    .flatMap(({amortization}) => amortization)
+    .reduce((acc, {interest}) => acc + interest, 0);
 
   const expectedTotalInterestPaidForOriginalLoan = amortizationsForOriginalLoan
-    .flatMap(({ amortization }) => amortization)
-    .reduce((acc, { interest }) => acc + interest, 0);
+    .flatMap(({amortization}) => amortization)
+    .reduce((acc, {interest}) => acc + interest, 0);
 
   const expectedTotalInterestPaidWithRefinances = amortizationsWithRefinances
-    .flatMap(({ amortization }) => amortization)
-    .reduce((acc, { interest }) => acc + interest, 0);
+    .flatMap(({amortization}) => amortization)
+    .reduce((acc, {interest}) => acc + interest, 0);
 
   const interestSavings =
     expectedTotalInterestPaidForOriginalLoan - totalInterestPaid;
@@ -88,13 +88,13 @@ export default function LoanStats({
 
   const durationInMonths =
     amortizationsWithRefinancesAndPrepayments
-      .flatMap(({ amortization }) => amortization)
+      .flatMap(({amortization}) => amortization)
       // assume there's at least one element
       .at(-1)!.month + 1; // add 1 to adjust 0-index
 
   const expectedDurationInMonths =
     amortizationsForOriginalLoan
-      .flatMap(({ amortization }) => amortization)
+      .flatMap(({amortization}) => amortization)
       // assume there's at least one element
       .at(-1)!.month + 1; // add 1 to adjust 0-index
 
@@ -103,82 +103,71 @@ export default function LoanStats({
   const endDate = addMonths(startingMonthAndYear, durationInMonths);
 
   return (
-    <div
-      style={{
-        display: 'grid',
-        gap: 16,
-        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-      }}
-    >
-      <Card header={<h3>Principal paid</h3>}>
-        <div className="metric">
-          <Text slot="metric-compact">
+    <Grid columns={{minWidth: 240}} gap={4}>
+      <Card>
+        <VStack gap={2}>
+          <Heading level={3}>Principal paid</Heading>
+          <Text size="2xl" hasTabularNumbers>
             ${formatCompact(totalPrincipalPaid)}
           </Text>
-          <Text slot="supporting">{formatUSD(totalPrincipalPaid)}</Text>
-        </div>
+          <Text type="supporting">{formatUSD(totalPrincipalPaid)}</Text>
+        </VStack>
       </Card>
-      <Card
-        header={<h3>Interest paid</h3>}
-        footer={
-          <>
-            {interestSavings !== 0 && (
-              <Text slot="supporting">
-                <MetricDelta
-                  direction={interestSavings > 0 ? 'down' : 'up'}
-                  sentiment={interestSavings > 0 ? '+' : '-'}
-                >
-                  <strong>{formatUSD(interestSavings)}</strong>
-                </MetricDelta>
+      <Card>
+        <VStack gap={2}>
+          <Heading level={3}>Interest paid</Heading>
+          <Text size="2xl" hasTabularNumbers>
+            ${formatCompact(totalInterestPaid)}
+          </Text>
+          <Text type="supporting">{formatUSD(totalInterestPaid)}</Text>
+          {interestSavings !== 0 && (
+            <MetricDelta
+              direction={interestSavings > 0 ? 'down' : 'up'}
+              sentiment={interestSavings > 0 ? '+' : '-'}
+            >
+              {formatUSD(interestSavings)}
+            </MetricDelta>
+          )}
+          {interestSavingsDueToRefinances !== 0 && (
+            <Text type="supporting">
+              From refinance:{' '}
+              <Text type="supporting" weight="bold">
+                {formatUSD(interestSavingsDueToRefinances)}
               </Text>
-            )}
-            {interestSavingsDueToRefinances !== 0 && (
-              <Text slot="supporting">
-                From refinance:{' '}
-                <strong>{formatUSD(interestSavingsDueToRefinances)}</strong>
-              </Text>
-            )}
-            {interestSavingsDueToPrepayments !== 0 && (
-              <Text slot="supporting">
-                From prepayment:{' '}
-                <strong>{formatUSD(interestSavingsDueToPrepayments)}</strong>
-              </Text>
-            )}
-          </>
-        }
-      >
-        <div className="metric" style={{ marginBlockEnd: 16 }}>
-          <Text slot="metric-compact">${formatCompact(totalInterestPaid)}</Text>
-          <Text slot="supporting">{formatUSD(totalInterestPaid)}</Text>
-        </div>
-      </Card>
-      <Card
-        header={<h3>Duration</h3>}
-        footer={
-          <>
-            {durationDifference !== 0 && (
-              <Text slot="supporting">
-                <MetricDelta
-                  direction={durationDifference > 0 ? 'down' : 'up'}
-                  sentiment={durationDifference > 0 ? '+' : '-'}
-                >
-                  <strong>{formatMonths(durationDifference)}</strong>
-                </MetricDelta>
-              </Text>
-            )}
-            <Text slot="supporting">
-              Mortgage free:{' '}
-              <strong>
-                {endDate.month} {endDate.year}
-              </strong>
             </Text>
-          </>
-        }
-      >
-        <div className="metric">
-          <Text slot="metric-compact">{formatMonths(durationInMonths)}</Text>
-        </div>
+          )}
+          {interestSavingsDueToPrepayments !== 0 && (
+            <Text type="supporting">
+              From prepayment:{' '}
+              <Text type="supporting" weight="bold">
+                {formatUSD(interestSavingsDueToPrepayments)}
+              </Text>
+            </Text>
+          )}
+        </VStack>
       </Card>
-    </div>
+      <Card>
+        <VStack gap={2}>
+          <Heading level={3}>Duration</Heading>
+          <Text size="2xl" hasTabularNumbers>
+            {formatMonths(durationInMonths)}
+          </Text>
+          {durationDifference !== 0 && (
+            <MetricDelta
+              direction={durationDifference > 0 ? 'down' : 'up'}
+              sentiment={durationDifference > 0 ? '+' : '-'}
+            >
+              {formatMonths(durationDifference)}
+            </MetricDelta>
+          )}
+          <Text type="supporting">
+            Mortgage free:{' '}
+            <Text type="supporting" weight="bold">
+              {endDate.month} {endDate.year}
+            </Text>
+          </Text>
+        </VStack>
+      </Card>
+    </Grid>
   );
 }

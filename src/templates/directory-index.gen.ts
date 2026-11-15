@@ -104,10 +104,6 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
       path: '/finance/mortgages/[id]',
       files: [
         {
-          path: '/finance/mortgages/[id]/page.css',
-          tags: [],
-        },
-        {
           path: '/finance/mortgages/[id]/page.tsx',
           tags: ['page'],
         },
