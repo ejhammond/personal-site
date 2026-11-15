@@ -1,13 +1,16 @@
 'use client';
 
-import { Counter } from '@/ds/counter';
-import { Select, SelectItem } from '@/ds/select';
-import { Text } from '@/ds/text';
+import {Divider} from '@astryxdesign/core/Divider';
+import {
+  Layout,
+  LayoutContent,
+  LayoutHeader,
+} from '@astryxdesign/core/Layout';
+import {NumberInput} from '@astryxdesign/core/NumberInput';
+import {Selector} from '@astryxdesign/core/Selector';
+import {VStack} from '@astryxdesign/core/Stack';
+import {Heading, Text} from '@astryxdesign/core/Text';
 import * as React from 'react';
-
-import './page.css';
-import { Form } from '@/ds/form';
-import { PageLayout, PageLayoutHeader } from '@/ds/page-layout';
 
 type Advantage = 'none' | 'advantage' | 'disadvantage';
 
@@ -57,9 +60,9 @@ function calculateHitChance({
 }
 
 const ADVANTAGE_SELECTOR_ITEMS = [
-  { label: 'None', value: 'none' },
-  { label: 'Advantage', value: 'advantage' },
-  { label: 'Disadvantage', value: 'disadvantage' },
+  {label: 'None', value: 'none'},
+  {label: 'Advantage', value: 'advantage'},
+  {label: 'Disadvantage', value: 'disadvantage'},
 ];
 
 const D20: React.FC = () => {
@@ -70,55 +73,71 @@ const D20: React.FC = () => {
   });
   const updateD20FormData = React.useCallback(
     (merge: Partial<D20FormData>) => {
-      setD20FormData((p) => ({ ...p, ...merge }));
+      setD20FormData((p) => ({...p, ...merge}));
     },
     [setD20FormData],
   );
 
   return (
-    <PageLayout
-      type="form"
+    <Layout
+      height="fill"
+      contentWidth={640}
       header={
-        <PageLayoutHeader title="Roll chance" subtitle="Chance to meet a DC" />
+        <LayoutHeader hasDivider padding={4} paddingBlockEnd={0}>
+          <VStack gap={0}>
+            <Heading level={1}>Roll chance</Heading>
+            <Text type="supporting">Chance to meet a DC</Text>
+          </VStack>
+        </LayoutHeader>
       }
-    >
-      <Form id="roll-chance">
-        <Counter
-          label="Threshold"
-          min={0}
-          value={d20FormData.threshold}
-          onChange={(number) => {
-            updateD20FormData({ threshold: number });
-          }}
-        />
-        <Counter
-          label="Modifier"
-          value={d20FormData.modifier}
-          min={-19}
-          max={19}
-          onChange={(number) => {
-            console.log('change', number);
-            updateD20FormData({ modifier: number });
-          }}
-        />
-        <Select
-          label="Advantage"
-          selectedKey={d20FormData.advantage}
-          onSelectionChange={(value) => {
-            updateD20FormData({
-              advantage: value as Advantage,
-            });
-          }}
-          items={ADVANTAGE_SELECTOR_ITEMS}
-        >
-          {(item) => <SelectItem id={item.value}>{item.label}</SelectItem>}
-        </Select>
-      </Form>
-      <hr style={{ marginBlock: 16 }} />
-      <Text className="d20-output">
-        {(calculateHitChance(d20FormData) * 100).toFixed(2)}%
-      </Text>
-    </PageLayout>
+      content={
+        <LayoutContent role="main">
+          <VStack gap={4} padding={4}>
+            <form id="roll-chance">
+              <VStack gap={3}>
+                <NumberInput
+                  label="Threshold"
+                  min={0}
+                  width={150}
+                  isIntegerOnly
+                  hasNumberSteppers
+                  value={d20FormData.threshold}
+                  onChange={(number) => {
+                    updateD20FormData({threshold: number});
+                  }}
+                />
+                <NumberInput
+                  label="Modifier"
+                  min={-19}
+                  max={19}
+                  width={150}
+                  isIntegerOnly
+                  hasNumberSteppers
+                  value={d20FormData.modifier}
+                  onChange={(number) => {
+                    updateD20FormData({modifier: number});
+                  }}
+                />
+                <Selector
+                  label="Advantage"
+                  value={d20FormData.advantage}
+                  onChange={(value) => {
+                    updateD20FormData({
+                      advantage: value as Advantage,
+                    });
+                  }}
+                  options={ADVANTAGE_SELECTOR_ITEMS}
+                />
+              </VStack>
+            </form>
+            <Divider />
+            <Text size="xl" hasTabularNumbers>
+              {(calculateHitChance(d20FormData) * 100).toFixed(2)}%
+            </Text>
+          </VStack>
+        </LayoutContent>
+      }
+    />
   );
 };
 

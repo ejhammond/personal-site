@@ -1,16 +1,17 @@
 'use client';
 
-import { Checkbox } from '@/ds/checkbox';
-import { Counter } from '@/ds/counter';
-import { HStack } from '@/ds/h-stack';
-import { Text } from '@/ds/text';
-import { VStack } from '@/ds/v-stack';
-import { Roll, rollToString } from '@/utils/dnd';
-import { useCallback, useState } from 'react';
-
-import './page.css';
-import { Form } from '@/ds/form';
-import { PageLayout, PageLayoutHeader } from '@/ds/page-layout';
+import {CheckboxInput} from '@astryxdesign/core/CheckboxInput';
+import {Divider} from '@astryxdesign/core/Divider';
+import {
+  Layout,
+  LayoutContent,
+  LayoutHeader,
+} from '@astryxdesign/core/Layout';
+import {NumberInput} from '@astryxdesign/core/NumberInput';
+import {HStack, VStack} from '@astryxdesign/core/Stack';
+import {Heading, Text} from '@astryxdesign/core/Text';
+import {Roll, rollToString} from '@/utils/dnd';
+import {useCallback, useState} from 'react';
 
 type DamageFormData = Roll & {
   critical: boolean;
@@ -67,7 +68,7 @@ const Damage: React.FC = () => {
     critical: false,
   });
 
-  const { critical, d4, d6, d8, d10, d12, modifier } = damageFormData;
+  const {critical, d4, d6, d8, d10, d12, modifier} = damageFormData;
   const roll: Roll = {
     d4: critical ? 2 * d4 : d4,
     d6: critical ? 2 * d6 : d6,
@@ -79,114 +80,139 @@ const Damage: React.FC = () => {
 
   const updateDamageFormData = useCallback(
     (merge: Partial<DamageFormData>) => {
-      setDamageFormData((p) => ({ ...p, ...merge }));
+      setDamageFormData((p) => ({...p, ...merge}));
     },
     [setDamageFormData],
   );
 
   return (
-    <PageLayout
-      type="form"
+    <Layout
+      height="fill"
+      contentWidth={640}
       header={
-        <PageLayoutHeader
-          title="Damage"
-          subtitle="Average damage for an attack roll"
-        />
+        <LayoutHeader hasDivider padding={4} paddingBlockEnd={0}>
+          <VStack gap={0}>
+            <Heading level={1}>Damage</Heading>
+            <Text type="supporting">Average damage for an attack roll</Text>
+          </VStack>
+        </LayoutHeader>
       }
-    >
-      <Form id="damage">
-        <Counter
-          label="D4"
-          min={0}
-          value={damageFormData.d4}
-          onChange={(number) => {
-            updateDamageFormData({ d4: number });
-          }}
-        />
-        <Counter
-          label="D6"
-          min={0}
-          value={damageFormData.d6}
-          onChange={(number) => {
-            updateDamageFormData({ d6: number });
-          }}
-        />
-        <Counter
-          label="D8"
-          min={0}
-          value={damageFormData.d8}
-          onChange={(number) => {
-            updateDamageFormData({ d8: number });
-          }}
-        />
-        <Counter
-          label="D10"
-          min={0}
-          value={damageFormData.d10}
-          onChange={(number) => {
-            updateDamageFormData({ d10: number });
-          }}
-        />
-        <Counter
-          label="D12"
-          min={0}
-          value={damageFormData.d12}
-          onChange={(number) => {
-            updateDamageFormData({ d12: number });
-          }}
-        />
-        <Counter
-          label="Modifier"
-          value={damageFormData.modifier}
-          onChange={(number) => {
-            updateDamageFormData({ modifier: number });
-          }}
-        />
-        <Checkbox
-          isSelected={damageFormData.critical}
-          onChange={(isCritical) => {
-            updateDamageFormData({ critical: isCritical });
-          }}
-        >
-          Critical
-        </Checkbox>
-      </Form>
-      <Text aria-hidden className="damage-output">
-        {rollToString(roll)}
-      </Text>
-      <hr style={{ marginBlock: 16 }} />
-      <div>
-        <HStack className="damage-output" gap="md">
-          <VStack>
-            <h4>Min</h4>
-            <Text>
-              {calculateAverageDamage({
-                ...damageFormData,
-                minAvgMax: 'min',
-              })}
+      content={
+        <LayoutContent role="main">
+          <VStack gap={4} padding={4}>
+            <form id="damage">
+              <VStack gap={3}>
+                <NumberInput
+                  label="D4"
+                  min={0}
+                  width={150}
+                  isIntegerOnly
+                  hasNumberSteppers
+                  value={damageFormData.d4}
+                  onChange={(number) => {
+                    updateDamageFormData({d4: number});
+                  }}
+                />
+                <NumberInput
+                  label="D6"
+                  min={0}
+                  width={150}
+                  isIntegerOnly
+                  hasNumberSteppers
+                  value={damageFormData.d6}
+                  onChange={(number) => {
+                    updateDamageFormData({d6: number});
+                  }}
+                />
+                <NumberInput
+                  label="D8"
+                  min={0}
+                  width={150}
+                  isIntegerOnly
+                  hasNumberSteppers
+                  value={damageFormData.d8}
+                  onChange={(number) => {
+                    updateDamageFormData({d8: number});
+                  }}
+                />
+                <NumberInput
+                  label="D10"
+                  min={0}
+                  width={150}
+                  isIntegerOnly
+                  hasNumberSteppers
+                  value={damageFormData.d10}
+                  onChange={(number) => {
+                    updateDamageFormData({d10: number});
+                  }}
+                />
+                <NumberInput
+                  label="D12"
+                  min={0}
+                  width={150}
+                  isIntegerOnly
+                  hasNumberSteppers
+                  value={damageFormData.d12}
+                  onChange={(number) => {
+                    updateDamageFormData({d12: number});
+                  }}
+                />
+                <NumberInput
+                  label="Modifier"
+                  width={150}
+                  isIntegerOnly
+                  hasNumberSteppers
+                  value={damageFormData.modifier}
+                  onChange={(number) => {
+                    updateDamageFormData({modifier: number});
+                  }}
+                />
+                <CheckboxInput
+                  label="Critical"
+                  value={damageFormData.critical}
+                  onChange={(isCritical) => {
+                    updateDamageFormData({critical: isCritical});
+                  }}
+                />
+              </VStack>
+            </form>
+            <Text size="xl" aria-hidden>
+              {rollToString(roll)}
             </Text>
+            <Divider />
+            <HStack gap={4}>
+              <VStack>
+                <Heading level={4}>Min</Heading>
+                <Text size="xl" hasTabularNumbers>
+                  {calculateAverageDamage({
+                    ...damageFormData,
+                    minAvgMax: 'min',
+                  })}
+                </Text>
+              </VStack>
+              <VStack>
+                <Heading level={4}>Avg</Heading>
+                <Text size="xl" hasTabularNumbers>
+                  {calculateAverageDamage({
+                    ...damageFormData,
+                    minAvgMax: 'avg',
+                  })}
+                </Text>
+              </VStack>
+              <VStack>
+                <Heading level={4}>Max</Heading>
+                <Text size="xl" hasTabularNumbers>
+                  {calculateAverageDamage({
+                    ...damageFormData,
+                    minAvgMax: 'max',
+                  })}
+                </Text>
+              </VStack>
+            </HStack>
           </VStack>
-          <VStack>
-            <h4>Avg</h4>
-            <Text>
-              {calculateAverageDamage({
-                ...damageFormData,
-                minAvgMax: 'avg',
-              })}
-            </Text>
-          </VStack>
-          <VStack>
-            <h4>Max</h4>
-            <Text>
-              {calculateAverageDamage({
-                ...damageFormData,
-                minAvgMax: 'max',
-              })}
-            </Text>
-          </VStack>
-        </HStack>
-      </div>
-    </PageLayout>
+        </LayoutContent>
+      }
+    />
   );
 };
 
