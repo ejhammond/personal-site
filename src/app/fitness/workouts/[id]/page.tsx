@@ -4,7 +4,12 @@ import { SiteFooter } from '@/app/site-footer';
 import { createClient } from '@/supabase/server';
 import { redirect } from 'next/navigation';
 import { notFound } from 'next/navigation';
-import { Layout, LayoutContent, LayoutFooter, LayoutHeader } from '@astryxdesign/core/Layout';
+import {
+  Layout,
+  LayoutContent,
+  LayoutFooter,
+  LayoutHeader,
+} from '@astryxdesign/core/Layout';
 import { List } from '@astryxdesign/core/List';
 import { HStack, StackItem, VStack } from '@astryxdesign/core/Stack';
 import { Heading } from '@astryxdesign/core/Text';

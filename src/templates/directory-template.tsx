@@ -32,8 +32,7 @@ export function DirectoryTemplate() {
   const title = isRoot
     ? 'Ayhota'
     : makeHeading(directory.path.split('/').at(-1) ?? 'Pages');
-  const parentPath =
-    uriPath.split('/').slice(0, -1).join('/') || '/';
+  const parentPath = uriPath.split('/').slice(0, -1).join('/') || '/';
   const subDirectories = directory.subDirectories.toSorted();
 
   return (

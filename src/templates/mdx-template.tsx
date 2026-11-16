@@ -35,8 +35,7 @@ export function MDXTemplate({
   const editOnGitHubURL = `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO_NAME}/edit/${GITHUB_MAIN_BRANCH}${repoPath}`;
 
   const parsedDate = new Date(date);
-  const parentPath =
-    uriPath.split('/').slice(0, -1).join('/') || '/';
+  const parentPath = uriPath.split('/').slice(0, -1).join('/') || '/';
 
   return (
     <Layout

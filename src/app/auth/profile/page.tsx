@@ -3,7 +3,12 @@ import { Button } from '@astryxdesign/core/Button';
 import { HStack, StackItem } from '@astryxdesign/core/Stack';
 import { Heading } from '@astryxdesign/core/Text';
 import { Center } from '@astryxdesign/core/Center';
-import { Layout, LayoutContent, LayoutFooter, LayoutHeader } from '@astryxdesign/core/Layout';
+import {
+  Layout,
+  LayoutContent,
+  LayoutFooter,
+  LayoutHeader,
+} from '@astryxdesign/core/Layout';
 import { VStack } from '@astryxdesign/core/Stack';
 import { createClient } from '@/supabase/server';
 import { redirect } from 'next/navigation';

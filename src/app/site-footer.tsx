@@ -13,10 +13,7 @@ export function SiteFooter() {
         © 2026 EJ Hammond
       </Text>
       <StackItem size="fill" />
-      <Link
-        href="https://github.com/ejhammond/personal-site"
-        color="secondary"
-      >
+      <Link href="https://github.com/ejhammond/personal-site" color="secondary">
         Source on GitHub
       </Link>
     </HStack>

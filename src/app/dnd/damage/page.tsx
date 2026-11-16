@@ -4,7 +4,12 @@ import { BackLink } from '@/app/back-link';
 import { SiteFooter } from '@/app/site-footer';
 import { Card } from '@astryxdesign/core/Card';
 import { CheckboxInput } from '@astryxdesign/core/CheckboxInput';
-import { Layout, LayoutContent, LayoutFooter, LayoutHeader } from '@astryxdesign/core/Layout';
+import {
+  Layout,
+  LayoutContent,
+  LayoutFooter,
+  LayoutHeader,
+} from '@astryxdesign/core/Layout';
 import { NumberInput } from '@astryxdesign/core/NumberInput';
 import { HStack, VStack } from '@astryxdesign/core/Stack';
 import { Heading, Text } from '@astryxdesign/core/Text';

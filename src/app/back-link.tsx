@@ -8,7 +8,13 @@ import { HStack } from '@astryxdesign/core/Stack';
  * pointing at the parent page. Works in Server Components: the chevron is
  * a built-in glyph name (a string), not a component type.
  */
-export function BackLink({ href, label = 'Back' }: { href: string; label?: string }) {
+export function BackLink({
+  href,
+  label = 'Back',
+}: {
+  href: string;
+  label?: string;
+}) {
   return (
     <Link href={href} color="secondary">
       <HStack gap={1} vAlign="center">

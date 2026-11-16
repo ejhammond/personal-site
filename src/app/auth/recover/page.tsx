@@ -14,8 +14,7 @@ export default async function RecoverPage({
   return (
     <AuthLayout title="Account recovery">
       <Text type="supporting" color="secondary">
-        Enter your email and we&apos;ll send you a link to reset your
-        password.
+        Enter your email and we&apos;ll send you a link to reset your password.
       </Text>
       <RequestPasswordResetForm next={next.or('/')} />
       <VStack gap={1} hAlign="center">
