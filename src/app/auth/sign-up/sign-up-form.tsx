@@ -3,7 +3,7 @@
 import { useActionState, useState } from 'react';
 import { Banner } from '@astryxdesign/core/Banner';
 import { Button } from '@astryxdesign/core/Button';
-import { VStack } from '@astryxdesign/core/Stack';
+import { HStack, VStack } from '@astryxdesign/core/Stack';
 import { TextInput } from '@astryxdesign/core/TextInput';
 import { signUp, SignUpFormState } from './actions';
 
@@ -15,6 +15,7 @@ export default function SignUpForm({ next }: { next: string }) {
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <form id="sign-up" action={action}>
@@ -54,7 +55,8 @@ export default function SignUpForm({ next }: { next: string }) {
         <TextInput
           label="Password"
           htmlName="password"
-          type="password"
+          type={showPassword ? 'text' : 'password'}
+          description="At least 6 characters"
           isRequired
           value={password}
           onChange={setPassword}
@@ -65,8 +67,16 @@ export default function SignUpForm({ next }: { next: string }) {
               : undefined
           }
         />
+        <HStack hAlign="start">
+          <Button
+            label={showPassword ? 'Hide password' : 'Show password'}
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowPassword((show) => !show)}
+          />
+        </HStack>
         <Button
-          label="Submit"
+          label="Sign up"
           variant="primary"
           type="submit"
           isLoading={isPending}

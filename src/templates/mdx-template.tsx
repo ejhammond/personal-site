@@ -4,9 +4,11 @@ import React from 'react';
 
 import { MDXArticleMetadata } from '@/types/mdx-article-metadata';
 import profileImage from '@/images/profile-pic.jpeg';
+import { BackLink } from '@/app/back-link';
+import { SiteFooter } from '@/app/site-footer';
 import { Avatar } from '@astryxdesign/core/Avatar';
 import { Divider } from '@astryxdesign/core/Divider';
-import { Layout, LayoutContent } from '@astryxdesign/core/Layout';
+import { Layout, LayoutContent, LayoutFooter } from '@astryxdesign/core/Layout';
 import { Link } from '@astryxdesign/core/Link';
 import { HStack, VStack } from '@astryxdesign/core/Stack';
 import { Heading, Text } from '@astryxdesign/core/Text';
@@ -27,19 +29,30 @@ export function MDXTemplate({
   title,
   date,
   repoPath,
+  uriPath,
   children,
 }: MDXArticleMetadata & Readonly<{ children: React.ReactNode }>) {
   const editOnGitHubURL = `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO_NAME}/edit/${GITHUB_MAIN_BRANCH}${repoPath}`;
 
   const parsedDate = new Date(date);
+  const parentPath =
+    uriPath.split('/').slice(0, -1).join('/') || '/';
 
   return (
     <Layout
-      height="auto"
+      height="fill"
       contentWidth={960}
+      footer={
+        <LayoutFooter hasDivider padding={4}>
+          <SiteFooter />
+        </LayoutFooter>
+      }
       content={
         <LayoutContent isScrollable={false} padding={8}>
           <VStack gap={8}>
+            <HStack hAlign="start">
+              <BackLink href={parentPath} />
+            </HStack>
             <VStack gap={2}>
               <Heading level={1}>{title}</Heading>
               <Text type="supporting" color="secondary">

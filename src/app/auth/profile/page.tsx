@@ -1,8 +1,9 @@
+import { SiteFooter } from '@/app/site-footer';
 import { Button } from '@astryxdesign/core/Button';
 import { HStack, StackItem } from '@astryxdesign/core/Stack';
 import { Heading } from '@astryxdesign/core/Text';
 import { Center } from '@astryxdesign/core/Center';
-import { Layout, LayoutContent, LayoutHeader } from '@astryxdesign/core/Layout';
+import { Layout, LayoutContent, LayoutFooter, LayoutHeader } from '@astryxdesign/core/Layout';
 import { VStack } from '@astryxdesign/core/Stack';
 import { createClient } from '@/supabase/server';
 import { redirect } from 'next/navigation';
@@ -24,7 +25,7 @@ export default async function ProfilePage() {
   } = await supabase.auth.getUser();
 
   if (user == null) {
-    redirect('/auth/login');
+    redirect(`/auth/login?next=${encodeURIComponent('/auth/profile')}`);
   }
 
   // ensure that the ProfileForm is re-mounted if name/email change
@@ -34,6 +35,11 @@ export default async function ProfilePage() {
     <Layout
       height="fill"
       contentWidth={1200}
+      footer={
+        <LayoutFooter hasDivider padding={4}>
+          <SiteFooter />
+        </LayoutFooter>
+      }
       header={
         <LayoutHeader hasDivider>
           <HStack vAlign="center">

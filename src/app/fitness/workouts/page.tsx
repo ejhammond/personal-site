@@ -1,7 +1,9 @@
+import { BackLink } from '@/app/back-link';
+import { SiteFooter } from '@/app/site-footer';
 import { createClient } from '@/supabase/server';
 import { redirect } from 'next/navigation';
 import { EmptyState } from '@astryxdesign/core/EmptyState';
-import { Layout, LayoutContent } from '@astryxdesign/core/Layout';
+import { Layout, LayoutContent, LayoutFooter } from '@astryxdesign/core/Layout';
 import { HStack, StackItem, VStack } from '@astryxdesign/core/Stack';
 import { Heading } from '@astryxdesign/core/Text';
 import { CreateWorkoutButton } from './__private__/create-workout-button';
@@ -32,9 +34,17 @@ export default async function Workouts() {
     <Layout
       height="fill"
       contentWidth={960}
+      footer={
+        <LayoutFooter hasDivider padding={4}>
+          <SiteFooter />
+        </LayoutFooter>
+      }
       content={
         <LayoutContent padding={0}>
           <VStack padding={4} gap={8}>
+            <HStack hAlign="start">
+              <BackLink href="/fitness" />
+            </HStack>
             <HStack gap={3} vAlign="center">
               <StackItem size="fill">
                 <Heading level={1}>Workouts</Heading>

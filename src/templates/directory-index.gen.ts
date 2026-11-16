@@ -24,6 +24,10 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
           tags: [],
         },
         {
+          path: '/back-link.tsx',
+          tags: [],
+        },
+        {
           path: '/favicon.ico',
           tags: [],
         },
@@ -39,6 +43,10 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
           path: '/root-providers.tsx',
           tags: [],
         },
+        {
+          path: '/site-footer.tsx',
+          tags: [],
+        },
       ],
       subDirectories: ['/articles', '/dnd', '/finance', '/fitness'],
     },
@@ -49,6 +57,7 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
       path: '/fitness',
       files: [],
       subDirectories: ['/fitness/workouts'],
+      description: 'Log your workouts and track your sets and reps',
     },
   ],
   [
@@ -62,6 +71,7 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
         },
       ],
       subDirectories: ['/fitness/workouts/[id]'],
+      description: 'Sign in to log and view your workouts',
     },
   ],
   [
@@ -83,6 +93,7 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
       path: '/finance',
       files: [],
       subDirectories: ['/finance/mortgages'],
+      description: 'Track your mortgages and amortization schedules',
     },
   ],
   [
@@ -96,6 +107,7 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
         },
       ],
       subDirectories: ['/finance/mortgages/[id]'],
+      description: 'Sign in to view and track your mortgages',
     },
   ],
   [
@@ -117,6 +129,7 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
       path: '/dnd',
       files: [],
       subDirectories: ['/dnd/d20', '/dnd/damage'],
+      description: 'D&D tools: roll-chance and damage calculators',
     },
   ],
   [
@@ -130,6 +143,7 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
         },
       ],
       subDirectories: [],
+      description: 'Average damage for an attack roll',
     },
   ],
   [
@@ -143,6 +157,7 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
         },
       ],
       subDirectories: [],
+      description: 'Chance to meet a DC',
     },
   ],
   [
@@ -156,6 +171,7 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
         '/articles/redux',
         '/articles/responsive-react-components',
       ],
+      description: 'Essays on React, TypeScript, and personal finance',
     },
   ],
   [
@@ -177,6 +193,8 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
         },
       ],
       subDirectories: [],
+      description: 'A pattern for creating responsive components',
+      date: '2019-11-10',
     },
   ],
   [
@@ -188,6 +206,7 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
         '/articles/redux/react-redux',
         '/articles/redux/redux-minus-react',
       ],
+      description: 'Articles about Redux',
     },
   ],
   [
@@ -209,6 +228,8 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
         },
       ],
       subDirectories: ['/articles/redux/redux-minus-react/images'],
+      description: 'A truly barebones intro to Redux',
+      date: '2020-09-28',
     },
   ],
   [
@@ -327,6 +348,9 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
         },
       ],
       subDirectories: [],
+      description:
+        'Explores how React Redux helps to integrate Redux with React apps',
+      date: '2020-09-30',
     },
   ],
   [
@@ -348,6 +372,8 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
         },
       ],
       subDirectories: ['/articles/react-children/images'],
+      description: 'Benefits of using the "children" prop in React',
+      date: '2021-05-22',
     },
   ],
   [
@@ -382,6 +408,9 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
         },
       ],
       subDirectories: ['/articles/personal-finance/images'],
+      description:
+        "A personal finance guide for folks who don't have time for personal finance",
+      date: '2024-02-13',
     },
   ],
   [

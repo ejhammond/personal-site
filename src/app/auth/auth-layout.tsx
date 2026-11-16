@@ -1,7 +1,9 @@
+import { BackLink } from '@/app/back-link';
+import { SiteFooter } from '@/app/site-footer';
 import { Card } from '@astryxdesign/core/Card';
 import { Center } from '@astryxdesign/core/Center';
-import { Layout, LayoutContent } from '@astryxdesign/core/Layout';
-import { VStack } from '@astryxdesign/core/Stack';
+import { Layout, LayoutContent, LayoutFooter } from '@astryxdesign/core/Layout';
+import { HStack, VStack } from '@astryxdesign/core/Stack';
 import { Heading } from '@astryxdesign/core/Text';
 import type { CSSProperties, ReactNode } from 'react';
 
@@ -27,6 +29,11 @@ export function AuthLayout({
     <Layout
       height="fill"
       contentWidth={1200}
+      footer={
+        <LayoutFooter hasDivider padding={4}>
+          <SiteFooter />
+        </LayoutFooter>
+      }
       content={
         <LayoutContent padding={8}>
           <Center axis="both" padding={6}>
@@ -39,6 +46,9 @@ export function AuthLayout({
                   {children}
                 </VStack>
               </Card>
+              <HStack hAlign="center">
+                <BackLink href="/" label="Back to home" />
+              </HStack>
             </VStack>
           </Center>
         </LayoutContent>

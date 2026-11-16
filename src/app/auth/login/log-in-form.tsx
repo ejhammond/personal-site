@@ -3,7 +3,7 @@
 import { useActionState, useState } from 'react';
 import { Banner } from '@astryxdesign/core/Banner';
 import { Button } from '@astryxdesign/core/Button';
-import { VStack } from '@astryxdesign/core/Stack';
+import { HStack, VStack } from '@astryxdesign/core/Stack';
 import { TextInput } from '@astryxdesign/core/TextInput';
 import { logIn, LogInFormState } from './actions';
 
@@ -14,6 +14,7 @@ export default function LogInForm({ next }: { next: string }) {
   >(logIn, {});
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <form id="log-in" action={action}>
@@ -43,7 +44,7 @@ export default function LogInForm({ next }: { next: string }) {
         <TextInput
           label="Password"
           htmlName="password"
-          type="password"
+          type={showPassword ? 'text' : 'password'}
           isRequired
           value={password}
           onChange={setPassword}
@@ -54,6 +55,14 @@ export default function LogInForm({ next }: { next: string }) {
               : undefined
           }
         />
+        <HStack hAlign="start">
+          <Button
+            label={showPassword ? 'Hide password' : 'Show password'}
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowPassword((show) => !show)}
+          />
+        </HStack>
         <Button
           label="Log in"
           variant="primary"

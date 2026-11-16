@@ -15,6 +15,11 @@ export type Directory = Readonly<{
   path: string;
   files: ReadonlyArray<File>;
   subDirectories: ReadonlyArray<string>;
+  // One-line card description (article metadata, or the static map in
+  // scripts/traverse.ts for section/tool pages) and, for articles, the
+  // publish date (YYYY-MM-DD) from metadata.json.
+  description?: string;
+  date?: string;
 }>;
 export type DirectoryIndex = ReadonlyMap<string, Directory>;
 
@@ -26,6 +31,8 @@ type SerializableDirectory = Readonly<{
   path: string;
   files: ReadonlyArray<SerializableFile>;
   subDirectories: ReadonlyArray<string>;
+  description?: string;
+  date?: string;
 }>;
 export type SerializableDirectoryIndex = ReadonlyArray<
   [string, SerializableDirectory]
@@ -43,6 +50,8 @@ export function serializeDirectoryIndex(index: DirectoryIndex): string {
         tags: Array.from(f.tags),
       })),
       subDirectories: dir.subDirectories,
+      description: dir.description,
+      date: dir.date,
     },
   ]);
 
@@ -62,6 +71,8 @@ export function hydrateDirectoryIndex(
           tags: new Set(Array.from(f.tags)),
         })),
         subDirectories: dir.subDirectories,
+        description: dir.description,
+        date: dir.date,
       },
     ]),
   );

@@ -3,7 +3,7 @@ import Content from './__private__/content';
 import { createClient } from '@/supabase/server';
 import { Loan, Payment, RecurringPayment, Refinance } from '@/utils/loan';
 import { monthFromNumber } from '@/utils/date';
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { WithID } from '@/utils/id';
 
 export default async function MortgageID({
@@ -13,6 +13,16 @@ export default async function MortgageID({
 }) {
   const params = await asyncParams;
   const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user == null) {
+    redirect(
+      `/auth/login?next=${encodeURIComponent(`/finance/mortgages/${params.id}`)}`,
+    );
+  }
 
   const { data } = await supabase
     .from('mortgage')

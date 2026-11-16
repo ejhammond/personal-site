@@ -1,10 +1,12 @@
 'use client';
 
-import { Divider } from '@astryxdesign/core/Divider';
-import { Layout, LayoutContent, LayoutHeader } from '@astryxdesign/core/Layout';
+import { BackLink } from '@/app/back-link';
+import { SiteFooter } from '@/app/site-footer';
+import { Card } from '@astryxdesign/core/Card';
+import { Layout, LayoutContent, LayoutFooter, LayoutHeader } from '@astryxdesign/core/Layout';
 import { NumberInput } from '@astryxdesign/core/NumberInput';
 import { Selector } from '@astryxdesign/core/Selector';
-import { VStack } from '@astryxdesign/core/Stack';
+import { HStack, VStack } from '@astryxdesign/core/Stack';
 import { Heading, Text } from '@astryxdesign/core/Text';
 import * as React from 'react';
 
@@ -77,14 +79,24 @@ const D20: React.FC = () => {
   return (
     <Layout
       height="fill"
-      contentWidth={640}
+      contentWidth={480}
       header={
         <LayoutHeader hasDivider padding={4} paddingBlockEnd={0}>
-          <VStack gap={0}>
-            <Heading level={1}>Roll chance</Heading>
-            <Text type="supporting">Chance to meet a DC</Text>
+          <VStack gap={3}>
+            <HStack hAlign="start">
+              <BackLink href="/dnd" />
+            </HStack>
+            <VStack gap={0}>
+              <Heading level={1}>Roll chance</Heading>
+              <Text type="supporting">Chance to meet a DC</Text>
+            </VStack>
           </VStack>
         </LayoutHeader>
+      }
+      footer={
+        <LayoutFooter hasDivider padding={4}>
+          <SiteFooter />
+        </LayoutFooter>
       }
       content={
         <LayoutContent role="main">
@@ -94,7 +106,6 @@ const D20: React.FC = () => {
                 <NumberInput
                   label="Threshold"
                   min={0}
-                  width={150}
                   isIntegerOnly
                   hasNumberSteppers
                   value={d20FormData.threshold}
@@ -106,7 +117,6 @@ const D20: React.FC = () => {
                   label="Modifier"
                   min={-19}
                   max={19}
-                  width={150}
                   isIntegerOnly
                   hasNumberSteppers
                   value={d20FormData.modifier}
@@ -126,10 +136,16 @@ const D20: React.FC = () => {
                 />
               </VStack>
             </form>
-            <Divider />
-            <Text size="xl" hasTabularNumbers>
-              {(calculateHitChance(d20FormData) * 100).toFixed(2)}%
-            </Text>
+            <Card variant="muted">
+              <VStack gap={1}>
+                <Text type="supporting" color="secondary">
+                  Chance to roll
+                </Text>
+                <Text size="xl" hasTabularNumbers>
+                  {(calculateHitChance(d20FormData) * 100).toFixed(2)}%
+                </Text>
+              </VStack>
+            </Card>
           </VStack>
         </LayoutContent>
       }

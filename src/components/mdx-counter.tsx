@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { Card } from '@astryxdesign/core/Card';
 import { NumberInput } from '@astryxdesign/core/NumberInput';
 
 // Interactive counter demo for the redux-minus-react article, which renders
@@ -10,13 +11,15 @@ import { NumberInput } from '@astryxdesign/core/NumberInput';
 export function MdxCounter() {
   const [value, setValue] = useState(0);
   return (
-    <NumberInput
-      label="Counter"
-      isLabelHidden
-      value={value}
-      onChange={setValue}
-      hasNumberSteppers
-      width={150}
-    />
+    <Card variant="muted">
+      <NumberInput
+        label="Counter"
+        isLabelHidden
+        value={value}
+        onChange={setValue}
+        hasNumberSteppers
+        width={150}
+      />
+    </Card>
   );
 }

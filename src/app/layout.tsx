@@ -36,7 +36,7 @@ export default async function RootLayout({
         <body>
           <Theme theme={themes[defaultThemeSlug]} mode="system">
             <AppShell
-              height="auto"
+              height="fill"
               topNav={
                 <TopNav
                   label="Top navigation"
@@ -57,7 +57,7 @@ export default async function RootLayout({
                   startContent={
                     <>
                       <TopNavItem label="Articles" href="/articles" />
-                      <TopNavItem label="Dnd" href="/dnd" />
+                      <TopNavItem label="D&D" href="/dnd" />
                       <TopNavItem label="Finance" href="/finance" />
                       <TopNavItem label="Fitness" href="/fitness" />
                     </>

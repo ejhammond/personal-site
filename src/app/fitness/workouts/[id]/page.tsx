@@ -1,10 +1,10 @@
 import React from 'react';
+import { BackLink } from '@/app/back-link';
+import { SiteFooter } from '@/app/site-footer';
 import { createClient } from '@/supabase/server';
 import { redirect } from 'next/navigation';
 import { notFound } from 'next/navigation';
-import { Icon } from '@astryxdesign/core/Icon';
-import { Layout, LayoutContent, LayoutHeader } from '@astryxdesign/core/Layout';
-import { Link } from '@astryxdesign/core/Link';
+import { Layout, LayoutContent, LayoutFooter, LayoutHeader } from '@astryxdesign/core/Layout';
 import { List } from '@astryxdesign/core/List';
 import { HStack, StackItem, VStack } from '@astryxdesign/core/Stack';
 import { Heading } from '@astryxdesign/core/Text';
@@ -51,18 +51,18 @@ export default async function WorkoutID({
       height="fill"
       contentWidth={1000}
       defaultHasDividers
+      footer={
+        <LayoutFooter hasDivider padding={4}>
+          <SiteFooter />
+        </LayoutFooter>
+      }
       header={
         <LayoutHeader hasDivider padding={4} paddingBlockEnd={0}>
           <VStack gap={3}>
             <HStack gap={4} vAlign="start">
               <StackItem size="fill">
                 <VStack gap={0}>
-                  <Link href="/fitness/workouts" color="secondary">
-                    <HStack gap={1} vAlign="center">
-                      <Icon icon="chevronLeft" size="sm" color="inherit" />
-                      All workouts
-                    </HStack>
-                  </Link>
+                  <BackLink href="/fitness/workouts" label="All workouts" />
                   <Heading level={1} maxLines={1}>
                     {workout.name} ({workout.sets} × {workout.reps})
                   </Heading>

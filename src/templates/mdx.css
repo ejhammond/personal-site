@@ -57,6 +57,18 @@ code[data-theme*=' '] span {
     }
   }
 
+  /* wrapper added by the MdxPre component so the Copy button can sit over
+     the block's top-right corner */
+  .mdx-pre {
+    position: relative;
+  }
+
+  .mdx-pre-copy {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+  }
+
   /* inline code is code with no pre parent */
 
   & code {

@@ -30,6 +30,20 @@ export function toFilePath(sitePath: SitePath): FilePath {
 
 const ignoredPatterns = ['/__private__', '/auth'];
 
+// One-line descriptions for section/tool pages, shown on the directory
+// cards. Article directories get theirs from metadata.json instead (below).
+const directoryDescriptions: Record<string, string> = {
+  '/articles': 'Essays on React, TypeScript, and personal finance',
+  '/articles/redux': 'Articles about Redux',
+  '/dnd': 'D&D tools: roll-chance and damage calculators',
+  '/dnd/d20': 'Chance to meet a DC',
+  '/dnd/damage': 'Average damage for an attack roll',
+  '/finance': 'Track your mortgages and amortization schedules',
+  '/finance/mortgages': 'Sign in to view and track your mortgages',
+  '/fitness': 'Log your workouts and track your sets and reps',
+  '/fitness/workouts': 'Sign in to log and view your workouts',
+};
+
 async function readDirectory(sitePath: SitePath): Promise<Directory> {
   const filePath = toFilePath(sitePath);
   const entries = await fs.readdir(filePath, { withFileTypes: true });
@@ -83,10 +97,26 @@ async function readDirectory(sitePath: SitePath): Promise<Directory> {
     });
   }
 
+  // Article directories carry their description and date in metadata.json;
+  // section/tool pages use the static map above.
+  let description = directoryDescriptions[sitePath];
+  let date: string | undefined;
+  if (files.some((f) => f.tags.has('article-meta'))) {
+    const metadata = JSON.parse(
+      await fs.readFile(path.join(filePath, ARTICLE_METADATA_FILENAME), {
+        encoding: 'utf-8',
+      }),
+    ) as { description?: string; date?: string };
+    description = metadata.description ?? description;
+    date = metadata.date;
+  }
+
   return {
     path: sitePath,
     subDirectories,
     files,
+    description,
+    date,
   };
 }
 

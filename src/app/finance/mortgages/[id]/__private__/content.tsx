@@ -21,6 +21,8 @@ import { useLoan } from './loan/use-loan';
 import useRefinances from './refinance/use-refinances';
 import usePayments from './payment/use-payments';
 import useRecurringPayments from './recurring-payment/use-recurring-payments';
+import { BackLink } from '@/app/back-link';
+import { SiteFooter } from '@/app/site-footer';
 import { Banner } from '@astryxdesign/core/Banner';
 import { Button } from '@astryxdesign/core/Button';
 import { Dialog, DialogHeader } from '@astryxdesign/core/Dialog';
@@ -29,10 +31,10 @@ import { Icon } from '@astryxdesign/core/Icon';
 import {
   Layout,
   LayoutContent,
+  LayoutFooter,
   LayoutHeader,
   LayoutPanel,
 } from '@astryxdesign/core/Layout';
-import { Link } from '@astryxdesign/core/Link';
 import { MoreMenu } from '@astryxdesign/core/MoreMenu';
 import { Section } from '@astryxdesign/core/Section';
 import { HStack, StackItem, VStack } from '@astryxdesign/core/Stack';
@@ -152,18 +154,18 @@ export default function Content({
         height="fill"
         contentWidth={1000}
         defaultHasDividers
+        footer={
+          <LayoutFooter hasDivider padding={4}>
+            <SiteFooter />
+          </LayoutFooter>
+        }
         header={
           <LayoutHeader hasDivider padding={4} paddingBlockEnd={0}>
             <VStack gap={3}>
               <HStack gap={4} vAlign="start">
                 <StackItem size="fill">
                   <VStack gap={0}>
-                    <Link href="/finance/mortgages" color="secondary">
-                      <HStack gap={1} vAlign="center">
-                        <Icon icon="chevronLeft" size="sm" color="inherit" />
-                        All mortgages
-                      </HStack>
-                    </Link>
+                    <BackLink href="/finance/mortgages" label="All mortgages" />
                     <Heading level={1} maxLines={1}>
                       {name}
                     </Heading>
