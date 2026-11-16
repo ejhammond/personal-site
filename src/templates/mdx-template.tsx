@@ -47,7 +47,7 @@ export function MDXTemplate({
         </LayoutFooter>
       }
       content={
-        <LayoutContent isScrollable={false} padding={8}>
+        <LayoutContent padding={8}>
           <VStack gap={8}>
             <HStack hAlign="start">
               <BackLink href={parentPath} />

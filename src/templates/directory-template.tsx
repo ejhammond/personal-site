@@ -19,6 +19,12 @@ function formatDate(date: string): string {
   });
 }
 
+// Directory names render through makeHeading, except 'dnd' — the site
+// calls it D&D everywhere (nav, descriptions), not "Dnd".
+function displayName(name: string): string {
+  return name === 'dnd' ? 'D&D' : makeHeading(name);
+}
+
 export function DirectoryTemplate() {
   const uriPath = usePathname();
 
@@ -31,7 +37,7 @@ export function DirectoryTemplate() {
   const isRoot = uriPath === '/';
   const title = isRoot
     ? 'Ayhota'
-    : makeHeading(directory.path.split('/').at(-1) ?? 'Pages');
+    : displayName(directory.path.split('/').at(-1) ?? 'Pages');
   const parentPath = uriPath.split('/').slice(0, -1).join('/') || '/';
   const subDirectories = directory.subDirectories.toSorted();
 
@@ -66,7 +72,7 @@ export function DirectoryTemplate() {
                 const isPage =
                   subDirectory?.files?.some((f) => f.tags.has('page')) ?? false;
                 const name = dir.split('/').at(-1) ?? dir;
-                const label = makeHeading(name);
+                const label = displayName(name);
                 const description = subDirectory?.description;
                 const date = subDirectory?.date;
                 return (
