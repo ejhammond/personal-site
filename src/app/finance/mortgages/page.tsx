@@ -2,28 +2,11 @@ import { createClient } from '@/supabase/server';
 import { redirect } from 'next/navigation';
 import { EmptyState } from '@astryxdesign/core/EmptyState';
 import { Layout, LayoutContent } from '@astryxdesign/core/Layout';
-import { Link } from '@astryxdesign/core/Link';
 import { HStack, StackItem, VStack } from '@astryxdesign/core/Stack';
-import { Table, proportional } from '@astryxdesign/core/Table';
-import type { TableColumn } from '@astryxdesign/core/Table';
 import { Heading } from '@astryxdesign/core/Text';
 import { CreateMortgageButton } from './__private__/create-mortgage-button';
-
-type MortgageRow = {
-  id: number;
-  name: string;
-};
-
-const columns: TableColumn<MortgageRow>[] = [
-  {
-    key: 'name',
-    header: 'Name',
-    width: proportional(1),
-    renderCell: (item) => (
-      <Link href={`/finance/mortgages/${item.id}`}>{item.name}</Link>
-    ),
-  },
-];
+import { MortgagesTable } from './__private__/mortgages-table';
+import type { MortgageRow } from './__private__/mortgages-table';
 
 export default async function Mortgage() {
   const supabase = await createClient();
@@ -58,15 +41,7 @@ export default async function Mortgage() {
                 description="Create your first mortgage to start tracking it."
               />
             ) : (
-              <Table
-                data={rows}
-                columns={columns}
-                idKey="id"
-                density="balanced"
-                dividers="none"
-                hasHover
-                textOverflow="truncate"
-              />
+              <MortgagesTable rows={rows} />
             )}
           </VStack>
         </LayoutContent>
