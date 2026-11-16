@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useSyncExternalStore } from 'react';
 
 /**
  * Returns whether the document has been hydrated by React. This will return
@@ -9,9 +9,9 @@ import { useEffect, useState } from 'react';
  * accessing window.
  */
 export function useIsHydrated(): boolean {
-  const [isOnClient, setIsOnClient] = useState(false);
-  useEffect(() => {
-    setIsOnClient(true);
-  }, []);
-  return isOnClient;
+  return useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
 }

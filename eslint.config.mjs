@@ -1,13 +1,12 @@
-import { FlatCompat } from '@eslint/eslintrc';
-
-const compat = new FlatCompat({
-  // import.meta.dirname is available after Node.js v20.11.0
-  baseDirectory: import.meta.dirname,
-});
+import nextCoreWebVitals from 'eslint-config-next/core-web-vitals';
+import nextTypescript from 'eslint-config-next/typescript';
+import prettier from 'eslint-config-prettier';
 
 const eslintConfig = [
-  ...compat.config({
-    extends: ['next/core-web-vitals', 'next/typescript', 'prettier'],
+  ...nextCoreWebVitals,
+  ...nextTypescript,
+  prettier,
+  {
     rules: {
       '@typescript-eslint/no-unused-vars': [
         'error',
@@ -19,7 +18,7 @@ const eslintConfig = [
       ],
       '@typescript-eslint/no-namespace': 'off',
     },
-  }),
+  },
 ];
 
 export default eslintConfig;

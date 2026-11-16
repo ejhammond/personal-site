@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 
 /**
  * Monitors the given media query and returns whether it matches
@@ -12,21 +12,18 @@ import { useEffect, useState } from 'react';
  * PostHydration component.
  */
 export function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState(false);
+  const subscribe = useCallback(
+    (onStoreChange: () => void) => {
+      const mediaQueryList = window.matchMedia(query);
+      mediaQueryList.addEventListener('change', onStoreChange);
+      return () => mediaQueryList.removeEventListener('change', onStoreChange);
+    },
+    [query],
+  );
+  const getSnapshot = useCallback(
+    () => window.matchMedia(query).matches,
+    [query],
+  );
 
-  useEffect(() => {
-    const mediaQueryList = window.matchMedia(query);
-
-    // immediately set matches based on the current result
-    setMatches(mediaQueryList.matches);
-
-    // listen for changes to the result
-    const listener = (event: MediaQueryListEvent) => {
-      setMatches(event.matches);
-    };
-    mediaQueryList.addEventListener('change', listener);
-    return () => mediaQueryList.removeEventListener('change', listener);
-  }, [query]);
-
-  return matches;
+  return useSyncExternalStore(subscribe, getSnapshot, () => false);
 }

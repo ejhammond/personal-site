@@ -1,8 +1,4 @@
 import createMDXPlugin from '@next/mdx';
-import prettyCode from 'rehype-pretty-code';
-import toc from 'remark-toc';
-import autoLinkHeadings from 'rehype-autolink-headings';
-import { glob } from 'glob';
 
 /** @type {import('rehype-pretty-code').Options} */
 const prettyCodeOptions = {
@@ -14,17 +10,20 @@ const prettyCodeOptions = {
 const withMDX = createMDXPlugin({
   extension: /\.mdx?$/,
   options: {
-    remarkPlugins: [toc],
-    rehypePlugins: [[prettyCode, prettyCodeOptions], autoLinkHeadings],
+    // Plugins are named by module specifier (not imported) so Turbopack can
+    // serialize the loader options; the MDX loader resolves them from the
+    // project root. (Next 16 builds/dev run on Turbopack by default.)
+    remarkPlugins: ['remark-toc'],
+    rehypePlugins: [
+      ['rehype-pretty-code', prettyCodeOptions],
+      'rehype-autolink-headings',
+    ],
   },
 });
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   pageExtensions: ['ts', 'tsx', 'gen.ts', 'gen.tsx'],
-  experimental: {
-    viewTransition: true,
-  },
   images: {
     remotePatterns: [
       {
