@@ -94,6 +94,17 @@ export function monthAndYearToDate({ month, year }: MonthAndYear): Date {
   return new Date(year, monthToNumber(month) - 1);
 }
 
+/**
+ * Parse a 'YYYY-MM-DD' date as local time. new Date('YYYY-MM-DD') parses
+ * as UTC midnight, which is the previous day (and possibly the previous
+ * month) in US time zones — a 1st-of-month article date would render
+ * under the wrong month.
+ */
+export function parseDateString(date: string): Date {
+  const [year, month, day] = date.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
 export function monthAndYearFromDate(date: Date): MonthAndYear {
   return {
     month: monthFromNumber(date.getMonth() + 1),

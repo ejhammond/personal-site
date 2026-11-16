@@ -3,7 +3,7 @@
 import { useActionState, useState } from 'react';
 import { Banner } from '@astryxdesign/core/Banner';
 import { Button } from '@astryxdesign/core/Button';
-import { VStack } from '@astryxdesign/core/Stack';
+import { HStack, VStack } from '@astryxdesign/core/Stack';
 import { TextInput } from '@astryxdesign/core/TextInput';
 import { updateUser, UpdateUserFormState } from './actions';
 
@@ -21,6 +21,7 @@ export default function EditProfileForm({
   const [displayName, setDisplayName] = useState(initialDisplayName);
   const [email, setEmail] = useState(initialEmail ?? '');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <form id="edit-profile" action={action}>
@@ -58,11 +59,19 @@ export default function EditProfileForm({
         <TextInput
           label="New password"
           htmlName="password"
-          type="password"
+          type={showPassword ? 'text' : 'password'}
           value={password}
           onChange={setPassword}
           isDisabled={isPending}
         />
+        <HStack hAlign="start">
+          <Button
+            label={showPassword ? 'Hide password' : 'Show password'}
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowPassword((show) => !show)}
+          />
+        </HStack>
         <Button
           label="Submit"
           variant="primary"

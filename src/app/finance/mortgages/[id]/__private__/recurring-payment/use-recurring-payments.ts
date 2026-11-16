@@ -1,6 +1,6 @@
 import { createClient } from '@/supabase/client';
 import { Database } from '@/types/database.types';
-import { WithID } from '@/utils/id';
+import { parseDBID, WithID } from '@/utils/id';
 import { RecurringPayment } from '@/utils/loan';
 import { arrayToMap, removeFromMap, setInMap } from '@/utils/map';
 import { startTransition, useCallback, useEffect, useState } from 'react';
@@ -32,6 +32,13 @@ export default function useRecurringPayments(
   }, []);
 
   useEffect(() => {
+    // Route params are raw strings; a non-numeric id would make the
+    // realtime filter malformed, so don't subscribe at all.
+    const numericLoanID = parseDBID(loanID);
+    if (numericLoanID == null) {
+      return;
+    }
+
     const channel = supabase
       .channel('mortgage_recurring_payment_updates')
       .on(
@@ -40,7 +47,7 @@ export default function useRecurringPayments(
           event: '*',
           schema: 'public',
           table: 'mortgage_recurring_payment',
-          filter: `mortgage_id=eq.${loanID}`,
+          filter: `mortgage_id=eq.${numericLoanID}`,
         },
         (payload) => {
           if (

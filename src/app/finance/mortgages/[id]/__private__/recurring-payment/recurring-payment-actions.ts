@@ -9,6 +9,7 @@ import {
   ServerActionState,
   ServerActionStateWithMeta,
 } from '@/utils/actions';
+import { requiredNumber } from '@/utils/schema';
 import z from 'zod/v4';
 
 type RecurringPaymentRow =
@@ -18,8 +19,8 @@ const recurringPaymentSchema = z.object({
   id: z.coerce.number(),
   mortgage_id: z.coerce.number(),
   user_id: z.coerce.string(),
-  starting_month: z.coerce.number().min(0),
-  amount: z.coerce.number().min(0),
+  starting_month: requiredNumber(z.number().min(0)),
+  amount: requiredNumber(z.number().min(0)),
 });
 
 export type InsertRecurringPaymentPayload = Omit<
@@ -45,6 +46,7 @@ export type DeleteRecurringPaymentActionState =
 export const insertRecurringPayment =
   createServerAction<InsertRecurringPaymentPayload>({
     schema: recurringPaymentSchema.omit({ id: true, user_id: true }),
+    revalidate: ['/finance/mortgages/[id]'],
     action: async ({ payload }) => {
       const supabase = await createClient();
 
@@ -65,6 +67,7 @@ export const updateRecurringPayment = createServerActionWithMeta<
   schema: recurringPaymentSchema
     .omit({ mortgage_id: true, user_id: true })
     .partial(),
+  revalidate: ['/finance/mortgages/[id]'],
   action: async ({ payload, meta }) => {
     const supabase = await createClient();
 
@@ -82,6 +85,7 @@ export const updateRecurringPayment = createServerActionWithMeta<
 export const deleteRecurringPayment =
   createServerAction<DeleteRecurringPaymentPayload>({
     schema: recurringPaymentSchema.pick({ id: true }),
+    revalidate: ['/finance/mortgages/[id]'],
     action: async ({ payload }) => {
       const supabase = await createClient();
 

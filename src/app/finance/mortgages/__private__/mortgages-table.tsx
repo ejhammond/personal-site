@@ -23,6 +23,7 @@ const columns: TableColumn<MortgageRow>[] = [
 export function MortgagesTable({ rows }: { rows: MortgageRow[] }) {
   return (
     <Table
+      aria-label="Mortgages"
       data={rows}
       columns={columns}
       idKey="id"

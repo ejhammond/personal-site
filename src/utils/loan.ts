@@ -66,7 +66,9 @@ function getRecurringPaymentForMonth(
     return 0;
   }
 
-  const reversed = recurringExtraPayments.sort(
+  // Sort a copy: Array.sort sorts in place, and the caller's array is
+  // shared state (the recurring-payments map's values).
+  const reversed = [...recurringExtraPayments].sort(
     (a, b) => b.startingMonth - a.startingMonth,
   );
 

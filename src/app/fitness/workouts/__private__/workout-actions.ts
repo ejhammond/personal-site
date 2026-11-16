@@ -10,6 +10,7 @@ import {
   ServerActionStateWithMeta,
 } from '@/utils/actions';
 import { redirect } from 'next/navigation';
+import { requiredNumber } from '@/utils/schema';
 import z from 'zod/v4';
 
 type WorkoutRow = Database['public']['Tables']['gym_workout']['Row'];
@@ -17,9 +18,9 @@ type WorkoutRow = Database['public']['Tables']['gym_workout']['Row'];
 const workoutSchema = z.object({
   id: z.coerce.number(),
   user_id: z.coerce.string(),
-  name: z.string(),
-  sets: z.coerce.number().int().min(1),
-  reps: z.coerce.number().int().min(1),
+  name: z.string().min(1).max(200),
+  sets: requiredNumber(z.number().int().min(1)),
+  reps: requiredNumber(z.number().int().min(1)),
   created_at: z.coerce.string(),
 });
 
@@ -47,6 +48,7 @@ export const insertWorkout = createServerAction<InsertWorkoutPayload>({
     user_id: true,
     created_at: true,
   }),
+  revalidate: ['/fitness/workouts'],
   action: async ({ payload }) => {
     const supabase = await createClient();
 
@@ -68,6 +70,7 @@ export const updateWorkout = createServerActionWithMeta<
       created_at: true,
     })
     .partial(),
+  revalidate: ['/fitness/workouts/[id]', '/fitness/workouts'],
   action: async ({ payload, meta }) => {
     const supabase = await createClient();
 

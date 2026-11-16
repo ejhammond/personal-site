@@ -9,6 +9,7 @@ import {
   ServerActionState,
   ServerActionStateWithMeta,
 } from '@/utils/actions';
+import { requiredNumber } from '@/utils/schema';
 import z from 'zod/v4';
 
 type WorkoutInstanceRow =
@@ -20,7 +21,7 @@ const workoutInstanceSchema = z.object({
   workout_id: z.coerce.number(),
   signal: z.enum(['INCREASE', 'MAINTAIN', 'DECREASE']),
   timestamp: z.coerce.string(),
-  weight: z.coerce.number().min(0),
+  weight: requiredNumber(z.number().min(0)),
   created_at: z.coerce.string(),
 });
 
@@ -51,6 +52,7 @@ export const insertWorkoutInstance =
       user_id: true,
       created_at: true,
     }),
+    revalidate: ['/fitness/workouts/[id]'],
     action: async ({ payload }) => {
       const supabase = await createClient();
 
@@ -75,6 +77,7 @@ export const updateWorkoutInstance = createServerActionWithMeta<
       created_at: true,
     })
     .partial(),
+  revalidate: ['/fitness/workouts/[id]'],
   action: async ({ payload, meta }) => {
     const supabase = await createClient();
 
@@ -92,6 +95,7 @@ export const updateWorkoutInstance = createServerActionWithMeta<
 export const deleteWorkoutInstance =
   createServerAction<DeleteWorkoutInstancePayload>({
     schema: workoutInstanceSchema.pick({ id: true }),
+    revalidate: ['/fitness/workouts/[id]'],
     action: async ({ payload }) => {
       const supabase = await createClient();
 

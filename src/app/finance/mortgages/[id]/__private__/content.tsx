@@ -119,16 +119,18 @@ export default function Content({
       });
 
       setError(undefined);
+
+      // Only hide the panel on success: on error it stays open so the
+      // error banner (which lives in the panel) remains visible.
+      if (isNarrow) {
+        setIsPanelDialogOpen(false);
+      } else {
+        setIsPanelShown(false);
+      }
     } catch (e: unknown) {
       if (e instanceof Error) {
         setError(e.message);
       }
-    }
-
-    if (isNarrow) {
-      setIsPanelDialogOpen(false);
-    } else {
-      setIsPanelShown(false);
     }
   };
 

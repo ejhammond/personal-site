@@ -21,10 +21,13 @@ export default async function LogInPage({
   }
 
   const next = await genMaybeFromAsyncSearchParam(asyncSearchParams, 'next');
+  // The confirm route redirects here with ?error= when a confirmation
+  // link is invalid or expired; show it instead of dropping it.
+  const error = await genMaybeFromAsyncSearchParam(asyncSearchParams, 'error');
 
   return (
     <AuthLayout title="Log in">
-      <LogInForm next={next.or('/')} />
+      <LogInForm next={next.or('/')} initialError={error.or(undefined)} />
       <VStack gap={1} hAlign="center">
         <Link href="/auth/sign-up">Need an account?</Link>
         <Link href="/auth/recover">Forgot password?</Link>

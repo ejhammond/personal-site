@@ -8,7 +8,7 @@ import {
   serializeDirectoryIndex,
 } from '../src/types/directory';
 
-const ignoredDirectories = ['/images', '/__private__', '/auth'];
+const ignoredDirectories = ['images', '__private__', 'auth'];
 
 export async function genIndexes(
   directoryIndex: DirectoryIndex,
@@ -33,8 +33,10 @@ export const directoryIndex = hydrateDirectoryIndex(serializableDirectoryIndex);
     directoryIndexFile,
     { encoding: 'utf-8' },
   );
-  traverseDirectory(directoryIndex, async (dir) => {
-    if (ignoredDirectories.some((pattern) => dir.path.includes(pattern))) {
+  await traverseDirectory(directoryIndex, async (dir) => {
+    if (
+      dir.path.split('/').some((segment) => ignoredDirectories.includes(segment))
+    ) {
       return;
     }
 

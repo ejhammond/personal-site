@@ -9,6 +9,7 @@ import {
   ServerActionState,
   ServerActionStateWithMeta,
 } from '@/utils/actions';
+import { requiredNumber } from '@/utils/schema';
 import z from 'zod/v4';
 
 type PaymentRow = Database['public']['Tables']['mortgage_payment']['Row'];
@@ -17,8 +18,8 @@ const paymentSchema = z.object({
   id: z.coerce.number(),
   mortgage_id: z.coerce.number(),
   user_id: z.coerce.string(),
-  month: z.coerce.number().min(0),
-  amount: z.coerce.number().min(0),
+  month: requiredNumber(z.number().min(0)),
+  amount: requiredNumber(z.number().min(0)),
 });
 
 export type InsertPaymentPayload = Omit<PaymentRow, 'id' | 'user_id'>;
@@ -38,6 +39,7 @@ export type DeletePaymentActionState = ServerActionState<DeletePaymentPayload>;
 
 export const insertPayment = createServerAction<InsertPaymentPayload>({
   schema: paymentSchema.omit({ id: true, user_id: true }),
+  revalidate: ['/finance/mortgages/[id]'],
   action: async ({ payload }) => {
     const supabase = await createClient();
 
@@ -54,6 +56,7 @@ export const updatePayment = createServerActionWithMeta<
   UpdatePaymentMeta
 >({
   schema: paymentSchema.omit({ mortgage_id: true, user_id: true }).partial(),
+  revalidate: ['/finance/mortgages/[id]'],
   action: async ({ payload, meta }) => {
     const supabase = await createClient();
 
@@ -70,6 +73,7 @@ export const updatePayment = createServerActionWithMeta<
 
 export const deletePayment = createServerAction<DeletePaymentPayload>({
   schema: paymentSchema.pick({ id: true }),
+  revalidate: ['/finance/mortgages/[id]'],
   action: async ({ payload }) => {
     const supabase = await createClient();
 

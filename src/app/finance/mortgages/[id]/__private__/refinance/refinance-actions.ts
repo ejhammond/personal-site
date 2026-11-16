@@ -9,6 +9,7 @@ import {
   ServerActionState,
   ServerActionStateWithMeta,
 } from '@/utils/actions';
+import { nullableNumber, requiredNumber } from '@/utils/schema';
 import z from 'zod/v4';
 
 type RefinanceRow = Database['public']['Tables']['mortgage_refinance']['Row'];
@@ -17,11 +18,14 @@ const refinanceSchema = z.object({
   id: z.coerce.number(),
   mortgage_id: z.coerce.number(),
   user_id: z.coerce.string(),
-  month: z.coerce.number().min(0),
-  principal: z.coerce.number().min(0).nullable(),
-  annualized_interest_rate: z.coerce.number().min(0),
-  term: z.coerce.number().int().min(1),
-  pre_payment: z.coerce.number().min(0).nullable(),
+  // Month 0 never fires: the loop looks refinances up by month = current
+  // month + 1, starting from month 0, so a month-0 refinance is silently
+  // ignored. Reject it here.
+  month: requiredNumber(z.number().min(1)),
+  principal: nullableNumber(z.number().min(0)),
+  annualized_interest_rate: requiredNumber(z.number().min(0).max(1)),
+  term: requiredNumber(z.number().int().min(1)),
+  pre_payment: nullableNumber(z.number().min(0)),
 });
 
 export type InsertRefinancePayload = Omit<RefinanceRow, 'id' | 'user_id'>;
@@ -43,6 +47,7 @@ export type DeleteRefinanceActionState =
 
 export const insertRefinance = createServerAction<InsertRefinancePayload>({
   schema: refinanceSchema.omit({ id: true, user_id: true }),
+  revalidate: ['/finance/mortgages/[id]'],
   action: async ({ payload }) => {
     const supabase = await createClient();
 
@@ -59,6 +64,7 @@ export const updateRefinance = createServerActionWithMeta<
   UpdateRefinanceMeta
 >({
   schema: refinanceSchema.omit({ mortgage_id: true, user_id: true }).partial(),
+  revalidate: ['/finance/mortgages/[id]'],
   action: async ({ payload, meta }) => {
     const supabase = await createClient();
 
@@ -75,6 +81,7 @@ export const updateRefinance = createServerActionWithMeta<
 
 export const deleteRefinance = createServerAction<DeleteRefinancePayload>({
   schema: refinanceSchema.pick({ id: true }),
+  revalidate: ['/finance/mortgages/[id]'],
   action: async ({ payload }) => {
     const supabase = await createClient();
 

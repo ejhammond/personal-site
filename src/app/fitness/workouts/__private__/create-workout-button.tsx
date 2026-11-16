@@ -6,7 +6,10 @@ import { NumberInput } from '@astryxdesign/core/NumberInput';
 import { VStack } from '@astryxdesign/core/Stack';
 import { TextInput } from '@astryxdesign/core/TextInput';
 import { useState } from 'react';
-import { insertWorkout } from './workout-actions';
+import {
+  insertWorkout,
+  InsertWorkoutActionState,
+} from './workout-actions';
 import { FormFooter } from '@/components/form-footer';
 
 const defaultWorkout = {
@@ -23,6 +26,8 @@ export function CreateWorkoutButton() {
   } | null>(null);
 
   const [isPending, setIsPending] = useState(false);
+  const [actionState, setActionState] =
+    useState<InsertWorkoutActionState>({});
 
   return (
     <>
@@ -57,13 +62,19 @@ export function CreateWorkoutButton() {
                 event.preventDefault();
                 void (async () => {
                   setIsPending(true);
-                  await insertWorkout({
+                  setActionState({});
+                  const state = await insertWorkout({
                     name: draftWorkout.name,
                     sets: draftWorkout.sets,
                     reps: draftWorkout.reps,
                   });
+                  setActionState(state);
                   setIsPending(false);
-                  setDraftWorkout(null);
+                  // Only close on success; on failure the dialog stays open
+                  // with the error in the footer.
+                  if (state.errors == null) {
+                    setDraftWorkout(null);
+                  }
                 })();
               }}
             >
@@ -107,6 +118,7 @@ export function CreateWorkoutButton() {
                 />
                 <FormFooter
                   isPending={isPending}
+                  errorMessage={actionState.errors?.form}
                   onCancel={() => setDraftWorkout(null)}
                 />
               </VStack>

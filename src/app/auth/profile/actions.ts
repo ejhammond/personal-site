@@ -49,10 +49,22 @@ export async function updateUser(
     displayName !== '' &&
     displayName !== user.user_metadata.display_name
   ) {
+    if (displayName.length > 200) {
+      return {
+        type: 'error',
+        errors: { form: 'Display name must be 200 characters or fewer' },
+      };
+    }
     updates.data = { display_name: displayName };
   }
   if (typeof password === 'string' && password !== '') {
     updates.password = password;
+  }
+
+  // Nothing changed: don't call Supabase just to report a success that
+  // didn't happen.
+  if (Object.keys(updates).length === 0) {
+    return { type: null };
   }
 
   const { error } = await supabase.auth.updateUser(updates);

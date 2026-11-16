@@ -19,6 +19,7 @@ import { formatPercent } from '@/utils/number';
 import { plural } from '@/utils/string';
 import { optimisticPending, WithOptimistic } from '@/utils/with-optimistic';
 import { useOptimistic, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { updateLoan, UpdateLoanActionState } from './loan-actions';
 import { monthToNumber } from '@/utils/date';
 
@@ -29,6 +30,7 @@ export default function LoanField({
   loanID: string;
   loan: Loan;
 }) {
+  const router = useRouter();
   const [optimisticLoan, setOptimisticLoan] = useOptimistic<
     WithOptimistic<Loan>,
     Loan
@@ -89,8 +91,15 @@ export default function LoanField({
               );
               setUpdateState(state);
               setUpdateIsPending(false);
+              // Only close on success: on failure the dialog stays open
+              // with the error in the footer, and the optimistic value is
+              // rolled back to server truth.
+              if (state.errors == null) {
+                close();
+              } else {
+                router.refresh();
+              }
             })();
-            close();
           }}
         >
           <VStack gap={3}>

@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 import { createClient } from '@/supabase/server';
+import { isSafeNextPathname } from '@/utils/auth';
 
 export type RequestPasswordResetFormState =
   | {
@@ -37,7 +38,9 @@ export async function requestPasswordReset(
 
   revalidatePath('/');
 
-  if (typeof next === 'string') {
+  // The hidden field is attacker-controlled; only same-origin paths are
+  // safe to redirect to. Anything else shows the success state instead.
+  if (isSafeNextPathname(next)) {
     redirect(next);
   } else {
     return { type: 'success' };

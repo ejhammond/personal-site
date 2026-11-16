@@ -8,10 +8,13 @@ import { readTimer, startTimer } from './timer';
 import { readFiles } from './traverse';
 
 async function genPages(): Promise<void> {
+  // Read the index once; genArticles returns an updated copy recording
+  // the pages it wrote, which genIndexes then uses.
+  const files = await readFiles();
   // gen page files for our mdx articles
-  await genArticles(await readFiles());
+  const withArticlePages = await genArticles(files);
   // gen "index" pages for any non-page path
-  await genIndexes(await readFiles());
+  await genIndexes(withArticlePages);
 }
 
 async function main() {

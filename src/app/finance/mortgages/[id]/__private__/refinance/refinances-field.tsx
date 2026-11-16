@@ -2,7 +2,7 @@
 
 import { CheckboxInput } from '@astryxdesign/core/CheckboxInput';
 import { NumberInput } from '@astryxdesign/core/NumberInput';
-import { createUniqueID, WithID } from '@/utils/id';
+import { createUniqueID, parseDBID, WithID } from '@/utils/id';
 import { Refinance } from '@/utils/loan';
 import { formatPercent } from '@/utils/number';
 import { plural } from '@/utils/string';
@@ -21,6 +21,7 @@ import {
 } from '@astryxdesign/core/MetadataList';
 import { VStack } from '@astryxdesign/core/Stack';
 import { startTransition, useOptimistic, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { optimisticPending, WithOptimistic } from '@/utils/with-optimistic';
 import { mapToArray, removeFromMap, setInMap } from '@/utils/map';
 import {
@@ -58,6 +59,7 @@ export default function RefinancesField({
     {},
   );
   const [updateIsPending, setUpdateIsPending] = useState<boolean>(false);
+  const router = useRouter();
 
   return (
     <CollectionField<WithOptimistic<WithID<Refinance>>>
@@ -84,7 +86,9 @@ export default function RefinancesField({
             type: 'upsert',
             item: draftItem,
           });
-          insertRefinance({
+        });
+        void (async () => {
+          const state = await insertRefinance({
             mortgage_id: parseInt(loanID, 10),
             month: draftItem.month,
             principal: draftItem.principal,
@@ -92,7 +96,11 @@ export default function RefinancesField({
             term: draftItem.term,
             pre_payment: draftItem.prePayment,
           });
-        });
+          // A failed insert must not leave a phantom item on screen.
+          if (state.errors != null) {
+            router.refresh();
+          }
+        })();
       }}
       renderEditForm={({ draftItem, setDraftItem, close }) => (
         <form
@@ -100,6 +108,19 @@ export default function RefinancesField({
           onSubmit={(event) => {
             event.preventDefault();
             void (async () => {
+              const id = parseDBID(draftItem.id);
+              if (id == null) {
+                // A placeholder id means the item hasn't been saved yet;
+                // there is no row to update. Keep the dialog open and let
+                // the user retry once the insert has landed.
+                setUpdateState({
+                  errors: {
+                    form: 'This item is still saving — close and try again in a moment.',
+                  },
+                });
+                return;
+              }
+
               dispatchOptimistic({ type: 'upsert', item: draftItem });
 
               setUpdateIsPending(true);
@@ -112,14 +133,19 @@ export default function RefinancesField({
                   term: draftItem.term,
                   pre_payment: draftItem.prePayment,
                 },
-                {
-                  id: parseInt(draftItem.id, 10),
-                },
+                { id },
               );
               setUpdateState(state);
               setUpdateIsPending(false);
+              // Only close on success: on failure the dialog stays open
+              // with the error in the footer, and the optimistic value is
+              // rolled back to server truth.
+              if (state.errors == null) {
+                close();
+              } else {
+                router.refresh();
+              }
             })();
-            close();
           }}
         >
           <VStack gap={3}>
@@ -205,13 +231,24 @@ export default function RefinancesField({
             isPending={item.isPending}
             onEdit={edit}
             onRemove={() => {
+              const id = parseDBID(item.id);
               startTransition(() => {
                 dispatchOptimistic({
                   type: 'delete',
                   id: item.id,
                 });
-                deleteRefinance({ id: parseInt(item.id, 10) });
               });
+              if (id == null) {
+                // Never saved server-side; nothing to delete.
+                return;
+              }
+              void (async () => {
+                const state = await deleteRefinance({ id });
+                // A failed delete must not leave the item missing.
+                if (state.errors != null) {
+                  router.refresh();
+                }
+              })();
             }}
           >
             <MetadataList>

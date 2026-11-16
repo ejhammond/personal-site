@@ -40,6 +40,7 @@ const columns: TableColumn<WorkoutRow>[] = [
 export function WorkoutsTable({ rows }: { rows: WorkoutRow[] }) {
   return (
     <Table
+      aria-label="Workouts"
       data={rows}
       columns={columns}
       idKey="id"

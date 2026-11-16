@@ -3,6 +3,7 @@ import './mdx.css';
 import React from 'react';
 
 import { MDXArticleMetadata } from '@/types/mdx-article-metadata';
+import { parseDateString } from '@/utils/date';
 import profileImage from '@/images/profile-pic.jpeg';
 import { BackLink } from '@/app/back-link';
 import { SiteFooter } from '@/app/site-footer';
@@ -34,7 +35,7 @@ export function MDXTemplate({
 }: MDXArticleMetadata & Readonly<{ children: React.ReactNode }>) {
   const editOnGitHubURL = `https://github.com/${GITHUB_USERNAME}/${GITHUB_REPO_NAME}/edit/${GITHUB_MAIN_BRANCH}${repoPath}`;
 
-  const parsedDate = new Date(date);
+  const parsedDate = parseDateString(date);
   const parentPath = uriPath.split('/').slice(0, -1).join('/') || '/';
 
   return (

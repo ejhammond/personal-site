@@ -1,8 +1,12 @@
 import { Database } from '@/types/database.types';
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { cache } from 'react';
 
-export async function createClient() {
+// One client per request: the root layout and the page both call
+// getUser(), and without this each call builds its own client (and its
+// own session lookup).
+export const createClient = cache(async () => {
   const cookieStore = await cookies();
 
   return createServerClient<Database>(
@@ -27,4 +31,4 @@ export async function createClient() {
       },
     },
   );
-}
+});

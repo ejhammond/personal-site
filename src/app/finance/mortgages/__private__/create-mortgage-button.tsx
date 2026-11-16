@@ -5,7 +5,10 @@ import { Dialog, DialogHeader } from '@astryxdesign/core/Dialog';
 import { VStack } from '@astryxdesign/core/Stack';
 import { TextInput } from '@astryxdesign/core/TextInput';
 import { useState } from 'react';
-import { insertLoan } from '../[id]/__private__/loan/loan-actions';
+import {
+  insertLoan,
+  InsertLoanActionState,
+} from '../[id]/__private__/loan/loan-actions';
 import { FormFooter } from '@/components/form-footer';
 
 export function CreateMortgageButton() {
@@ -14,6 +17,7 @@ export function CreateMortgageButton() {
   );
 
   const [isPending, setIsPending] = useState(false);
+  const [actionState, setActionState] = useState<InsertLoanActionState>({});
 
   return (
     <>
@@ -52,7 +56,8 @@ export function CreateMortgageButton() {
                   const today = new Date();
 
                   setIsPending(true);
-                  await insertLoan({
+                  setActionState({});
+                  const state = await insertLoan({
                     name: draftMortgage.name,
                     principal: 100000,
                     term: 30,
@@ -61,8 +66,13 @@ export function CreateMortgageButton() {
                     month: today.getMonth() + 1,
                     year: today.getFullYear(),
                   });
+                  setActionState(state);
                   setIsPending(false);
-                  setDraftMortgage(null);
+                  // Only close on success; on failure the dialog stays open
+                  // with the error in the footer.
+                  if (state.errors == null) {
+                    setDraftMortgage(null);
+                  }
                 })();
               }}
             >
@@ -75,6 +85,7 @@ export function CreateMortgageButton() {
                 />
                 <FormFooter
                   isPending={isPending}
+                  errorMessage={actionState.errors?.form}
                   onCancel={() => setDraftMortgage(null)}
                 />
               </VStack>

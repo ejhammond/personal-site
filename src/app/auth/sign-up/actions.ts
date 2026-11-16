@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 import { createClient } from '@/supabase/server';
+import { isSafeNextPathname } from '@/utils/auth';
 
 export type SignUpFormState = {
   errors?: {
@@ -34,6 +35,12 @@ export async function signUp(
   if (typeof displayName !== 'string' || displayName === '') {
     errors['displayName'] = 'Invalid display name';
   }
+  if (
+    typeof displayName === 'string' &&
+    displayName.length > 200
+  ) {
+    errors['displayName'] = 'Display name must be 200 characters or fewer';
+  }
   if (typeof email !== 'string' || email === '') {
     errors['email'] = 'Invalid email';
   }
@@ -55,9 +62,11 @@ export async function signUp(
   });
 
   if (error != null) {
-    redirect(`/auth/sign-up?error=${encodeURIComponent(error.message)}`);
+    return { errors: { form: error.message } };
   }
 
   revalidatePath('/');
-  redirect(next);
+  // The hidden field is attacker-controlled; only same-origin paths are
+  // safe to redirect to.
+  redirect(isSafeNextPathname(next) ? next : '/');
 }

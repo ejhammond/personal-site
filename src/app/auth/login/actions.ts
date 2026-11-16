@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 import { createClient } from '@/supabase/server';
+import { isSafeNextPathname } from '@/utils/auth';
 
 export type LogInFormState = {
   errors?: {
@@ -50,5 +51,7 @@ export async function logIn(
   }
 
   revalidatePath('/');
-  redirect(next);
+  // The hidden field is attacker-controlled; only same-origin paths are
+  // safe to redirect to.
+  redirect(isSafeNextPathname(next) ? next : '/');
 }

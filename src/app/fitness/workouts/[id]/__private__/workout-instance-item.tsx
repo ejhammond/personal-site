@@ -13,6 +13,8 @@ import { FormFooter } from '@/components/form-footer';
 import {
   updateWorkoutInstance,
   deleteWorkoutInstance,
+  UpdateWorkoutInstanceActionState,
+  DeleteWorkoutInstanceActionState,
 } from './workout-instance-actions';
 
 type Signal = 'INCREASE' | 'MAINTAIN' | 'DECREASE';
@@ -63,6 +65,10 @@ export function WorkoutInstanceItem({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isPending, setIsPending] = useState(false);
+  const [editState, setEditState] =
+    useState<UpdateWorkoutInstanceActionState>({});
+  const [deleteState, setDeleteState] =
+    useState<DeleteWorkoutInstanceActionState>({});
 
   const [editData, setEditData] = useState({
     weight: instance.weight,
@@ -126,7 +132,8 @@ export function WorkoutInstanceItem({
               event.preventDefault();
               void (async () => {
                 setIsPending(true);
-                await updateWorkoutInstance(
+                setEditState({});
+                const state = await updateWorkoutInstance(
                   {
                     weight: editData.weight,
                     signal: editData.signal,
@@ -134,8 +141,13 @@ export function WorkoutInstanceItem({
                   },
                   { id: instance.id },
                 );
+                setEditState(state);
                 setIsPending(false);
-                setIsEditModalOpen(false);
+                // Only close on success; on failure the dialog stays open
+                // with the error in the footer.
+                if (state.errors == null) {
+                  setIsEditModalOpen(false);
+                }
               })();
             }}
           >
@@ -162,7 +174,11 @@ export function WorkoutInstanceItem({
                 }
                 options={SIGNAL_ITEMS}
               />
-              <FormFooter isPending={isPending} onCancel={closeEditModal} />
+              <FormFooter
+                isPending={isPending}
+                errorMessage={editState.errors?.form}
+                onCancel={closeEditModal}
+              />
             </VStack>
           </form>
         </VStack>
@@ -181,15 +197,24 @@ export function WorkoutInstanceItem({
               event.preventDefault();
               void (async () => {
                 setIsPending(true);
-                await deleteWorkoutInstance({ id: instance.id });
+                setDeleteState({});
+                const state = await deleteWorkoutInstance({
+                  id: instance.id,
+                });
+                setDeleteState(state);
                 setIsPending(false);
-                setIsDeleteModalOpen(false);
+                // Only close on success; on failure the dialog stays open
+                // with the error in the footer.
+                if (state.errors == null) {
+                  setIsDeleteModalOpen(false);
+                }
               })();
             }}
           >
             <VStack gap={3}>
               <FormFooter
                 isPending={isPending}
+                errorMessage={deleteState.errors?.form}
                 onCancel={() => setIsDeleteModalOpen(false)}
               />
             </VStack>

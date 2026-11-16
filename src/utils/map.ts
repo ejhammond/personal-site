@@ -21,15 +21,6 @@ export function removeFromMap<TKey, TValue>(
   return next;
 }
 
-export function sortMap<TKey, TValue>(
-  map: ReadonlyMap<TKey, TValue>,
-  compareFn: (a: TValue, b: TValue) => number,
-) {
-  return new Map(
-    Array.from(map.entries()).toSorted(([, a], [, b]) => compareFn(a, b)),
-  );
-}
-
 export function arrayToMap<T>(
   array: T[],
   getID: (item: T) => string,

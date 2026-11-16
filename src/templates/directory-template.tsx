@@ -1,6 +1,7 @@
 'use client';
 
 import { directoryIndex } from '@/templates/directory-index.gen';
+import { parseDateString } from '@/utils/date';
 import { makeHeading } from '@/utils/string';
 import { usePathname } from 'next/navigation';
 import { useMemo } from 'react';
@@ -13,7 +14,7 @@ import { Layout, LayoutContent, LayoutFooter } from '@astryxdesign/core/Layout';
 import { HStack, VStack } from '@astryxdesign/core/Stack';
 
 function formatDate(date: string): string {
-  return new Date(date).toLocaleDateString('en-US', {
+  return parseDateString(date).toLocaleDateString('en-US', {
     month: 'long',
     year: 'numeric',
   });

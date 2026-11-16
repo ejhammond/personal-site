@@ -3,9 +3,16 @@ export type WithID<T> = T & {
 };
 
 export function createUniqueID(): string {
-  return (Math.random() * 100000000).toFixed(0);
+  return crypto.randomUUID();
 }
 
-export function idify(str: string): string {
-  return str.toLowerCase().replace(/\s+/g, '-');
+/**
+ * Parse a database id from a string id. Only all-digit strings are real
+ * ids; anything else is a client-side placeholder (see createUniqueID)
+ * for an item that hasn't been saved yet, and must never reach the
+ * database — parseInt would silently turn e.g. '3f8a…' into 3, targeting
+ * a different row entirely.
+ */
+export function parseDBID(id: string): number | null {
+  return /^\d+$/.test(id) ? Number(id) : null;
 }

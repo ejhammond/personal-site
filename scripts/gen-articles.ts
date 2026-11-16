@@ -11,7 +11,7 @@ import {
   toFilePath,
   traverseDirectory,
 } from './traverse';
-import { DirectoryIndex } from '@/types/directory';
+import { DirectoryIndex, FileTag } from '@/types/directory';
 
 function getArticleDisplayName(contentOrMetadataFile: string): string {
   const p = path.parse(contentOrMetadataFile);
@@ -43,7 +43,7 @@ async function getMetadata(metadataFile: string): Promise<MDXArticleMetadata> {
   const description = assertExists('description');
   const date = assertExists('date');
 
-  if (!/\d\d\d\d-\d\d-\d\d/.test(date)) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
     throw new Error(
       `Frontmatter error: ${getArticleDisplayName(
         metadataFile,
@@ -110,8 +110,14 @@ export default function Page() {
 
 export async function genArticles(
   directoryIndex: DirectoryIndex,
-): Promise<void> {
-  traverseDirectory(directoryIndex, async (dir) => {
+): Promise<DirectoryIndex> {
+  // The index is read once and shared with genIndexes (see gen.ts), so
+  // return an updated copy recording each page written — otherwise
+  // genIndexes would see no page file here and overwrite the article
+  // page with a directory page.
+  const updatedIndex = new Map(directoryIndex);
+
+  await traverseDirectory(directoryIndex, async (dir) => {
     const contentFile = dir.files.find((file) =>
       file.tags.has('article-content'),
     );
@@ -131,5 +137,18 @@ export async function genArticles(
     }
 
     await genPage(toFilePath(contentFile.path), toFilePath(metadataFile.path));
+
+    updatedIndex.set(dir.path, {
+      ...dir,
+      files: [
+        ...dir.files,
+        {
+          path: `${dir.path}/page.gen.tsx`,
+          tags: new Set<FileTag>(['page', 'generated']),
+        },
+      ],
+    });
   });
+
+  return updatedIndex;
 }

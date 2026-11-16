@@ -43,7 +43,11 @@ export function RenameLoanModal({
               setActionState(state);
               setIsPending(false);
 
-              onOpenChange(false);
+              // Only close on success; on failure the dialog stays open
+              // with the error in the footer.
+              if (state.errors == null) {
+                onOpenChange(false);
+              }
             })();
           }}
         >

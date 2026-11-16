@@ -21,14 +21,23 @@ function singleDiceRollToString({
 }
 
 export function rollToString({ d4, d6, d8, d10, d12, modifier }: Roll): string {
-  return [
+  const dice = [
     singleDiceRollToString({ value: 4, qty: d4 }),
     singleDiceRollToString({ value: 6, qty: d6 }),
     singleDiceRollToString({ value: 8, qty: d8 }),
     singleDiceRollToString({ value: 10, qty: d10 }),
     singleDiceRollToString({ value: 12, qty: d12 }),
-    modifier,
-  ]
-    .filter((s) => s != null)
-    .join(' + ');
+  ].filter((s) => s != null);
+
+  if (dice.length === 0) {
+    return `${modifier}`;
+  }
+
+  if (modifier === 0) {
+    return dice.join(' + ');
+  }
+
+  return modifier > 0
+    ? `${dice.join(' + ')} + ${modifier}`
+    : `${dice.join(' + ')} - ${Math.abs(modifier)}`;
 }

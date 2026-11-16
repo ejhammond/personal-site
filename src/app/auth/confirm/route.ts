@@ -17,7 +17,10 @@ export async function GET(request: NextRequest) {
   redirectTo.searchParams.delete('type');
 
   if (token_hash == null || type == null) {
-    redirectTo.pathname = `/auth/login?error=${encodeURIComponent('Invalid confirmation link')}`;
+    // Setting a string containing '?' on pathname would percent-encode
+    // the '?' and land on a 404; set the path and the query separately.
+    redirectTo.pathname = '/auth/login';
+    redirectTo.searchParams.set('error', 'Invalid confirmation link');
   } else {
     const supabase = await createClient();
 
@@ -26,7 +29,8 @@ export async function GET(request: NextRequest) {
       token_hash,
     });
     if (error != null) {
-      redirectTo.pathname = `/auth/login?error=${encodeURIComponent(error.message)}`;
+      redirectTo.pathname = '/auth/login';
+      redirectTo.searchParams.set('error', error.message);
     } else {
       // on success, we can clear the "next" param
       redirectTo.searchParams.delete('next');

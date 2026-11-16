@@ -41,6 +41,29 @@ export default function LoanStats({
   amortizationsWithRefinances: Amortizations;
   amortizationsWithRefinancesAndPrepayments: Amortizations;
 }) {
+  // amortize() returns an empty schedule when the starting balance is
+  // zero or negative (e.g. a pre-payment at or above the principal, or a
+  // $0 principal from data saved before the schema bound it) — show a
+  // message instead of crashing on [0] / .at(-1)! below.
+  if (
+    amortizationsForOriginalLoan.length === 0 ||
+    amortizationsWithRefinances.length === 0 ||
+    amortizationsWithRefinancesAndPrepayments.length === 0
+  ) {
+    return (
+      <Card>
+        <VStack gap={2}>
+          <Heading level={3}>Loan stats unavailable</Heading>
+          <Text type="supporting">
+            This mortgage can&apos;t be amortized — check that the amount
+            financed is greater than the pre-payment and the rate is
+            sensible.
+          </Text>
+        </VStack>
+      </Card>
+    );
+  }
+
   const startingMonthAndYear = amortizationsForOriginalLoan[0].loan.start;
 
   const totalFromPrincipalPrePayments =

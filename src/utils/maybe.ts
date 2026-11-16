@@ -74,31 +74,6 @@ export namespace Maybe {
   ): Maybe<TValue> {
     return value != null ? is(value) : not;
   }
-
-  export function fromPredicate<TValue>(
-    value: TValue,
-    predicate: (value: TValue) => boolean,
-  ): Maybe<TValue> {
-    return predicate(value) ? is(value) : not;
-  }
-
-  export function fromCatch<TValue>(fn: () => TValue) {
-    try {
-      return is(fn());
-    } catch {
-      return not;
-    }
-  }
-
-  export async function fromPromise<TValue>(
-    promise: Promise<TValue>,
-  ): Promise<Maybe<TValue>> {
-    try {
-      return new Is(await promise);
-    } catch (_error) {
-      return new Not();
-    }
-  }
 }
 
 export type Maybe<TValue> = Is<TValue> | Not;

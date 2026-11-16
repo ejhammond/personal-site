@@ -6,10 +6,9 @@ export async function genMaybeFromAsyncSearchParam(
   key: string,
 ): Promise<Maybe<string>> {
   const searchParams = await asyncSearchParams;
-  return (
-    Maybe.fromNullish(searchParams[key])
-      // if there are duplicate keys just take the first
-      .map((v) => (Array.isArray(v) ? v[0] : v))
-      .map(decodeURIComponent)
+  // Values are already decoded by Next.js; decoding again would throw
+  // URIError on a malformed escape (e.g. a stray %) for no benefit.
+  return Maybe.fromNullish(searchParams[key]).map((v) =>
+    Array.isArray(v) ? v[0] : v,
   );
 }

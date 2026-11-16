@@ -6,7 +6,10 @@ import { NumberInput } from '@astryxdesign/core/NumberInput';
 import { Selector } from '@astryxdesign/core/Selector';
 import { VStack } from '@astryxdesign/core/Stack';
 import { useState } from 'react';
-import { insertWorkoutInstance } from './workout-instance-actions';
+import {
+  insertWorkoutInstance,
+  InsertWorkoutInstanceActionState,
+} from './workout-instance-actions';
 import { FormFooter } from '@/components/form-footer';
 
 type Signal = 'INCREASE' | 'MAINTAIN' | 'DECREASE';
@@ -17,11 +20,15 @@ const SIGNAL_ITEMS = [
   { label: 'Decrease weight', value: 'DECREASE' as Signal },
 ];
 
-const defaultInstance = {
-  signal: 'MAINTAIN' as Signal,
-  weight: 20,
-  timestamp: new Date().toISOString(),
-};
+// Built per open, not once at module load: the timestamp must be when the
+// workout is logged, not when the page first loaded.
+function createDefaultInstance() {
+  return {
+    signal: 'MAINTAIN' as Signal,
+    weight: 20,
+    timestamp: new Date().toISOString(),
+  };
+}
 
 export function CreateWorkoutInstanceButton({
   workoutID,
@@ -35,13 +42,15 @@ export function CreateWorkoutInstanceButton({
   } | null>(null);
 
   const [isPending, setIsPending] = useState(false);
+  const [actionState, setActionState] =
+    useState<InsertWorkoutInstanceActionState>({});
 
   return (
     <>
       <Button
         label="Log Workout"
         variant="primary"
-        onClick={() => setDraftInstance(defaultInstance)}
+        onClick={() => setDraftInstance(createDefaultInstance())}
       />
 
       <Dialog
@@ -68,14 +77,20 @@ export function CreateWorkoutInstanceButton({
                 event.preventDefault();
                 void (async () => {
                   setIsPending(true);
-                  await insertWorkoutInstance({
+                  setActionState({});
+                  const state = await insertWorkoutInstance({
                     workout_id: Number(workoutID),
                     signal: draftInstance.signal,
                     timestamp: draftInstance.timestamp,
                     weight: draftInstance.weight,
                   });
+                  setActionState(state);
                   setIsPending(false);
-                  setDraftInstance(null);
+                  // Only close on success; on failure the dialog stays open
+                  // with the error in the footer.
+                  if (state.errors == null) {
+                    setDraftInstance(null);
+                  }
                 })();
               }}
             >
@@ -86,7 +101,7 @@ export function CreateWorkoutInstanceButton({
                   value={draftInstance.weight}
                   onChange={(value) =>
                     setDraftInstance((p) => ({
-                      ...(p ?? defaultInstance),
+                      ...(p ?? createDefaultInstance()),
                       weight: value,
                     }))
                   }
@@ -96,7 +111,7 @@ export function CreateWorkoutInstanceButton({
                   value={draftInstance.signal}
                   onChange={(value) =>
                     setDraftInstance((p) => ({
-                      ...(p ?? defaultInstance),
+                      ...(p ?? createDefaultInstance()),
                       signal: value as Signal,
                     }))
                   }
@@ -104,6 +119,7 @@ export function CreateWorkoutInstanceButton({
                 />
                 <FormFooter
                   isPending={isPending}
+                  errorMessage={actionState.errors?.form}
                   onCancel={() => setDraftInstance(null)}
                 />
               </VStack>

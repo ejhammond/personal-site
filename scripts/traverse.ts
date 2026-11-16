@@ -28,7 +28,9 @@ export function toFilePath(sitePath: SitePath): FilePath {
   return path.join(APP_ROOT, sitePath);
 }
 
-const ignoredPatterns = ['/__private__', '/auth'];
+// Directories to skip while traversing, matched by exact segment so a
+// name like 'authors' or 'auth-backup' is not caught by '/auth'.
+const ignoredSegments = new Set(['__private__', 'auth']);
 
 // One-line descriptions for section/tool pages, shown on the directory
 // cards. Article directories get theirs from metadata.json instead (below).
@@ -54,7 +56,11 @@ async function readDirectory(sitePath: SitePath): Promise<Directory> {
     const fullPath = path.resolve(filePath, entry.name);
     const tags = new Set<FileTag>();
 
-    if (ignoredPatterns.some((p) => fullPath.includes(p))) {
+    if (
+      fullPath
+        .split(path.sep)
+        .some((segment) => ignoredSegments.has(segment))
+    ) {
       continue;
     }
 

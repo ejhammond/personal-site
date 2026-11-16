@@ -19,6 +19,10 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     pre: MdxPre,
     ColorModeSwitch, // not used yet
     ColorModeImage,
-    a: ({ href, children }) => <Link href={href}>{children}</Link>,
+    a: ({ href, children, ...props }) => (
+      <Link href={href} {...props}>
+        {children}
+      </Link>
+    ),
   };
 }

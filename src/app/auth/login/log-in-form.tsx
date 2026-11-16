@@ -7,11 +7,20 @@ import { HStack, VStack } from '@astryxdesign/core/Stack';
 import { TextInput } from '@astryxdesign/core/TextInput';
 import { logIn, LogInFormState } from './actions';
 
-export default function LogInForm({ next }: { next: string }) {
+export default function LogInForm({
+  next,
+  initialError,
+}: {
+  next: string;
+  initialError?: string;
+}) {
   const [actionState, action, isPending] = useActionState<
     LogInFormState,
     FormData
-  >(logIn, {});
+  >(
+    logIn,
+    initialError != null ? { errors: { form: initialError } } : {},
+  );
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);

@@ -24,6 +24,7 @@ export function createServerAction<
 >({
   action,
   schema,
+  revalidate,
 }: Readonly<{
   /**
    * Action to perform. Only runs if the payload is valid according to the
@@ -36,6 +37,15 @@ export function createServerAction<
     }>,
   ) => Promise<undefined>;
   schema: z.ZodType<TPayload>;
+  /**
+   * Routes showing this action's data, revalidated after a successful
+   * mutation so the page the user is looking at refreshes instead of
+   * going stale until a manual refresh. Dynamic segments may be given as
+   * patterns (e.g. '/finance/mortgages/[id]') — those revalidate every
+   * matching page. Actions that redirect don't need this: the redirect
+   * target is a fresh navigation that fetches current data.
+   */
+  revalidate?: ReadonlyArray<string>;
 }>) {
   return async (payload: TPayload): Promise<ServerActionState<TPayload>> => {
     const validation = schema.safeParse(payload);
@@ -62,7 +72,9 @@ export function createServerAction<
         payload: validation.data,
       });
 
-      revalidatePath('/');
+      for (const path of revalidate ?? []) {
+        revalidatePath(path, 'page');
+      }
 
       return {};
     } catch (error) {
@@ -83,6 +95,7 @@ export function createServerActionWithMeta<
 >({
   action,
   schema,
+  revalidate,
 }: Readonly<{
   /**
    * Action to perform. Only runs if the payload is valid according to the
@@ -96,6 +109,10 @@ export function createServerActionWithMeta<
     }>,
   ) => Promise<undefined>;
   schema: z.ZodType<TPayload>;
+  /**
+   * Routes showing this action's data; see createServerAction.
+   */
+  revalidate?: ReadonlyArray<string>;
 }>) {
   return async (
     payload: TPayload,
@@ -103,6 +120,7 @@ export function createServerActionWithMeta<
   ): Promise<ServerActionStateWithMeta<TPayload, TMeta>> => {
     const base = createServerAction({
       schema,
+      revalidate,
       action: async ({ payload }) => {
         return action({ payload, meta });
       },
