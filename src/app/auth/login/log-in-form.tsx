@@ -17,10 +17,7 @@ export default function LogInForm({
   const [actionState, action, isPending] = useActionState<
     LogInFormState,
     FormData
-  >(
-    logIn,
-    initialError != null ? { errors: { form: initialError } } : {},
-  );
+  >(logIn, initialError != null ? { errors: { form: initialError } } : {});
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);

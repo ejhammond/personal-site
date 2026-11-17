@@ -56,8 +56,7 @@ export default function LoanStats({
           <Heading level={3}>Loan stats unavailable</Heading>
           <Text type="supporting">
             This mortgage can&apos;t be amortized — check that the amount
-            financed is greater than the pre-payment and the rate is
-            sensible.
+            financed is greater than the pre-payment and the rate is sensible.
           </Text>
         </VStack>
       </Card>

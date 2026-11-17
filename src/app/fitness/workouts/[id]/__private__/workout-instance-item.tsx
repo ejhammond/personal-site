@@ -65,8 +65,9 @@ export function WorkoutInstanceItem({
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isPending, setIsPending] = useState(false);
-  const [editState, setEditState] =
-    useState<UpdateWorkoutInstanceActionState>({});
+  const [editState, setEditState] = useState<UpdateWorkoutInstanceActionState>(
+    {},
+  );
   const [deleteState, setDeleteState] =
     useState<DeleteWorkoutInstanceActionState>({});
 

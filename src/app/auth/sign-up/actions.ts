@@ -35,10 +35,7 @@ export async function signUp(
   if (typeof displayName !== 'string' || displayName === '') {
     errors['displayName'] = 'Invalid display name';
   }
-  if (
-    typeof displayName === 'string' &&
-    displayName.length > 200
-  ) {
+  if (typeof displayName === 'string' && displayName.length > 200) {
     errors['displayName'] = 'Display name must be 200 characters or fewer';
   }
   if (typeof email !== 'string' || email === '') {

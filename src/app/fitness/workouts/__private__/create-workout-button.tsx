@@ -6,10 +6,7 @@ import { NumberInput } from '@astryxdesign/core/NumberInput';
 import { VStack } from '@astryxdesign/core/Stack';
 import { TextInput } from '@astryxdesign/core/TextInput';
 import { useState } from 'react';
-import {
-  insertWorkout,
-  InsertWorkoutActionState,
-} from './workout-actions';
+import { insertWorkout, InsertWorkoutActionState } from './workout-actions';
 import { FormFooter } from '@/components/form-footer';
 
 const defaultWorkout = {
@@ -26,8 +23,7 @@ export function CreateWorkoutButton() {
   } | null>(null);
 
   const [isPending, setIsPending] = useState(false);
-  const [actionState, setActionState] =
-    useState<InsertWorkoutActionState>({});
+  const [actionState, setActionState] = useState<InsertWorkoutActionState>({});
 
   return (
     <>

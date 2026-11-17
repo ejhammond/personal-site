@@ -35,7 +35,9 @@ export const directoryIndex = hydrateDirectoryIndex(serializableDirectoryIndex);
   );
   await traverseDirectory(directoryIndex, async (dir) => {
     if (
-      dir.path.split('/').some((segment) => ignoredDirectories.includes(segment))
+      dir.path
+        .split('/')
+        .some((segment) => ignoredDirectories.includes(segment))
     ) {
       return;
     }

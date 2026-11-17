@@ -27,8 +27,7 @@ export function WorkoutMenu({ workout }: { workout: Workout }) {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isPending, setIsPending] = useState(false);
   const [editState, setEditState] = useState<UpdateWorkoutActionState>({});
-  const [deleteState, setDeleteState] =
-    useState<DeleteWorkoutActionState>({});
+  const [deleteState, setDeleteState] = useState<DeleteWorkoutActionState>({});
 
   const [editData, setEditData] = useState({
     name: workout.name,

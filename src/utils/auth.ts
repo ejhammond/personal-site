@@ -22,7 +22,5 @@ export function getNextPathname({
 
   // URLSearchParams values are already decoded; decoding again would throw
   // URIError on a stray % and is not needed.
-  return isSafeNextPathname(nextFromParams)
-    ? nextFromParams
-    : defaultPathname;
+  return isSafeNextPathname(nextFromParams) ? nextFromParams : defaultPathname;
 }

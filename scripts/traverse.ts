@@ -57,9 +57,7 @@ async function readDirectory(sitePath: SitePath): Promise<Directory> {
     const tags = new Set<FileTag>();
 
     if (
-      fullPath
-        .split(path.sep)
-        .some((segment) => ignoredSegments.has(segment))
+      fullPath.split(path.sep).some((segment) => ignoredSegments.has(segment))
     ) {
       continue;
     }
