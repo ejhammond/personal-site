@@ -15,7 +15,6 @@ import type { MortgageRow } from './__private__/mortgages-table';
 // default is to prerender; `instant = false` opts out).
 export const instant = false;
 
-
 export default async function Mortgage() {
   const supabase = await createClient();
 

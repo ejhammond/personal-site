@@ -70,9 +70,7 @@ export default async function RootLayout({
                     </>
                   }
                   endContent={
-                    <Suspense
-                      fallback={<AccountLink isLoggedIn={false} />}
-                    >
+                    <Suspense fallback={<AccountLink isLoggedIn={false} />}>
                       <NavAccountLink />
                     </Suspense>
                   }

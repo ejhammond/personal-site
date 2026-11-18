@@ -20,7 +20,6 @@ import type { CSSProperties } from 'react';
 // default is to prerender; `instant = false` opts out).
 export const instant = false;
 
-
 // Cap the column but let it shrink to fit narrow screens (Stack has no
 // maxWidth prop, so it's set here).
 const contentStyle: CSSProperties = {

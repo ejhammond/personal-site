@@ -12,7 +12,6 @@ import LogInForm from './log-in-form';
 // default is to prerender; `instant = false` opts out).
 export const instant = false;
 
-
 export default async function LogInPage({
   searchParams: asyncSearchParams,
 }: NextServerComponentProps<unknown>) {

@@ -8,7 +8,6 @@ import ResetPasswordForm from './reset-password-form';
 // default is to prerender; `instant = false` opts out).
 export const instant = false;
 
-
 export default async function ResetPage({
   searchParams: asyncSearchParams,
 }: NextServerComponentProps<unknown>) {

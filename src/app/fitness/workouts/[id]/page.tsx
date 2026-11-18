@@ -22,7 +22,6 @@ import { WorkoutMenu } from './__private__/workout-menu';
 // default is to prerender; `instant = false` opts out).
 export const instant = false;
 
-
 export default async function WorkoutID({
   params: asyncParams,
 }: {

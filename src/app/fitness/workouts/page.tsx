@@ -15,7 +15,6 @@ import type { WorkoutRow } from './__private__/workouts-table';
 // default is to prerender; `instant = false` opts out).
 export const instant = false;
 
-
 export default async function Workouts() {
   const supabase = await createClient();
 

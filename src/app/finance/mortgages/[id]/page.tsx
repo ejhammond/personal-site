@@ -11,7 +11,6 @@ import { WithID } from '@/utils/id';
 // default is to prerender; `instant = false` opts out).
 export const instant = false;
 
-
 export default async function MortgageID({
   params: asyncParams,
 }: {
