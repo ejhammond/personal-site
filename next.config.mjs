@@ -24,7 +24,23 @@ const withMDX = createMDXPlugin({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   pageExtensions: ['ts', 'tsx', 'gen.ts', 'gen.tsx'],
+  poweredByHeader: false,
+  // Baked in at build time: the footer copyright year must be a constant
+  // during prerendering — calling new Date() in the render path errors
+  // under Cache Components ("unstable value"). It refreshes on the next
+  // deploy after New Year.
+  env: {
+    NEXT_PUBLIC_COPYRIGHT_YEAR: String(new Date().getFullYear()),
+  },
+  // Cache Components (Partial Prerendering): pages with a
+  // Suspense-isolated dynamic hole (the nav login icon) prerender their
+  // static shell at build time and stream the hole at request time.
+  // Without this, any dynamic hole — even inside Suspense — keeps the
+  // whole route dynamic.
+  cacheComponents: true,
   images: {
+    // Serve AVIF where supported (smaller than WebP), WebP otherwise.
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
         protocol: 'https',

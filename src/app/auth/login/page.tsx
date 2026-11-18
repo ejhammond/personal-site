@@ -7,6 +7,12 @@ import { redirect } from 'next/navigation';
 import { AuthLayout } from '../auth-layout';
 import LogInForm from './log-in-form';
 
+// Per-request page: renders from the auth session and/or query params,
+// so it renders on demand instead of prerendering (Cache Components
+// default is to prerender; `instant = false` opts out).
+export const instant = false;
+
+
 export default async function LogInPage({
   searchParams: asyncSearchParams,
 }: NextServerComponentProps<unknown>) {

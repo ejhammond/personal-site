@@ -5,6 +5,12 @@ import { genMaybeFromAsyncSearchParam } from '@/utils/search-params';
 import { AuthLayout } from '../auth-layout';
 import SignUpForm from './sign-up-form';
 
+// Per-request page: renders from the auth session and/or query params,
+// so it renders on demand instead of prerendering (Cache Components
+// default is to prerender; `instant = false` opts out).
+export const instant = false;
+
+
 export default async function SignUpPage({
   searchParams: asyncSearchParams,
 }: NextServerComponentProps<unknown>) {

@@ -5,11 +5,13 @@ import { themes, defaultThemeSlug } from '@/astryx-themes';
 import { AppShell } from '@astryxdesign/core/AppShell';
 import { TopNav, TopNavHeading, TopNavItem } from '@astryxdesign/core/TopNav';
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import ayhotaLogo from '@/images/ayhota-logo.png';
 import Image from 'next/image';
 import { AccountLink } from './account-link';
+import { NavAccountLink } from './nav-account-link';
 import { RootProviders } from './root-providers';
-import { createClient } from '@/supabase/server';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata: Metadata = {
   title: 'Ayhota',
@@ -24,14 +26,19 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
   return (
     <html lang="en">
+      {/* Preconnect for the Google Fonts @import in the Astryx theme's
+          fonts.css (see src/astryx-themes.ts): the font stylesheet is
+          fetched from fonts.googleapis.com and the files from
+          fonts.gstatic.com, so set both connections up while the page's
+          own CSS loads instead of after. React 19 hoists these to <head>. */}
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossOrigin="anonymous"
+      />
       <RootProviders>
         <body>
           <Theme theme={themes[defaultThemeSlug]} mode="system">
@@ -62,13 +69,20 @@ export default async function RootLayout({
                       <TopNavItem label="Fitness" href="/fitness" />
                     </>
                   }
-                  endContent={<AccountLink isLoggedIn={user != null} />}
+                  endContent={
+                    <Suspense
+                      fallback={<AccountLink isLoggedIn={false} />}
+                    >
+                      <NavAccountLink />
+                    </Suspense>
+                  }
                 />
               }
             >
               {children}
             </AppShell>
           </Theme>
+          <SpeedInsights />
         </body>
       </RootProviders>
     </html>

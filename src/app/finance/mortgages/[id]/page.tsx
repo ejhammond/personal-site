@@ -6,6 +6,12 @@ import { monthFromNumber } from '@/utils/date';
 import { notFound, redirect } from 'next/navigation';
 import { WithID } from '@/utils/id';
 
+// Per-request page: renders from the auth session and/or query params,
+// so it renders on demand instead of prerendering (Cache Components
+// default is to prerender; `instant = false` opts out).
+export const instant = false;
+
+
 export default async function MortgageID({
   params: asyncParams,
 }: {

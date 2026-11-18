@@ -15,6 +15,12 @@ import { redirect } from 'next/navigation';
 import EditProfileForm from './edit-profile-form';
 import type { CSSProperties } from 'react';
 
+// Per-request page: renders from the auth session and/or query params,
+// so it renders on demand instead of prerendering (Cache Components
+// default is to prerender; `instant = false` opts out).
+export const instant = false;
+
+
 // Cap the column but let it shrink to fit narrow screens (Stack has no
 // maxWidth prop, so it's set here).
 const contentStyle: CSSProperties = {

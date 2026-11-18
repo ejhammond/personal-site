@@ -40,6 +40,10 @@ const serializableDirectoryIndex: SerializableDirectoryIndex = [
           tags: [],
         },
         {
+          path: '/nav-account-link.tsx',
+          tags: [],
+        },
+        {
           path: '/root-providers.tsx',
           tags: [],
         },

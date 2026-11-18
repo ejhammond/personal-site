@@ -10,7 +10,7 @@ export function SiteFooter() {
   return (
     <HStack gap={2} vAlign="center">
       <Text type="supporting" color="secondary">
-        © {new Date().getFullYear()} EJ Hammond
+        © {process.env.NEXT_PUBLIC_COPYRIGHT_YEAR} EJ Hammond
       </Text>
       <StackItem size="fill" />
       <Link href="https://github.com/ejhammond/personal-site" color="secondary">

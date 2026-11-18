@@ -10,6 +10,12 @@ import { CreateWorkoutButton } from './__private__/create-workout-button';
 import { WorkoutsTable } from './__private__/workouts-table';
 import type { WorkoutRow } from './__private__/workouts-table';
 
+// Per-request page: renders from the auth session and/or query params,
+// so it renders on demand instead of prerendering (Cache Components
+// default is to prerender; `instant = false` opts out).
+export const instant = false;
+
+
 export default async function Workouts() {
   const supabase = await createClient();
 
